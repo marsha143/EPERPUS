@@ -31,7 +31,7 @@ $jumlah_buku = $r['jumlah'];
                             <div class="p-3 text-center">
                                 <h1 class="text-gradient text-primary"><span id="state1"
                                         countTo="<?=$jumlah_buku?>">0</span>+</h1>
-                                <h5 class="mt-3">Jumlah Buku</h5>
+                                <h5 class="mt-3">Jumlah Buku Yang Tersedia</h5>
                                 <p class="text-sm font-weight-normal">Tersedia buku pendidikan, novel, juga komik
                                     berbahasa Jepang!</p>
                             </div>
