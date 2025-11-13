@@ -48,7 +48,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="card-body">
                             <p class="pb-3">
-                                Selamat datang di Perpustakaan Politeknik Takumi. Silahkan isi data kehadiran.
+                                Selamat datang di Perpustakaan Politeknik Takumi. Silahkan isi data kehadiran tamu.
                             </p>
                             <form method="POST" action="" class="text-start">
                                 <div class="card-body p-0 my-3">
