@@ -11,7 +11,7 @@ $jumlah_buku = $r['jumlah'];
         <div class="container">
             <div class="row">
                 <div class="col-lg-7 text-center mx-auto">
-                    <h1 class="text-white pt-3 mt-n5">EPERPUS</h1>
+                    <h1 class="text-white pt-3 mt-n5">EPERPUS 2.0</h1>
                     <p class="lead text-white mt-3">Elektronic Perpustakaan <br> Politeknik Takumi</p>
                     <a href="login">
                         <button type="submit" class="btn bg-white text-dark">Login</button>
