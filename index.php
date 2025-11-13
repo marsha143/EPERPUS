@@ -33,7 +33,7 @@ $jumlah_buku = $r['jumlah'];
                                         countTo="<?=$jumlah_buku?>">0</span>+</h1>
                                 <h5 class="mt-3">Jumlah Buku</h5>
                                 <p class="text-sm font-weight-normal">Tersedia buku pendidikan, novel, juga komik
-                                    berbasa Jepang</p>
+                                    berbasa Jepang!</p>
                             </div>
                             <hr class="vertical dark">
                         </div>
