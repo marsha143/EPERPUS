@@ -66,7 +66,7 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
             <canvas id="chartKunjungan" style="min-height:240px;"></canvas>
           </div>
           <div class="card-footer">
-            <p class="mb-0">Kunjungan perpustakaan.</p>
+            <p class="mb-0">Kunjungan perpustakaan</p>
           </div>
         </div>
       </div>
