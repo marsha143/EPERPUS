@@ -33,6 +33,9 @@ $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
           </li>
       </ul>
     </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
+      Search Buku
+    </button>
   </div>
 </nav>
 
@@ -95,39 +98,64 @@ $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 </div>
 </div>
 </div>
-<div class="container py-7">
-  <div class="row mt-5">
-    <div class="col-sm-3 col-6 mx-auto">
-      <!-- Button trigger modal -->
-      <button type="button" class="btn bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Launch demo modal
-      </button>
+<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
 
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Your modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Society has put up so many boundaries, so many limitations on what’s right and wrong that it’s almost
-              impossible to get a pure thought out.
-              <br><br>
-              It’s like a little kid, a little boy, looking at colors, and no one told him what colors are good, before
-              somebody tells you you shouldn’t like pink because that’s for girls, or you’d instantly become a gay
-              two-year-old.
-            </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn bg-gradient-dark mb-0" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn bg-gradient-primary mb-0">Save changes</button>
-            </div>
-          </div>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Search Buku</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
+      <form action="search_buku.php" method="GET">
+        <div class="modal-body">
+
+          <!-- Judul Buku -->
+          <div class="mb-3">
+            <label class="form-label">Judul Buku</label>
+            <input type="text" name="judul" class="form-control" placeholder="Masukkan judul buku">
+          </div>
+
+          <!-- ISBN -->
+          <div class="mb-3">
+            <label class="form-label">ISBN</label>
+            <input type="text" name="isbn" class="form-control" placeholder="Masukkan ISBN">
+          </div>
+
+          <!-- Penulis -->
+          <div class="mb-3">
+            <label class="form-label">Penulis</label>
+            <input type="text" name="penulis" class="form-control" placeholder="Masukkan nama penulis">
+          </div>
+
+          <!-- Tahun Terbit -->
+          <div class="mb-3">
+            <label class="form-label">Tahun Terbit</label>
+            <input type="number" name="tahun" min="0" class="form-control" placeholder="Contoh: 2020">
+          </div>
+
+          <!-- Penerbit -->
+          <div class="mb-3">
+            <label class="form-label">Penerbit</label>
+            <input type="text" name="penerbit" class="form-control" placeholder="Masukkan penerbit">
+          </div>
+
+          <!-- Kode Buku -->
+          <div class="mb-3">
+            <label class="form-label">Kode Buku</label>
+            <input type="number" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+
+      </form>
+
     </div>
   </div>
 </div>
-
 <?php include('./layouts/footer.php'); ?>
