@@ -67,24 +67,17 @@
                         <img src="./assets/img/down-arrow-dark.svg" alt="down-arrow"
                             class="arrow ms-auto ms-md-2 d-lg-none d-block">
                     </a>
-                                        <ul class="dropdown-menu dropdown-menu-animation" aria-labelledby="dropdownMenuPages2">
+                    <ul class="dropdown-menu dropdown-menu-animation" aria-labelledby="dropdownMenuPages2">
                         <li>
-                            <a class="dropdown-item <?= $page == 'home_anggota' ? 'active' : '' ?>"
-                                href="app_anggota?page=home_anggota">
-                                <i class="material-icons opacity-6 me-2 text-md">home</i>
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item <?= $page == 'buku_anggota' ? 'active' : '' ?>"
-                                href="app_anggota?page=buku_anggota">
+                            <a class="dropdown-item <?= $page == 'profile_anggota' ? 'active' : '' ?>"
+                                href="app_anggota?page=profile_anggota">
                                 <i class="material-icons opacity-6 me-2 text-md">table_view</i>
-                                Books
+                                Profile
                             </a>
                         </li>
-                <li class="nav-item my-auto ms-3 ms-lg-0">
-                    <a href="logout" class="btn btn-sm bg-white mb-0 me-1 mt-2 mt-md-0">Logout</a>
-                </li>
+                        <li class="nav-item my-auto ms-3 ms-lg-0">
+                            <a href="logout" class="btn btn-sm bg-white mb-0 me-1 mt-2 mt-md-0">Logout</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
