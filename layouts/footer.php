@@ -1,3 +1,39 @@
+<script>
+    function openDetailBuku(card) {
+        const cover     = card.dataset.cover;
+        const judul     = card.dataset.judul;
+        const kode      = card.dataset.kode;
+        const isbn      = card.dataset.isbn;
+        const penulis   = card.dataset.penulis;
+        const tahun     = card.dataset.tahun;
+        const penerbit  = card.dataset.penerbit;
+        const status    = card.dataset.status;
+        const deskripsi = card.dataset.deskripsi;
+
+        document.getElementById('modalCover').src           = cover;
+        document.getElementById('modalJudulBuku').innerText = judul;
+        document.getElementById('modalJudul').innerText     = judul;
+        document.getElementById('modalPenulis').innerText   = "Oleh " + penulis;
+        document.getElementById('modalKode').innerText      = kode;
+        document.getElementById('modalIsbn').innerText      = isbn;
+        document.getElementById('modalTahun').innerText     = tahun;
+        document.getElementById('modalPenerbit').innerText  = penerbit;
+        document.getElementById('modalDeskripsi').innerText = deskripsi;
+
+        const statusSpan = document.getElementById('modalStatus');
+        statusSpan.innerText = status.toUpperCase();
+        statusSpan.classList.remove('bg-success','bg-danger','text-white');
+
+        if (status.toLowerCase() === 'dipinjam') {
+            statusSpan.classList.add('bg-danger','text-white');
+        } else {
+            statusSpan.classList.add('bg-success','text-white');
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('detailBukuModal'));
+        modal.show();
+    }
+</script>
 <!--   Core JS Files   -->
 <script src="./assets/js/core/popper.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/bootstrap.min.js" type="text/javascript"></script>

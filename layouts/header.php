@@ -84,6 +84,54 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <!-- CSS Files -->
 <link id="pagestyle" href="./assets/css/material-kit.css?v=3.0.0" rel="stylesheet" />
+
+<style>
+    /* GRID ala Booksaw */
+    .book-grid {
+        margin-top: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .book-card {
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        border: none;
+        transition: 0.25s;
+        cursor: pointer;
+        background: #ffffff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .book-card img {
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .book-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .book-author {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .badge-status {
+        font-size: 11px;
+        border-radius: 999px;
+        padding: 4px 10px;
+    }
+</style>
 </head>
 
 <body class="index-page bg-gray-200">

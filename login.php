@@ -45,7 +45,7 @@ if (isset($_POST['login'])) {
   if ($dataUser['role'] === 'admin') {
     header('Location: app');
   } else {
-header('Location: index_anggota?id_anggota='.$dataUser['id']);
+header('Location: app_anggota?id_anggota='.$dataUser['id']);
   }
   exit;
 }
