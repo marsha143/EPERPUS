@@ -1,80 +1,110 @@
-<?php include('./layouts/header.php'); ?>
 <?php
+$idAnggota = $_SESSION['user']['id'] ?? 0;
 
-$idAnggota = isset($_GET['id_anggota']) ? (int) $_GET['id_anggota'] : 0;
+$sqlSedang = "SELECT COUNT(*) AS jml FROM peminjaman WHERE id_anggota=$idAnggota AND status='Dipinjam'";
+$sedang = mysqli_fetch_assoc(mysqli_query($conn, $sqlSedang))['jml'] ?? 0;
 
-$sql = "
-  SELECT 
-    p.id,
-    b.cover,
-    b.kode_buku,
-    b.judul_buku,
-    p.tanggal_pinjam,
-    p.tanggal_kembali,
-    p.tanggal_dikembalikan,
-    p.status
-  FROM peminjaman p
-  JOIN buku b ON b.id_buku = p.id_buku
-  WHERE p.id_anggota = $idAnggota
+$sqlSelesai = "SELECT COUNT(*) AS jml FROM peminjaman WHERE id_anggota=$idAnggota AND status='Dikembalikan'";
+$selesai = mysqli_fetch_assoc(mysqli_query($conn, $sqlSelesai))['jml'] ?? 0;
+
+$sqlTotal = "SELECT COUNT(*) AS jml FROM peminjaman WHERE id_anggota=$idAnggota";
+$total = mysqli_fetch_assoc(mysqli_query($conn, $sqlTotal))['jml'] ?? 0;
+
+
+$sqlPopuler = "
+    SELECT b.*, COUNT(p.id) AS total_pinjam
+    FROM peminjaman p
+    JOIN buku b ON p.id_buku = b.id_buku
+    GROUP BY p.id_buku
+    ORDER BY total_pinjam DESC
+    LIMIT 4
 ";
+$populer = mysqli_fetch_all(mysqli_query($conn, $sqlPopuler), MYSQLI_ASSOC);
 
-$sql .= " ORDER BY p.id DESC";
-
-$res = mysqli_query($conn, $sql);
-$peminjaman = $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : [];
+$namaAnggota = htmlspecialchars($_SESSION['user']['username'] ?? 'Anggota');
 ?>
 
 <div class="container mt-4">
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead class="thead-light">
-                        <tr>
-                            <th style="width:60px">No</th>
-                            <th>cover</th>
-                            <th style="min-width:110px">Kode Buku</th>
-                            <th style="min-width:200px">Judul Buku</th>
-                            <th style="min-width:120px">Tgl Pinjam</th>
-                            <th style="min-width:120px">Jatuh Tempo</th>
-                            <th style="min-width:140px">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($peminjaman)): ?>
-                        <tr>
-                            <td colspan="6" class="text-center py-4">Belum ada data peminjaman.</td>
-                        </tr>
-                        <?php else: ?>
-                        <?php $no=1; foreach ($peminjaman as $row): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><img src="<?= $row['cover']?>" alt="cover" style="height:48px"></td>
-                            <td><?= htmlspecialchars($row['kode_buku']) ?></td>
-                            <td><?= htmlspecialchars($row['judul_buku']) ?></td>
-                            <td><?= htmlspecialchars($row['tanggal_pinjam']) ?></td>
-                            <td><?= htmlspecialchars($row['tanggal_kembali']) ?></td>
-                            <td>
-                                <?php if ($row['status'] === 'Dipinjam'): ?>
-                                <span class="badge bg-warning text-dark">Dipinjam</span>
-                                <?php else: ?>
-                                <span class="badge bg-success">Dikembalikan</span>
-                                <?php endif; ?>
-                                <?php if (!empty($row['tanggal_dikembalikan'])): ?>
-                                <small class="text-muted d-block">Kembali:
-                                    <?= htmlspecialchars($row['tanggal_dikembalikan']) ?></small>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <?php if (count($populer) == 0): ?>
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-2">Buku Paling Sering Dipinjam</h5>
+                    <p class="text-muted mb-0">Belum ada data peminjaman buku.</p>
+                </div>
+            </div>
+            <?php else: ?>
+            <?php $b = $populer[0]; ?>
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div class="row g-0 align-items-center" style="background: #f8f9fb;">
+                    <div class="col-md-7">
+                        <div class="p-5">
+
+                            <small class="text-uppercase text-muted">
+                                Buku Paling Sering Dipinjam
+                            </small>
+
+                            <h1 class="fw-bold mt-3 mb-2" style="letter-spacing: .05em; font-size: 2.7rem;">
+                                <?= htmlspecialchars($b['judul_buku']) ?>
+                            </h1>
+
+                            <h5 class="text-secondary mb-4" style="font-weight: 400;">
+                                <?= htmlspecialchars($b['nama_penulis']) ?>
+                            </h5>
+
+                            <span class="badge bg-primary-subtle text-primary me-2">
+                                <?= $b['total_pinjam'] ?>x dipinjam
+                            </span>
+                            <span class="badge bg-primary text-white">
+                                Populer di EPERPUS
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="d-flex justify-content-center align-items-center h-100 p-5">
+
+                            <div class="bg-white rounded-3 shadow-sm p-3" style="max-width: 260px; cursor: pointer;">
+
+                                <img src="<?= $b['cover'] ?>" class="img-fluid rounded-2" style="object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-2">
+                        Selamat datang, <?= $namaAnggota; ?> 👋
+                    </h4>
+                    <p class="text-muted mb-3">
+                        Berikut ringkasan aktivitas peminjaman Anda di EPERPUS.
+                    </p>
+                    <div class="d-flex flex-wrap gap-4">
+                        <div>
+                            <h5 class="mb-0"><?= $sedang ?></h5>
+                            <small class="text-muted">Buku sedang dipinjam</small>
+                        </div>
+                        <div>
+                            <h5 class="mb-0"><?= $selesai ?></h5>
+                            <small class="text-muted">Buku sudah dikembalikan</small>
+                        </div>
+                        <div>
+                            <h5 class="mb-0"><?= $total ?></h5>
+                            <small class="text-muted">Total peminjaman</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">
+                        Tips: cek menu <strong>Riwayat Peminjaman</strong> untuk melihat detail lengkap peminjaman Anda.
+                    </small>
+                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-</div>
-
-<?php include('./layouts/footer.php'); ?>

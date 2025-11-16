@@ -52,7 +52,7 @@
                             <a class="dropdown-item <?= $page == 'peminjaman_anggota' ? 'active' : '' ?>"
                                 href="app_anggota?page=peminjaman_anggota">
                                 <i class="material-icons opacity-6 me-2 text-md">format_textdirection_r_to_l</i>
-                                Proses peminjaman
+                                Riwayat peminjaman
                             </a>
                         </li>
                     </ul>

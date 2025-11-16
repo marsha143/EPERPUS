@@ -1,5 +1,4 @@
 <?php include("./config/db.php"); ?>
-<?php include('./layouts/header.php'); ?>
 <?php
 
 if (isset($_SESSION['login'])){
@@ -45,11 +44,12 @@ if (isset($_POST['login'])) {
   if ($dataUser['role'] === 'admin') {
     header('Location: app');
   } else {
-header('Location: app_anggota?id_anggota='.$dataUser['id']);
-  }
-  exit;
+header('Location: app_anggota?page=home_anggota&view=index&id_anggota=' . $dataUser['id']);
+exit;       
+}
 }
 ?>
+<?php include('./layouts/header.php'); ?>
 <div class="page-header align-items-start min-vh-100"
     style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');"
     loading="lazy">

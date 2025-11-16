@@ -1,125 +1,79 @@
+<?php include('./layouts/header.php'); ?>
 <?php
-include('./layouts/header.php');
-$data = mysqli_query($conn, "
+
+$idAnggota = ($_SESSION['user']['id'] ?? 0);
+
+$sql = "
   SELECT 
-    b.*, 
-    CASE 
-      WHEN p.status = 'Dipinjam' THEN 'Dipinjam'
-      ELSE 'Tersedia'
-    END AS status_buku
-  FROM buku b
-  LEFT JOIN peminjaman p 
-    ON b.id_buku = p.id_buku 
-    AND p.status = 'Dipinjam'
-  
-");
-$buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
+    p.id,
+    b.cover,
+    b.kode_buku,
+    b.judul_buku,
+    p.tanggal_pinjam,
+    p.tanggal_kembali,
+    p.tanggal_dikembalikan,
+    p.status
+  FROM peminjaman p
+  JOIN buku b ON p.id_buku = b.id_buku
+  WHERE p.id_anggota = $idAnggota
+  ORDER BY p.tanggal_pinjam DESC
+";
 
+$data = mysqli_query($conn, $sql);
+$peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 ?>
-
-
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
-            <h5 class="mb-3">Daftar Buku</h5>
             <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-light">
+                <table class="table mb-0">
+                    <thead class="thead-light">
                         <tr>
-                            <th>Cover</th>
-                            <th>Judul Buku</th>
-                            <th>Kode Buku</th>
-                            <th>ISBN</th>
-                            <th>Nama Penulis</th>
-                            <th>Tahun Terbit</th>
-                            <th>Penerbit</th>
-                            <th>Status</th>
+                            <th style="width:60px">No</th>
+                            <th>cover</th>
+                            <th style="min-width:110px">Kode Buku</th>
+                            <th style="min-width:200px">Judul Buku</th>
+                            <th style="min-width:120px">Tgl Pinjam</th>
+                            <th style="min-width:120px">Jatuh Tempo</th>
+                            <th style="min-width:140px">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($buku as $b): ?>
+                        <?php if (empty($peminjaman)): ?>
                         <tr>
-                            <td><img src="<?= $b['cover']?>" alt="cover" style="height:48px"></td>
-                            <td><?= $b['judul_buku'] ?></td>
-                            <td><?= $b['kode_buku'] ?></td>
-                            <td><?= $b['isbn'] ?></td>
-                            <td><?= $b['nama_penulis'] ?></td>
-                            <td><?= $b['tahun_terbit'] ?></td>
-                            <td><?= $b['penerbit'] ?></td>
+                            <td colspan="6" class="text-center py-4">Belum ada data peminjaman.</td>
+                        </tr>
+                        <?php else: ?>
+                        <?php $no=1; foreach ($peminjaman as $row): ?>
+                        <tr>
+                            <td><?= $no++ ?></td>
+                            <td><img src="<?= $row['cover']?>" alt="cover" style="height:48px"></td>
+                            <td><?= htmlspecialchars($row['kode_buku']) ?></td>
+                            <td><?= htmlspecialchars($row['judul_buku']) ?></td>
+                            <td><?= htmlspecialchars($row['tanggal_pinjam']) ?></td>
+                            <td><?= htmlspecialchars($row['tanggal_kembali']) ?></td>
                             <td>
-                                <?php if ($b['status_buku'] == 'Dipinjam'): ?>
-                                <span class="badge bg-danger">Dipinjam</span>
+                                <?php if ($row['status'] === 'Dipinjam'): ?>
+                                <span class="badge bg-warning text-dark">Dipinjam</span>
                                 <?php else: ?>
-                                <span class="badge bg-success">Tersedia</span>
+                                <span class="badge bg-success">Dikembalikan</span>
+                                <?php endif; ?>
+                                <?php if (!empty($row['tanggal_dikembalikan'])): ?>
+                                <small class="text-muted d-block">Kembali:
+                                    <?= htmlspecialchars($row['tanggal_dikembalikan']) ?></small>
                                 <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Search Buku</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <form action="search_buku.php" method="GET">
-                <div class="modal-body">
-
-                    <!-- Judul Buku -->
-                    <div class="mb-3">
-                        <label class="form-label">Judul Buku</label>
-                        <input type="text" name="judul" class="form-control" placeholder="Masukkan judul buku">
-                    </div>
-
-                    <!-- ISBN -->
-                    <div class="mb-3">
-                        <label class="form-label">ISBN</label>
-                        <input type="text" name="isbn" class="form-control" placeholder="Masukkan ISBN">
-                    </div>
-
-                    <!-- Penulis -->
-                    <div class="mb-3">
-                        <label class="form-label">Penulis</label>
-                        <input type="text" name="penulis" class="form-control" placeholder="Masukkan nama penulis">
-                    </div>
-
-                    <!-- Tahun Terbit -->
-                    <div class="mb-3">
-                        <label class="form-label">Tahun Terbit</label>
-                        <input type="number" name="tahun" min="0" class="form-control" placeholder="Contoh: 2020">
-                    </div>
-
-                    <!-- Penerbit -->
-                    <div class="mb-3">
-                        <label class="form-label">Penerbit</label>
-                        <input type="text" name="penerbit" class="form-control" placeholder="Masukkan penerbit">
-                    </div>
-
-                    <!-- Kode Buku -->
-                    <div class="mb-3">
-                        <label class="form-label">Kode Buku</label>
-                        <input type="number" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
 </div>
+</div>
+
 <?php include('./layouts/footer.php'); ?>

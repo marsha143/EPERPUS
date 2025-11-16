@@ -17,7 +17,8 @@ if (isset($_POST['update'])) {
     $nama_penulis = $_POST['nama_penulis'];
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
-    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku', `kode_buku`='$kode_buku',`isbn`='$isbn',`nama_penulis`='$nama_penulis',`tahun_terbit`='$tahun_terbit', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    $deskripsi = $_POST['deskripsi'];
+    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku', `kode_buku`='$kode_buku',`isbn`='$isbn',`nama_penulis`='$nama_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -103,6 +104,15 @@ if (isset($_POST['update'])) {
                                         <label for="penerbit" class="form-label">penerbit</label>
                                         <input type="text" class="form-control" id="penerbit" name="penerbit"
                                             placeholder="masukkan penerbit" value="<?= $data['penerbit'] ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="deskripsi" class="form-label">deskripsi</label>
+                                        <input type="text" class="form-control" id="deskripsi" name="deskripsi"
+                                            placeholder="masukkan deskripsi" value="<?= $data['deskripsi'] ?>" required>
                                     </div>
                                 </div>
                             </div>
