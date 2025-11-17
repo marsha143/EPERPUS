@@ -82,11 +82,5 @@
                 </li>
             </ul>
         </div>
-        <div class="d-flex align-items-center ms-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
-                Search Buku
-            </button>
-        </div>
-
     </div>
 </nav>
