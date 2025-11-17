@@ -77,6 +77,37 @@ $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
         <?php endforeach; ?>
     </div>
 </div>
+<div class="modal fade" id="detailBukuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalJudulBuku">Detail Buku</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <img id="modalCover" src="" alt="cover" class="img-fluid rounded shadow-sm">
+                    </div>
+                    <div class="col-md-8">
+                        <h5 id="modalJudul" class="mb-1"></h5>
+                        <p class="text-muted mb-2" id="modalPenulis"></p>
+                        <p class="mb-1"><strong>Kode Buku:</strong> <span id="modalKode"></span></p>
+                        <p class="mb-1"><strong>ISBN:</strong> <span id="modalIsbn"></span></p>
+                        <p class="mb-1"><strong>Tahun Terbit:</strong> <span id="modalTahun"></span></p>
+                        <p class="mb-1"><strong>Penerbit:</strong> <span id="modalPenerbit"></span></p>
+                        <p class="mt-2"><strong>Status:</strong> <span id="modalStatus" class="badge-status"></span></p>
+                        <hr>
+                        <p id="modalDeskripsi" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
