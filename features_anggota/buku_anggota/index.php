@@ -1,4 +1,5 @@
 <?php
+
 $where = [];
 
 if (!empty($_GET['judul'])) {
@@ -53,28 +54,19 @@ $sqlRekom = "
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
   ORDER BY
-    -- urut tahun (ambil angka terakhir, misal '2024' dari '31 Juli 2024')
     CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', -1) AS UNSIGNED) DESC,
-
-    -- urut bulan (pakai urutan nama bulan bahasa Indonesia)
     FIELD(
       SUBSTRING_INDEX(SUBSTRING_INDEX(b.tahun_terbit, ' ', 2), ' ', -1),
       'Januari','Februari','Maret','April','Mei','Juni',
       'Juli','Agustus','September','Oktober','November','Desember'
     ) DESC,
-
-    -- urut tanggal (ambil angka pertama, misal '31' dari '31 Juli 2024')
     CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', 1) AS UNSIGNED) DESC,
-
-    -- kalau semua sama, pakai id_buku paling baru
     b.id_buku DESC
   LIMIT 5
 ";
 $dataRekom = mysqli_query($conn, $sqlRekom);
 $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
-$qPenulis = mysqli_query($conn, "SELECT DISTINCT nama_penulis FROM buku ORDER BY nama_penulis ASC");
-$penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 ?>
 
 
@@ -228,7 +220,6 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 
                         <hr>
 
-                        <!-- Deskripsi dengan scroll -->
                         <div class="modal-desc-wrapper">
                             <p id="modalDeskripsi" class="mb-0"></p>
                         </div>
@@ -267,16 +258,8 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Penulis</label>
-                        <select name="penulis" class="form-select js-example-basic-single">
-                            <option value="" hidden>-- Pilih Penulis --</option>
-
-                            <?php foreach ($penulisList as $pn): ?>
-                                <option value="<?= htmlspecialchars($pn['nama_penulis']) ?>">
-                                    <?= htmlspecialchars($pn['nama_penulis']) ?>
-                                </option>
-                            <?php endforeach; ?>
-
-                        </select>
+                        <input type="text" name="penulis" class="form-control"
+                               placeholder="Masukkan Penulis">
                     </div>
 
                     <div class="mb-3">
