@@ -83,67 +83,66 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
         <div class="card-body">
 
             <?php if (count($rekom) > 0): ?>
-            <div id="rekomCarousel" class="carousel slide" data-bs-ride="false">
-                <div class="carousel-inner">
+                <div id="rekomCarousel" class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner">
 
-                    <?php
-                    $chunks = array_chunk($rekom, 3);
-                    foreach ($chunks as $index => $chunk):
-                    ?>
-                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                        <div class="row justify-content-center">
+                        <?php
+                        $chunks = array_chunk($rekom, 3);
+                        foreach ($chunks as $index => $chunk):
+                            ?>
+                            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                <div class="row justify-content-center">
 
-                            <?php foreach ($chunk as $r): ?>
-                            <div class="col-12 col-sm-6 col-md-4">
-                                <div class="card book-card mb-3 rekom-slider-card"
-                                     onclick="openDetailBuku(this)"
-                                     data-cover="<?= $r['cover'] ?>"
-                                     data-judul="<?= htmlspecialchars($r['judul_buku']) ?>"
-                                     data-kode="<?= htmlspecialchars($r['kode_buku']) ?>"
-                                     data-isbn="<?= htmlspecialchars($r['isbn']) ?>"
-                                     data-penulis="<?= htmlspecialchars($r['nama_penulis']) ?>"
-                                     data-tahun="<?= htmlspecialchars($r['tahun_terbit']) ?>"
-                                     data-penerbit="<?= htmlspecialchars($r['penerbit']) ?>"
-                                     data-status="<?= htmlspecialchars($r['status_buku']) ?>"
-                                     data-deskripsi="<?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
+                                    <?php foreach ($chunk as $r): ?>
+                                        <div class="col-12 col-sm-6 col-md-4">
+                                            <div class="card book-card mb-3 rekom-slider-card" onclick="openDetailBuku(this)"
+                                                data-cover="<?= $r['cover'] ?>"
+                                                data-judul="<?= htmlspecialchars($r['judul_buku']) ?>"
+                                                data-kode="<?= htmlspecialchars($r['kode_buku']) ?>"
+                                                data-isbn="<?= htmlspecialchars($r['isbn']) ?>"
+                                                data-penulis="<?= htmlspecialchars($r['nama_penulis']) ?>"
+                                                data-tahun="<?= htmlspecialchars($r['tahun_terbit']) ?>"
+                                                data-penerbit="<?= htmlspecialchars($r['penerbit']) ?>"
+                                                data-status="<?= htmlspecialchars($r['status_buku']) ?>"
+                                                data-deskripsi="<?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
 
-                                    <img src="<?= $r['cover'] ?>" alt="cover">
+                                                <img src="<?= $r['cover'] ?>" alt="cover">
 
-                                    <div class="card-body text-center">
-                                        <div class="book-title"><?= $r['judul_buku'] ?></div>
-                                        <div class="book-author"><?= $r['nama_penulis'] ?></div>
+                                                <div class="card-body text-center">
+                                                    <div class="book-title"><?= $r['judul_buku'] ?></div>
+                                                    <div class="book-author"><?= $r['nama_penulis'] ?></div>
 
-                                        <div class="mt-2">
-                                            <?php if ($r['status_buku'] == 'Dipinjam'): ?>
-                                                <span class="badge-status bg-danger text-white">DIPINJAM</span>
-                                            <?php else: ?>
-                                                <span class="badge-status bg-success text-white">TERSEDIA</span>
-                                            <?php endif; ?>
+                                                    <div class="mt-2">
+                                                        <?php if ($r['status_buku'] == 'Dipinjam'): ?>
+                                                            <span class="badge-status bg-danger text-white">DIPINJAM</span>
+                                                        <?php else: ?>
+                                                            <span class="badge-status bg-success text-white">TERSEDIA</span>
+                                                        <?php endif; ?>
+                                                    </div>
+
+                                                    <div class="mt-2 rekom-caption-date">
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                    <?php endforeach; ?>
 
-                                        <div class="mt-2 rekom-caption-date">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                            <?php endforeach; ?>
+                        <?php endforeach; ?>
 
-                        </div>
                     </div>
-                    <?php endforeach; ?>
 
+                    <button class="carousel-control-prev" type="button" data-bs-target="#rekomCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#rekomCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
                 </div>
-
-                <button class="carousel-control-prev" type="button"
-                        data-bs-target="#rekomCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-
-                <button class="carousel-control-next" type="button"
-                        data-bs-target="#rekomCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
 
             <?php else: ?>
                 <p class="text-muted mb-0">Belum ada data buku.</p>
@@ -162,17 +161,14 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
     <div class="row">
         <?php foreach ($buku as $b): ?>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card book-card"
-                     onclick="openDetailBuku(this)"
-                     data-cover="<?= $b['cover'] ?>"
-                     data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
-                     data-kode="<?= htmlspecialchars($b['kode_buku']) ?>"
-                     data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
-                     data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
-                     data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
-                     data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
-                     data-status="<?= htmlspecialchars($b['status_buku']) ?>"
-                     data-deskripsi="<?= htmlspecialchars($b['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
+                <div class="card book-card" onclick="openDetailBuku(this)" data-cover="<?= $b['cover'] ?>"
+                    data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
+                    data-kode="<?= htmlspecialchars($b['kode_buku']) ?>" data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
+                    data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
+                    data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
+                    data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
+                    data-status="<?= htmlspecialchars($b['status_buku']) ?>"
+                    data-deskripsi="<?= htmlspecialchars($b['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
 
                     <img src="<?= $b['cover'] ?>" class="card-img-top" alt="cover">
 
@@ -206,14 +202,12 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalJudulBuku">Detail Buku</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4 mb-3 mb-md-0">
-                        <img id="modalCover" src="" alt="cover"
-                             class="img-fluid rounded shadow-sm">
+                        <img id="modalCover" src="" alt="cover" class="img-fluid rounded shadow-sm">
                     </div>
                     <div class="col-md-8">
                         <h5 id="modalJudul" class="mb-1"></h5>
@@ -235,8 +229,7 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -257,16 +250,13 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
                     <div class="mb-3">
                         <label class="form-label">Judul Buku</label>
-                        <input type="text" name="judul" class="form-control"
-                               placeholder="Masukkan judul buku">
+                        <input type="text" name="judul" class="form-control" placeholder="Masukkan judul buku">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">ISBN</label>
-                        <input type="text" name="isbn" class="form-control"
-                               placeholder="Masukkan ISBN">
+                        <input type="text" name="isbn" class="form-control" placeholder="Masukkan ISBN">
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Penulis</label>
                         <input type="text" name="penulis" class="form-control"
@@ -275,27 +265,23 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
                     <div class="mb-3">
                         <label class="form-label">Tahun Terbit</label>
-                        <input type="number" name="tahun" min="2000"
-                               class="form-control" placeholder="Contoh: 2024">
+                        <input type="number" name="tahun" min="2000" class="form-control" placeholder="Contoh: 2024">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Penerbit</label>
-                        <input type="text" name="penerbit" class="form-control"
-                               placeholder="Masukkan penerbit">
+                        <input type="text" name="penerbit" class="form-control" placeholder="Masukkan penerbit">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Kode Buku</label>
-                        <input type="text" name="kode_buku" class="form-control"
-                               placeholder="Masukkan kode buku">
+                        <input type="text" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
                     </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
 
