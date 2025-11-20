@@ -1,23 +1,24 @@
 <?php
+
 $where = [];
 
 if (!empty($_GET['judul'])) {
-    $where[] = "b.judul_buku LIKE '%" . safe($conn, $_GET['judul']) . "%'";
+    $where[] = "b.judul_buku LIKE '%" . $_GET['judul'] . "%'";
 }
 if (!empty($_GET['isbn'])) {
-    $where[] = "b.isbn LIKE '%" . safe($conn, $_GET['isbn']) . "%'";
+    $where[] = "b.isbn LIKE '%" . $_GET['isbn'] . "%'";
 }
 if (!empty($_GET['penulis'])) {
-    $where[] = "b.nama_penulis LIKE '%" . safe($conn, $_GET['penulis']) . "%'";
+    $where[] = "b.nama_penulis LIKE '%" . $_GET['penulis'] . "%'";
 }
 if (!empty($_GET['penerbit'])) {
-    $where[] = "b.penerbit LIKE '%" . safe($conn, $_GET['penerbit']) . "%'";
+    $where[] = "b.penerbit LIKE '%" . $_GET['penerbit'] . "%'";
 }
 if (!empty($_GET['tahun'])) {
-    $where[] = "b.tahun_terbit = '" . safe($conn, $_GET['tahun']) . "'";
+    $where[] = "b.tahun_terbit = '" . $_GET['tahun'] . "'";
 }
 if (!empty($_GET['kode_buku'])) {
-    $where[] = "b.kode_buku LIKE '%" . safe($conn, $_GET['kode_buku']) . "%'";
+    $where[] = "b.kode_buku LIKE '%" . $_GET['kode_buku'] . "%'";
 }
 
 $whereSQL = '';
@@ -53,25 +54,19 @@ $sqlRekom = "
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
   ORDER BY
-    -- urut tahun (ambil angka terakhir, misal '2024' dari '31 Juli 2024')
     CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', -1) AS UNSIGNED) DESC,
-
-    -- urut bulan (pakai urutan nama bulan bahasa Indonesia)
     FIELD(
       SUBSTRING_INDEX(SUBSTRING_INDEX(b.tahun_terbit, ' ', 2), ' ', -1),
       'Januari','Februari','Maret','April','Mei','Juni',
       'Juli','Agustus','September','Oktober','November','Desember'
     ) DESC,
-
-    -- urut tanggal (ambil angka pertama, misal '31' dari '31 Juli 2024')
     CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', 1) AS UNSIGNED) DESC,
-
-    -- kalau semua sama, pakai id_buku paling baru
     b.id_buku DESC
   LIMIT 5
 ";
 $dataRekom = mysqli_query($conn, $sqlRekom);
 $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
+
 ?>
 
 
@@ -231,7 +226,6 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
                         <hr>
 
-                        <!-- Deskripsi dengan scroll -->
                         <div class="modal-desc-wrapper">
                             <p id="modalDeskripsi" class="mb-0"></p>
                         </div>
@@ -275,7 +269,7 @@ $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
                     <div class="mb-3">
                         <label class="form-label">Penulis</label>
                         <input type="text" name="penulis" class="form-control"
-                               placeholder="Masukkan nama penulis">
+                               placeholder="Masukkan Penulis">
                     </div>
 
                     <div class="mb-3">
