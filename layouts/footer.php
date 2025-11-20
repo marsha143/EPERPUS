@@ -1,39 +1,42 @@
+
 <script>
-    function openDetailBuku(card) {
-        const cover     = card.dataset.cover;
-        const judul     = card.dataset.judul;
-        const kode      = card.dataset.kode;
-        const isbn      = card.dataset.isbn;
-        const penulis   = card.dataset.penulis;
-        const tahun     = card.dataset.tahun;
-        const penerbit  = card.dataset.penerbit;
-        const status    = card.dataset.status;
-        const deskripsi = card.dataset.deskripsi;
+function openDetailBuku(card) {
+    const cover   = card.getAttribute('data-cover')   || '';
+    const judul   = card.getAttribute('data-judul')   || '';
+    const kode    = card.getAttribute('data-kode')    || '';
+    const isbn    = card.getAttribute('data-isbn')    || '';
+    const penulis = card.getAttribute('data-penulis') || '';
+    const tahun   = card.getAttribute('data-tahun')   || '';
+    const penerbit= card.getAttribute('data-penerbit')|| '';
+    const status  = card.getAttribute('data-status')  || '';
+    const desk    = card.getAttribute('data-deskripsi') || 'Belum ada deskripsi buku.';
 
-        document.getElementById('modalCover').src           = cover;
-        document.getElementById('modalJudulBuku').innerText = judul;
-        document.getElementById('modalJudul').innerText     = judul;
-        document.getElementById('modalPenulis').innerText   = "Oleh " + penulis;
-        document.getElementById('modalKode').innerText      = kode;
-        document.getElementById('modalIsbn').innerText      = isbn;
-        document.getElementById('modalTahun').innerText     = tahun;
-        document.getElementById('modalPenerbit').innerText  = penerbit;
-        document.getElementById('modalDeskripsi').innerText = deskripsi;
+    document.getElementById('modalCover').src        = cover;
+    document.getElementById('modalJudulBuku').textContent = judul;
+    document.getElementById('modalJudul').textContent      = judul;
+    document.getElementById('modalPenulis').textContent    = penulis;
+    document.getElementById('modalKode').textContent       = kode;
+    document.getElementById('modalIsbn').textContent       = isbn;
+    document.getElementById('modalTahun').textContent      = tahun;
+    document.getElementById('modalPenerbit').textContent   = penerbit;
 
-        const statusSpan = document.getElementById('modalStatus');
-        statusSpan.innerText = status.toUpperCase();
-        statusSpan.classList.remove('bg-success','bg-danger','text-white');
-
-        if (status.toLowerCase() === 'dipinjam') {
-            statusSpan.classList.add('bg-danger','text-white');
-        } else {
-            statusSpan.classList.add('bg-success','text-white');
-        }
-
-        const modal = new bootstrap.Modal(document.getElementById('detailBukuModal'));
-        modal.show();
+    const statusSpan = document.getElementById('modalStatus');
+    statusSpan.textContent = status;
+    statusSpan.classList.remove('bg-danger', 'bg-success');
+    if (status === 'Dipinjam') {
+        statusSpan.classList.add('bg-danger', 'text-white');
+    } else {
+        statusSpan.classList.add('bg-success', 'text-white');
     }
+
+    document.getElementById('modalDeskripsi').textContent = desk;
+
+    const modalEl = document.getElementById('detailBukuModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+}
 </script>
+
 <!--   Core JS Files   -->
 <script src="./assets/js/core/popper.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/bootstrap.min.js" type="text/javascript"></script>

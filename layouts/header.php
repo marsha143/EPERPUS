@@ -131,6 +131,70 @@
         border-radius: 999px;
         padding: 4px 10px;
     }
+
+
+/* --- Rekomendasi slider --- */
+.rekom-wrapper {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    margin-bottom: 24px;
+}
+
+.rekom-slider-card {
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.rekom-slider-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+.rekom-slider-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,.12);
+}
+
+.rekom-caption-date {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Tombol carousel */
+#rekomCarousel .carousel-control-prev,
+#rekomCarousel .carousel-control-next {
+    width: 5%;
+}
+
+#rekomCarousel .carousel-control-prev-icon,
+#rekomCarousel .carousel-control-next-icon {
+    filter: invert(1) grayscale(100%);
+}
+
+/* --- Modal deskripsi scroll --- */
+.modal-desc-wrapper {
+    max-height: 220px;       /* kira-kira 200-an kata, sisanya scroll */
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.modal-desc-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-desc-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.2);
+    border-radius: 10px;
+}
+
+/* Supaya header modal rapi */
+#detailBukuModal .modal-title {
+    font-weight: 600;
+}
 </style>
 </head>
 
