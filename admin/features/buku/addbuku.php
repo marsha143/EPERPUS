@@ -74,9 +74,9 @@ if (isset($_POST['simpan'])) {
                                                 placeholder="masukkan nama penulis" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="tahun_terbit" class="form-label">tahun terbit</label>
-                                            <input type="int" class="form-control" id="tahun_terbit" name="tahun_terbit"
-                                                placeholder="masukkan tahun terbit" required>
+                                            <label class="form-label">Tahun teribt</label>
+                                            <input type="date" name="tahun_terbit" class="form-control"
+                                                value="<?= date('Y-m-d') ?>" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="penerbit" class="form-label">penerbit</label>

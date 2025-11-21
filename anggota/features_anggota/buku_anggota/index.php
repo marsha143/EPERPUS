@@ -55,16 +55,9 @@ $sqlRekom = "
   LEFT JOIN peminjaman p 
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
-  ORDER BY
-    CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', -1) AS UNSIGNED) DESC,
-    FIELD(
-      SUBSTRING_INDEX(SUBSTRING_INDEX(b.tahun_terbit, ' ', 2), ' ', -1),
-      'Januari','Februari','Maret','April','Mei','Juni',
-      'Juli','Agustus','September','Oktober','November','Desember'
-    ) DESC,
-    CAST(SUBSTRING_INDEX(b.tahun_terbit, ' ', 1) AS UNSIGNED) DESC,
-
-    b.id_buku DESC
+  ORDER BY  b.tahun_terbit DESC,
+            b.created_at,
+            b.id_buku DESC
   LIMIT 5
 ";
 $dataRekom = mysqli_query($conn, $sqlRekom);

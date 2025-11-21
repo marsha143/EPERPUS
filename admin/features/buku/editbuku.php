@@ -91,9 +91,8 @@ if (isset($_POST['update'])) {
                                             required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="tahun_terbit" class="form-label">tahun terbit</label>
-                                        <input type="int" class="form-control" id="tahun_terbit" name="tahun_terbit"
-                                            placeholder="masukkan keterangan" value="<?= $data['tahun_terbit'] ?>"
+                                        <input type="date" class="form-control" id="tahun_terbit" name="tahun_terbit"
+                                            placeholder="masukkan keterangan" value="<?= $data['tahun_terbit'] ?><?= date('Y-m-d') ?>"
                                             required>
                                     </div>
                                 </div>
