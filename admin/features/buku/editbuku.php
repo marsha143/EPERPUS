@@ -15,7 +15,7 @@ if (isset($_POST['update'])) {
     $judul_buku = $_POST['judul_buku'];
     $kode_buku = $_POST['kode_buku'];
     $isbn = $_POST['isbn'];
-    $nama_penulis = $_POST['nama_penulis'];
+    $id_penulis = $_POST['id_penulis'];
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
     $deskripsi = $_POST['deskripsi'];

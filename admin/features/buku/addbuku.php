@@ -1,40 +1,44 @@
 <?php
-$data = mysqli_query($conn, "SELECT * FROM penulis");
+$data = mysqli_query($conn, "SELECT id, nama_penulis FROM penulis");
 $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
-if (isset($_POST['simpan'])) {
-    $cover = $_POST['cover'];
-    $judul_buku = $_POST['judul_buku'];
-    $kode_buku = $_POST['kode_buku'];
-    $isbn = $_POST['isbn'];
-    $nama_penulis = $_POST['nama_penulis'];
-    $tahun_terbit = $_POST['tahun_terbit'];
-    $penerbit = $_POST['penerbit'];
-    $deskripsi = $_POST['deskripsi'];
 
-    $query = "INSERT INTO `buku`(`cover`,`judul_buku`, `kode_buku`, `isbn`, `nama_penulis`, `tahun_terbit`, `penerbit`, `deskripsi`) VALUES ('$cover','$judul_buku','$kode_buku','$isbn','$nama_penulis','$tahun_terbit','$penerbit','$deskripsi')";
+if (isset($_POST['simpan'])) {
+    $cover        = $_POST['cover'];
+    $judul_buku   = $_POST['judul_buku'];
+    $kode_buku    = $_POST['kode_buku'];
+    $isbn         = $_POST['isbn'];
+    $id_penulis   = isset($_POST['id_penulis']) ? (int) $_POST['id_penulis'] : 0;
+    $tahun_terbit = $_POST['tahun_terbit'];
+    $penerbit     = $_POST['penerbit'];
+    $deskripsi    = $_POST['deskripsi'];
+
+    $query = "
+        INSERT INTO buku
+            (`cover`,`judul_buku`, `kode_buku`, `isbn`, `id_penulis`, `tahun_terbit`, `penerbit`, `deskripsi`)
+        VALUES
+            ('$cover','$judul_buku','$kode_buku','$isbn',$id_penulis,'$tahun_terbit','$penerbit','$deskripsi')
+    ";
+
     $result = mysqli_query($conn, $query);
     if ($result) {
-
         echo "
         <script>
-        alert('data  berhasil disimpan');
-        window.location.href = 'app?page=buku'
+            alert('data  berhasil disimpan');
+            window.location.href = 'app?page=buku'
         </script>
         ";
     } else {
         echo "
          <script>
-        alert('data tidak berhasil disimpan');
+            alert('data tidak berhasil disimpan');
         </script>
         ";
     }
 }
-
 ?>
 
 <form action="" method="POST">
     <div class="d-flex justify-content-center mt-5">
-
         <body style="background-color: linen;">
             <div class="container mt-5">
                 <div class="card">
@@ -70,21 +74,19 @@ if (isset($_POST['simpan'])) {
                                             <input type="int" class="form-control" id="isbn" name="isbn"
                                                 placeholder="masukkan isbn" required>
                                         </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">penulis</label>
-                                        <select name="nama_penulis" class="form-select js-example-basic-single"
-                                            required>
-                                            <option value="" hidden>-- Pilih penulis --</option>
-                                            <?php foreach ($penulis as $p): ?>
-                                            <?php 
-            $selected = ($data['nama_penulis'] == $p['nama_penulis']) ? 'selected' : '';
-                                            ?>
-                                            <option value="<?= $p['nama_penulis'] ?>" <?= $selected ?>>
-                                                <?= $p['nama_penulis'] ?>
-                                            </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label">penulis</label>
+                                            <select name="id_penulis" class="form-select js-example-basic-single" required>
+                                                <option value="" hidden>-- Pilih penulis --</option>
+                                                <?php foreach ($penulis as $p): ?>
+                                                    <option value="<?= $p['id'] ?>">
+                                                        <?= $p['nama_penulis'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <label class="form-label">Tahun teribt</label>
                                             <input type="date" name="tahun_terbit" class="form-control"
@@ -105,10 +107,12 @@ if (isset($_POST['simpan'])) {
                         </div>
                     </div>
                     <div class="card-footer text-end">
-                        <button type="submit" name="simpan" class="btn btn-primary"><i
-                                class="fa-solid fa-download"></i>Simpan</button>
-                        <a href="app?page=buku" class="btn btn-secondary"><i
-                                class="fa-solid fa-arrow-left"></i>kembali</a>
+                        <button type="submit" name="simpan" class="btn btn-primary">
+                            <i class="fa-solid fa-download"></i>Simpan
+                        </button>
+                        <a href="app?page=buku" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left"></i>kembali
+                        </a>
                     </div>
                 </div>
             </div>
@@ -127,3 +131,4 @@ $(document).ready(function() {
 });
 </script>
 </body>
+</html>
