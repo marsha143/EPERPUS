@@ -1,5 +1,5 @@
 <?php include("./config/db.php"); ?>
-<?php include('./layouts/header.php'); ?>
+<?php include('./admin/layouts/header.php'); ?>
 <?php $q = mysqli_query($conn, "SELECT COUNT(*) AS jumlah FROM buku");
 $r = mysqli_fetch_assoc($q);
 $jumlah_buku = $r['jumlah'];
@@ -123,4 +123,4 @@ $jumlah_buku = $r['jumlah'];
             </div>
         </div>
 
-<?php include('./layouts/footer.php');?>
+<?php include('./admin/layouts/footer.php');?>

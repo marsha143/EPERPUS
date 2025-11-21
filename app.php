@@ -1,9 +1,9 @@
 <?php include("./config/db.php"); ?>
 
-<?php include('./layouts/header.php'); ?>
+<?php include('./admin/layouts/header.php'); ?>
 
 
-<?php include('./layouts/navbar.php'); ?>
+<?php include('./admin/layouts/navbar.php'); ?>
 
 
 <?php
@@ -17,7 +17,7 @@ if (isset($_GET['view'])) {
 } else {
     $view = 'index';
 }
-    $features = "./features/$page/$view.php";
+    $features = "./admin/features/$page/$view.php";
 
 
 

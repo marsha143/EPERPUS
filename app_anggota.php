@@ -1,8 +1,8 @@
 <?php include("./config/db.php"); ?>
 
-<?php include('./layouts_anggota/header.php'); ?>
+<?php include('./anggota/layouts_anggota/header.php'); ?>
 
-<?php include('./layouts_anggota/navbar.php'); ?>
+<?php include('./anggota/layouts_anggota/navbar.php'); ?>
 <?php
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
@@ -14,7 +14,7 @@ if (isset($_GET['view'])) {
 } else {
     $view = 'index';
 }
-    $features_anggota = "./features_anggota/$page/$view.php";
+    $features_anggota = "./anggota/features_anggota/$page/$view.php";
 
 
 
