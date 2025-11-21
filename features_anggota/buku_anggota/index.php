@@ -1,4 +1,6 @@
 <?php
+$data = mysqli_query($conn, "SELECT * FROM buku");
+$buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 $where = [];
 
@@ -113,7 +115,13 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                                                 <div class="card-body text-center">
                                                     <div class="book-title"><?= $r['judul_buku'] ?></div>
                                                     <div class="book-author"><?= $r['nama_penulis'] ?></div>
-
+                                                    <p class="text-muted small mt-2">
+                                                        <?php
+                                                        $desc = $r['deskripsi'] ?? 'Belum ada deskripsi.';
+                                                        $short = substr($desc, 0, 120) . '...(Baca selengkapnya)';
+                                                        echo htmlspecialchars($short);
+                                                        ?>
+                                                    </p>
                                                     <div class="mt-2">
                                                         <?php if ($r['status_buku'] == 'Dipinjam'): ?>
                                                             <span class="badge-status bg-danger text-white">DIPINJAM</span>
@@ -177,6 +185,13 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                     <div class="card-body text-center">
                         <div class="book-title"><?= $b['judul_buku'] ?></div>
                         <div class="book-author"><?= $b['nama_penulis'] ?></div>
+                        <p class="text-muted small mt-2">
+                            <?php
+                            $desc = $b['deskripsi'] ?? 'Belum ada deskripsi.';
+                            $short = substr($desc, 0, 120) . '...(Baca selengkapnya)';
+                            echo htmlspecialchars($short);
+                            ?>
+                        </p>
                         <div class="mt-2">
                             <?php if ($b['status_buku'] == 'Dipinjam'): ?>
                                 <span class="badge-status bg-danger text-white">DIPINJAM</span>
