@@ -3,7 +3,7 @@
 <?php include('./layouts/header.php'); ?>
 
 
-<?php include('./layouts/navbar_index.php'); ?>
+<?php include('./layouts/navbar.php'); ?>
 
 
 <?php

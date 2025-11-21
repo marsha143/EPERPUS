@@ -1,6 +1,4 @@
-<?php include('./layouts/header.php'); ?>
 <?php
-
 $idAnggota = ($_SESSION['user']['id'] ?? 0);
 
 $sql = "
@@ -76,4 +74,3 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 </div>
 </div>
 
-<?php include('./layouts/footer.php'); ?>

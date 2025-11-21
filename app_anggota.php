@@ -1,8 +1,8 @@
 <?php include("./config/db.php"); ?>
 
-<?php include('./layouts/header.php'); ?>
+<?php include('./layouts_anggota/header.php'); ?>
 
-<?php include('./layouts/navbar_anggota.php'); ?>
+<?php include('./layouts_anggota/navbar.php'); ?>
 <?php
 if (isset($_GET['page'])) {
     $page = $_GET['page'];

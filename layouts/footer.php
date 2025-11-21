@@ -1,42 +1,3 @@
-
-<script>
-function openDetailBuku(card) {
-    const cover   = card.getAttribute('data-cover')   || '';
-    const judul   = card.getAttribute('data-judul')   || '';
-    const kode    = card.getAttribute('data-kode')    || '';
-    const isbn    = card.getAttribute('data-isbn')    || '';
-    const penulis = card.getAttribute('data-penulis') || '';
-    const tahun   = card.getAttribute('data-tahun')   || '';
-    const penerbit= card.getAttribute('data-penerbit')|| '';
-    const status  = card.getAttribute('data-status')  || '';
-    const desk    = card.getAttribute('data-deskripsi') || 'Belum ada deskripsi buku.';
-
-    document.getElementById('modalCover').src        = cover;
-    document.getElementById('modalJudulBuku').textContent = judul;
-    document.getElementById('modalJudul').textContent      = judul;
-    document.getElementById('modalPenulis').textContent    = penulis;
-    document.getElementById('modalKode').textContent       = kode;
-    document.getElementById('modalIsbn').textContent       = isbn;
-    document.getElementById('modalTahun').textContent      = tahun;
-    document.getElementById('modalPenerbit').textContent   = penerbit;
-
-    const statusSpan = document.getElementById('modalStatus');
-    statusSpan.textContent = status;
-    statusSpan.classList.remove('bg-danger', 'bg-success');
-    if (status === 'Dipinjam') {
-        statusSpan.classList.add('bg-danger', 'text-white');
-    } else {
-        statusSpan.classList.add('bg-success', 'text-white');
-    }
-
-    document.getElementById('modalDeskripsi').textContent = desk;
-
-    const modalEl = document.getElementById('detailBukuModal');
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
-}
-</script>
-
 <!--   Core JS Files   -->
 <script src="./assets/js/core/popper.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/bootstrap.min.js" type="text/javascript"></script>
@@ -163,59 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('scroll', animate);
 
     // check if element is in view
-    function inView() {
-      // get window height
-      var windowHeight = window.innerHeight;
-      // get number of pixels that the document is scrolled
-      var scrollY = window.scrollY || window.pageYOffset;
-      // get current scroll position (distance from the top of the page to the bottom of the current viewport)
-      var scrollPosition = scrollY + windowHeight;
-      // get element position (distance from the top of the page to the bottom of the element)
-      var elementPosition = element.getBoundingClientRect().top + scrollY + elementHeight;
-
-      // is scroll position greater than element position? (is element in view?)
-      if (scrollPosition > elementPosition) {
-        return true;
-      }
-
-      return false;
-    }
-
-    var animateComplete = true;
-    // animate element when it is in view
-    function animate() {
-
-      // is element in view?
-      if (inView()) {
-        if (animateComplete) {
-          if (document.getElementById('state1')) {
-            const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));
-            if (!countUp.error) {
-              countUp.start();
-            } else {
-              console.error(countUp.error);
-            }
-          }
-          if (document.getElementById('state2')) {
-            const countUp1 = new CountUp('state2', document.getElementById("state2").getAttribute("countTo"));
-            if (!countUp1.error) {
-              countUp1.start();
-            } else {
-              console.error(countUp1.error);
-            }
-          }
-          if (document.getElementById('state3')) {
-            const countUp2 = new CountUp('state3', document.getElementById("state3").getAttribute("countTo"));
-            if (!countUp2.error) {
-              countUp2.start();
-            } else {
-              console.error(countUp2.error);
-            };
-          }
-          animateComplete = false;
-        }
-      }
-    }
 
     if (document.getElementById('typed')) {
       var typed = new Typed("#typed", {

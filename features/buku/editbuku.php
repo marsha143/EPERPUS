@@ -35,10 +35,10 @@ if (isset($_POST['update'])) {
             ";
     }
 }
-
 ?>
 
 <div class="d-flex justify-content-center mt-5">
+
     <body style="background-color: linen;">
         <div class="container mt-5">
             <div class="card">
@@ -122,7 +122,8 @@ if (isset($_POST['update'])) {
                         <input type="hidden" name="id_buku" value="<?= $data['id_buku'] ?>">
                         <button type="submit" name="update" class="btn btn-primary"><i
                                 class="fa-solid fa-download"></i>Simpan</button>
-                        <a href="app?page=buku" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i>kembali</a>
+                        <a href="app?page=buku" class="btn btn-secondary"><i
+                                class="fa-solid fa-arrow-left"></i>kembali</a>
                     </div>
                 </form>
             </div>
@@ -130,8 +131,8 @@ if (isset($_POST['update'])) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+</script>
 </body>
 
 </html>

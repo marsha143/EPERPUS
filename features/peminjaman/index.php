@@ -76,8 +76,6 @@ if (isset($_POST['kembalikan'])) {
           </script>";
   exit;
 }
-
-
 ?>
 
 <div class="container mt-4">
@@ -148,7 +146,6 @@ if (isset($_POST['kembalikan'])) {
                   echo $denda_berjalan;
                   ?>
                             </td>
-
                             <td><?= $p['tanggal_pinjam'] ?></td>
                             <td><?= $p['tanggal_kembali'] ?></td>
                             <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>

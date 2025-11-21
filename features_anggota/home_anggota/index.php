@@ -10,7 +10,6 @@ $selesai = mysqli_fetch_assoc(mysqli_query($conn, $sqlSelesai))['jml'] ?? 0;
 $sqlTotal = "SELECT COUNT(*) AS jml FROM peminjaman WHERE id_anggota=$idAnggota";
 $total = mysqli_fetch_assoc(mysqli_query($conn, $sqlTotal))['jml'] ?? 0;
 
-
 $sqlPopuler = "
     SELECT b.*, COUNT(p.id) AS total_pinjam
     FROM peminjaman p
@@ -40,19 +39,15 @@ $namaAnggota = htmlspecialchars($_SESSION['user']['username'] ?? 'Anggota');
                 <div class="row g-0 align-items-center" style="background: #f8f9fb;">
                     <div class="col-md-7">
                         <div class="p-5">
-
                             <small class="text-uppercase text-muted">
                                 Buku Paling Sering Dipinjam
                             </small>
-
                             <h1 class="fw-bold mt-3 mb-2" style="letter-spacing: .05em; font-size: 2.7rem;">
                                 <?= htmlspecialchars($b['judul_buku']) ?>
                             </h1>
-
                             <h5 class="text-secondary mb-4" style="font-weight: 400;">
                                 <?= htmlspecialchars($b['nama_penulis']) ?>
                             </h5>
-
                             <span class="badge bg-primary-subtle text-primary me-2">
                                 <?= $b['total_pinjam'] ?>x dipinjam
                             </span>
