@@ -1,5 +1,6 @@
 <?php
-
+$data = mysqli_query($conn, "SELECT * FROM penulis");
+$penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 if (isset($_GET['id_buku'])) {
     $id_buku = $_GET['id_buku'];
     $query = " SELECT * FROM buku WHERE id_buku = $id_buku ";
@@ -35,6 +36,7 @@ if (isset($_POST['update'])) {
             ";
     }
 }
+
 ?>
 
 <div class="d-flex justify-content-center mt-5">
@@ -85,15 +87,24 @@ if (isset($_POST['update'])) {
                             <div class="mb-3">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="nama_penulis" class="form-label">nama penulis</label>
-                                        <input type="text" class="form-control" id="nama_penulis" name="nama_penulis"
-                                            placeholder="masukkan nama_penulis" value="<?= $data['nama_penulis'] ?>"
+                                        <label class="form-label">penulis</label>
+                                        <select name="nama_penulis" class="form-select js-example-basic-single"
                                             required>
+                                            <option value="" hidden>-- Pilih penulis --</option>
+                                            <?php foreach ($penulis as $p): ?>
+                                            <?php 
+            $selected = ($data['nama_penulis'] == $p['nama_penulis']) ? 'selected' : '';
+                                            ?>
+                                            <option value="<?= $p['nama_penulis'] ?>" <?= $selected ?>>
+                                                <?= $p['nama_penulis'] ?>
+                                            </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
                                     <div class="col-md-6">
                                         <input type="date" class="form-control" id="tahun_terbit" name="tahun_terbit"
-                                            placeholder="masukkan keterangan" value="<?= $data['tahun_terbit'] ?><?= date('Y-m-d') ?>"
-                                            required>
+                                            placeholder="masukkan keterangan"
+                                            value="<?= $data['tahun_terbit'] ?><?= date('Y-m-d') ?>" required>
                                     </div>
                                 </div>
                             </div>
@@ -131,6 +142,13 @@ if (isset($_POST['update'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
 </script>
 </body>
 
