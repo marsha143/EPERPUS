@@ -19,7 +19,7 @@ if (isset($_POST['update'])) {
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
     $deskripsi = $_POST['deskripsi'];
-    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku', `kode_buku`='$kode_buku',`isbn`='$isbn',`nama_penulis`='$nama_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -88,14 +88,14 @@ if (isset($_POST['update'])) {
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">penulis</label>
-                                        <select name="nama_penulis" class="form-select js-example-basic-single"
+                                        <select name="id_penulis" class="form-select js-example-basic-single"
                                             required>
                                             <option value="" hidden>-- Pilih penulis --</option>
                                             <?php foreach ($penulis as $p): ?>
                                             <?php 
-            $selected = ($data['nama_penulis'] == $p['nama_penulis']) ? 'selected' : '';
+            $selected = ($data['id_penulis'] == $p['id']) ? 'selected' : '';
                                             ?>
-                                            <option value="<?= $p['nama_penulis'] ?>" <?= $selected ?>>
+                                            <option value="<?= $p['id'] ?>" <?= $selected ?>>
                                                 <?= $p['nama_penulis'] ?>
                                             </option>
                                             <?php endforeach; ?>

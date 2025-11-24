@@ -1,10 +1,11 @@
 <?php
-$data = mysqli_query($conn, "SELECT * FROM buku");
+$querydata = "SELECT *, penulis.nama_penulis FROM buku LEFT JOIN penulis ON penulis.id = buku.id_penulis";
+$data = mysqli_query($conn, $querydata);
 $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 if (isset($_POST['cari'])) {
     $keyword = $_POST['cari'];
-    $data = mysqli_query($conn, "SELECT * FROM buku WHERE judul_buku LIKE '%$keyword%'");
+    $data = mysqli_query($conn, "SELECT *, penulis.nama_penulis FROM buku JOIN penulis ON penulis.id = buku.id_penulis WHERE buku.judul_buku LIKE '%$keyword%'");
     $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 } else {
     if (isset($_POST['delete'])) {
