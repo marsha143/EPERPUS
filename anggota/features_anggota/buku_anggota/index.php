@@ -34,8 +34,10 @@ $sql = "
     CASE 
       WHEN p.status = 'Dipinjam' THEN 'Dipinjam'
       ELSE 'Tersedia'
-    END AS status_buku
+    END AS status_buku,
+    penulis.nama_penulis
   FROM buku b
+  LEFT JOIN penulis ON penulis.id = b.id_penulis
   LEFT JOIN peminjaman p 
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
@@ -50,8 +52,10 @@ $sqlRekom = "
     CASE 
       WHEN p.status = 'Dipinjam' THEN 'Dipinjam'
       ELSE 'Tersedia'
-    END AS status_buku
+    END AS status_buku, 
+    penulis.nama_penulis
   FROM buku b
+  LEFT JOIN penulis ON penulis.id = b.id_penulis
   LEFT JOIN peminjaman p 
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
@@ -63,7 +67,7 @@ $sqlRekom = "
 $dataRekom = mysqli_query($conn, $sqlRekom);
 $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
-$qPenulis = mysqli_query($conn, "SELECT DISTINCT nama_penulis FROM buku ORDER BY nama_penulis ASC");
+$qPenulis = mysqli_query($conn, "SELECT DISTINCT id_penulis FROM buku ORDER BY id_penulis ASC");
 $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 ?>
 

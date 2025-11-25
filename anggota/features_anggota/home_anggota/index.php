@@ -11,9 +11,10 @@ $sqlTotal = "SELECT COUNT(*) AS jml FROM peminjaman WHERE id_anggota=$idAnggota"
 $total = mysqli_fetch_assoc(mysqli_query($conn, $sqlTotal))['jml'] ?? 0;
 
 $sqlPopuler = "
-    SELECT b.*, COUNT(p.id) AS total_pinjam
+    SELECT b.*, COUNT(p.id) AS total_pinjam , penulis.nama_penulis
     FROM peminjaman p
     JOIN buku b ON p.id_buku = b.id_buku
+    LEFT JOIN penulis on penulis.id = b.id_penulis
     GROUP BY p.id_buku
     ORDER BY total_pinjam DESC
     LIMIT 4

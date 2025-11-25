@@ -104,7 +104,7 @@ if (isset($_POST['update'])) {
                                     <div class="col-md-6">
                                         <input type="date" class="form-control" id="tahun_terbit" name="tahun_terbit"
                                             placeholder="masukkan keterangan"
-                                            value="<?= $data['tahun_terbit'] ?><?= date('Y-m-d') ?>" required>
+                                            value="<?= $data['tahun_terbit'] ?>" required>
                                     </div>
                                 </div>
                             </div>
