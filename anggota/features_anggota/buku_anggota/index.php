@@ -11,7 +11,7 @@ if (!empty($_GET['isbn'])) {
     $where[] = "b.isbn LIKE '%" . $_GET['isbn'] . "%'";
 }
 if (!empty($_GET['penulis'])) {
-    $where[] = "b.nama_penulis LIKE '%" . $_GET['penulis'] . "%'";
+    $where[] = "penulis.nama_penulis LIKE '%" . $_GET['penulis'] . "%'";
 }
 if (!empty($_GET['penerbit'])) {
     $where[] = "b.penerbit LIKE '%" . $_GET['penerbit'] . "%'";
