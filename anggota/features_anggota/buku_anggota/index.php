@@ -67,7 +67,13 @@ $sqlRekom = "
 $dataRekom = mysqli_query($conn, $sqlRekom);
 $rekom = mysqli_fetch_all($dataRekom, MYSQLI_ASSOC);
 
-$qPenulis = mysqli_query($conn, "SELECT DISTINCT id_penulis FROM buku ORDER BY id_penulis ASC");
+$qPenulis = mysqli_query($conn, "
+    SELECT DISTINCT penulis.id, penulis.nama_penulis
+    FROM buku
+    LEFT JOIN penulis ON penulis.id = buku.id_penulis
+    WHERE penulis.nama_penulis IS NOT NULL
+    ORDER BY penulis.nama_penulis ASC
+");
 $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 ?>
 
@@ -277,7 +283,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                             <option value="" hidden>-- Pilih Penulis --</option>
 
                             <?php foreach ($penulisList as $p): ?>
-                                <option value="<?= htmlspecialchars($p['nama_penulis']) ?>" <?= isset($_GET['penulis']) && $_GET['penulis'] === $p['nama_penulis'] ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($p['nama_penulis']) ?>" <?= (isset($_GET['penulis']) && $_GET['penulis'] === $p['nama_penulis']) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($p['nama_penulis']) ?>
                                 </option>
                             <?php endforeach; ?>
