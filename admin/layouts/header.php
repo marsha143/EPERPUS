@@ -24,12 +24,68 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
     <link id="pagestyle" href="/EPERPUS/assets/css/material-kit.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
 </head>
 
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.ai-chat-section {
+  background: linear-gradient(to bottom, #fcfcfe, #fcfcfe);
+}
+
+.ai-bot-img {
+  width: 160px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.ai-chat-box {
+  border-radius: 18px;
+  background: #fff;
+}
+
+.chat-header {
+  background: #e91e63   ;
+  border-radius: 12px;
+}
+
+.chat-area {
+  height: 220px;
+  overflow-y: auto;
+}
+
+.chat-subtitle {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.lottie-buku {
+    display: block;
+    margin: 0 auto;
+    transform: translateX(20px); /* ubah angka 20 sesuai selera */
+}
+footer a {
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+footer a:hover {
+    opacity: 0.6;
+    transform: translateY(-3px);
+}
 
 </style>
+
 </head>
 
 <body class="index-page bg-gray-200">

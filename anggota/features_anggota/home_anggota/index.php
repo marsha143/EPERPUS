@@ -20,10 +20,22 @@ $sqlPopuler = "
     LIMIT 4
 ";
 $populer = mysqli_fetch_all(mysqli_query($conn, $sqlPopuler), MYSQLI_ASSOC);
-
 $namaAnggota = htmlspecialchars($_SESSION['user']['username'] ?? 'Anggota');
-?>
 
+
+$data = null;
+if ($idAnggota) { 
+    $sqlAnggota = "SELECT * FROM anggota WHERE id_anggota";
+    $resultAnggota = mysqli_query($conn, $sqlAnggota);
+    $data = mysqli_fetch_assoc($resultAnggota);
+}
+
+$idAnggota          = $data['id_anggota'];
+$prodiAnggota       = $data['program_studi'];
+$alamatAnggota      = $data['alamat'];
+$tahunGabungAnggota = $data['waktu_bergabung'];
+$fotoAnggota        = $data['foto'];
+?>
 <div class="container mt-4">
     <div class="row">
         <div class="col-lg-12 mb-4">
@@ -73,34 +85,103 @@ $namaAnggota = htmlspecialchars($_SESSION['user']['username'] ?? 'Anggota');
     </div>
     <div class="row mb-4">
         <div class="col-lg-12">
+
+            <!-- CARD UTAMA -->
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h4 class="mb-2">
+
+                    <h4 class="mb-4">
                         Selamat datang, <?= $namaAnggota; ?> 👋
                     </h4>
-                    <p class="text-muted mb-3">
-                        Berikut ringkasan aktivitas peminjaman Anda di EPERPUS.
-                    </p>
-                    <div class="d-flex flex-wrap gap-4">
-                        <div>
-                            <h5 class="mb-0"><?= $sedang ?></h5>
-                            <small class="text-muted">Buku sedang dipinjam</small>
+
+                    <!-- GRID DALAM SATU CONTAINER -->
+                    <div class="row">
+
+                        <!-- KIRI: RINGKASAN PEMINJAMAN -->
+                        <div class="col-lg-4">
+
+                            <div class="card shadow-sm border-0 mb-3">
+                                <div class="card-body">
+
+                                    <p class="text-muted mb-3">
+                                        Berikut ringkasan aktivitas peminjaman Anda di EPERPUS.
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-4">
+                                        <div>
+                                            <h5 class="mb-0"><?= $sedang ?></h5>
+                                            <small class="text-muted">Buku sedang dipinjam</small>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0"><?= $selesai ?></h5>
+                                            <small class="text-muted">Buku sudah dikembalikan</small>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0"><?= $total ?></h5>
+                                            <small class="text-muted">Total peminjaman</small>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <small class="text-muted">
+                                        Tips: cek menu <strong>Riwayat Peminjaman</strong> untuk melihat detail lengkap
+                                        peminjaman Anda.
+                                    </small>
+
+                                </div>
+                            </div>
+
                         </div>
-                        <div>
-                            <h5 class="mb-0"><?= $selesai ?></h5>
-                            <small class="text-muted">Buku sudah dikembalikan</small>
-                        </div>
-                        <div>
-                            <h5 class="mb-0"><?= $total ?></h5>
-                            <small class="text-muted">Total peminjaman</small>
+
+                        <!-- KANAN: KARTU ANGGOTA -->
+                        <div class="col-lg-8">
+
+                            <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3"
+                                style="border-radius: 16px;">
+
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-3 kartu-anggota-header">
+                                    <div class="fw-bold">KARTU ANGGOTA EPERPUS</div>
+                                    <div class="badge badge-anggota">AKTIF</div>
+                                </div>
+
+                                <img src="<?= $fotoAnggota; ?>" alt="Foto Anggota"
+                                    class="rounded-circle shadow-sm kartu-anggota-foto" style="object-fit: cover;">
+                                <hr>
+
+                                <div class="mb-2">
+                                    <strong>Nama:</strong> <span class="text-muted"><?= $namaAnggota; ?></span>
+
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong>Program studi</strong> <span class="text-muted">:
+                                        <?= $prodiAnggota; ?></span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong>Alamat</strong> <span class="text-muted">: <?= $alamatAnggota; ?></span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong>Tahun Bergabung</strong> <span class="text-muted">:
+                                        <?= $tahunGabungAnggota; ?></span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong>ID Anggota</strong> <span class="text-muted">: <?= $idAnggota; ?></span>
+                                </div>
+
+                            </div>
+                            <div class="mt-3 text-center">
+                                <button onclick="window.print()" class="btn btn-outline-primary btn-sm w-100">
+                                    Download Kartu (PDF)
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <hr>
-                    <small class="text-muted">
-                        Tips: cek menu <strong>Riwayat Peminjaman</strong> untuk melihat detail lengkap peminjaman Anda.
-                    </small>
                 </div>
             </div>
         </div>
     </div>
-</div>

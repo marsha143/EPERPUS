@@ -42,6 +42,47 @@ $jumlah_buku = $r['jumlah'];
             </div>
         </div>
     </section>
+    <section class="ai-chat-section py-5 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5 text-center mx-auto mb-4">
+                    <dotlottie-wc class="lottie-buku"
+                        src="https://lottie.host/e72dc47c-1505-4f3c-94c4-f09f4e525def/Xdp7tUP0iw.lottie"
+                        style="width: 300px; height: 300px;" autoplay loop>
+                    </dotlottie-wc>
+                    <h2 class="fw-bold mt-3 text-primary">Tanya AI Perpustakaan</h2>
+                    <p class="text-muted px-3">
+                        Punya pertanyaan tentang perpustakaan, buku, atau layanan kami?
+                        Tanyakan langsung ke asisten AI kami!
+                    </p>
+                </div>
+
+                <!-- Kanan: Kotak Chat -->
+                <div class="col-md-7">
+                    <div class="ai-chat-box shadow-lg p-4">
+                        <div class="chat-header p-3 mb-3 text-white rounded">
+                            <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Asisten AI</h5>
+                            <span class="chat-subtitle">Siap membantu menjawab pertanyaan Anda</span>
+                        </div>
+
+                        <!-- Area Chat (bisa diganti iframe atau widget) -->
+                        <div class="chat-area mb-3 p-3 bg-light rounded border">
+                            <p class="text-muted">✨ </p>
+                        </div>
+
+                        <!-- Input -->
+                        <form class="d-flex">
+                            <input type="text" class="form-control me-2" placeholder="Ketik pertanyaan kamu di sini...">
+                            <button class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <section class="my-5 py-5">
         <div class="container">
             <div class="row align-items-center">
@@ -115,12 +156,4 @@ $jumlah_buku = $r['jumlah'];
         </div>
     </section>
 </div>
-<div class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 ms-auto">
-                <h4 class="mb-1">Thank you for your support!</h4>
-            </div>
-        </div>
-
 <?php include('./admin/layouts/footer.php');?>

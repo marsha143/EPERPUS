@@ -27,6 +27,27 @@ $whereSQL = '';
 if (count($where) > 0) {
     $whereSQL = 'WHERE ' . implode(' AND ', $where);
 }
+// --- PAGINATION SETUP ---
+$limit = 12; // jumlah buku per halaman
+$page = isset($_GET['hal']) ? (int)$_GET['hal'] : 1;
+$start = ($page - 1) * $limit;
+
+// HITUNG TOTAL DATA
+$sqlCount = "
+    SELECT COUNT(*) AS total
+    FROM buku b
+    LEFT JOIN penulis ON penulis.id = b.id_penulis
+    LEFT JOIN peminjaman p 
+        ON b.id_buku = p.id_buku AND p.status = 'Dipinjam'
+    $whereSQL
+";
+
+$countQuery = mysqli_query($conn, $sqlCount);
+$countData  = mysqli_fetch_assoc($countQuery);
+$totalData  = $countData['total'];
+
+$totalPages = ceil($totalData / $limit);
+
 
 $sql = "
   SELECT 
@@ -42,6 +63,7 @@ $sql = "
     ON b.id_buku = p.id_buku 
     AND p.status = 'Dipinjam'
   $whereSQL
+   LIMIT $start, $limit
 ";
 $data = mysqli_query($conn, $sql);
 $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
@@ -88,77 +110,76 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 
     <div class="card rekom-wrapper">
         <div class="card-body">
-
             <?php if (count($rekom) > 0): ?>
-                <div id="rekomCarousel" class="carousel slide" data-bs-ride="false">
-                    <div class="carousel-inner">
+            <div id="rekomCarousel" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-inner">
 
-                        <?php
+                    <?php
                         $chunks = array_chunk($rekom, 3);
                         foreach ($chunks as $index => $chunk):
                             ?>
-                            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                <div class="row justify-content-center">
+                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                        <div class="row justify-content-center">
 
-                                    <?php foreach ($chunk as $r): ?>
-                                        <div class="col-12 col-sm-6 col-md-4">
-                                            <div class="card book-card mb-3 rekom-slider-card" onclick="openDetailBuku(this)"
-                                                data-cover="<?= $r['cover'] ?>"
-                                                data-judul="<?= htmlspecialchars($r['judul_buku']) ?>"
-                                                data-kode="<?= htmlspecialchars($r['kode_buku']) ?>"
-                                                data-isbn="<?= htmlspecialchars($r['isbn']) ?>"
-                                                data-penulis="<?= htmlspecialchars($r['nama_penulis']) ?>"
-                                                data-tahun="<?= htmlspecialchars($r['tahun_terbit']) ?>"
-                                                data-penerbit="<?= htmlspecialchars($r['penerbit']) ?>"
-                                                data-status="<?= htmlspecialchars($r['status_buku']) ?>"
-                                                data-deskripsi="<?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
+                            <?php foreach ($chunk as $r): ?>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="card book-card mb-3 rekom-slider-card" onclick="openDetailBuku(this)"
+                                    data-cover="<?= $r['cover'] ?>"
+                                    data-judul="<?= htmlspecialchars($r['judul_buku']) ?>"
+                                    data-kode="<?= htmlspecialchars($r['kode_buku']) ?>"
+                                    data-isbn="<?= htmlspecialchars($r['isbn']) ?>"
+                                    data-penulis="<?= htmlspecialchars($r['nama_penulis']) ?>"
+                                    data-tahun="<?= htmlspecialchars($r['tahun_terbit']) ?>"
+                                    data-penerbit="<?= htmlspecialchars($r['penerbit']) ?>"
+                                    data-status="<?= htmlspecialchars($r['status_buku']) ?>"
+                                    data-deskripsi="<?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
 
-                                                <img src="<?= $r['cover'] ?>" alt="cover">
+                                    <img src="<?= $r['cover'] ?>" alt="cover">
 
-                                                <div class="card-body text-center">
-                                                    <div class="book-title"><?= $r['judul_buku'] ?></div>
-                                                    <div class="book-author"><?= $r['nama_penulis'] ?></div>
-                                                    <p class="text-muted small mt-2">
-                                                        <?php
+                                    <div class="card-body text-center">
+                                        <div class="book-title"><?= $r['judul_buku'] ?></div>
+                                        <div class="book-author"><?= $r['nama_penulis'] ?></div>
+                                        <p class="text-muted small mt-2">
+                                            <?php
                                                         $desc = $r['deskripsi'] ?? 'Belum ada deskripsi.';
                                                         $short = substr($desc, 0, 120) . '...(Baca selengkapnya)';
                                                         echo htmlspecialchars($short);
                                                         ?>
-                                                    </p>
-                                                    <div class="mt-2">
-                                                        <?php if ($r['status_buku'] == 'Dipinjam'): ?>
-                                                            <span class="badge-status bg-danger text-white">DIPINJAM</span>
-                                                        <?php else: ?>
-                                                            <span class="badge-status bg-success text-white">TERSEDIA</span>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mt-2 rekom-caption-date">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        </p>
+                                        <div class="mt-2">
+                                            <?php if ($r['status_buku'] == 'Dipinjam'): ?>
+                                            <span class="badge-status bg-danger text-white">DIPINJAM</span>
+                                            <?php else: ?>
+                                            <span class="badge-status bg-success text-white">TERSEDIA</span>
+                                            <?php endif; ?>
                                         </div>
-                                    <?php endforeach; ?>
 
+                                        <div class="mt-2 rekom-caption-date">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
 
+                        </div>
                     </div>
+                    <?php endforeach; ?>
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="#rekomCarousel"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-
-                    <button class="carousel-control-next" type="button" data-bs-target="#rekomCarousel"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
                 </div>
 
+                <button class="carousel-control-prev" type="button" data-bs-target="#rekomCarousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next" type="button" data-bs-target="#rekomCarousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+
             <?php else: ?>
-                <p class="text-muted mb-0">Belum ada data buku.</p>
+            <p class="text-muted mb-0">Belum ada data buku.</p>
             <?php endif; ?>
 
         </div>
@@ -173,49 +194,71 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
 
     <div class="row">
         <?php foreach ($buku as $b): ?>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card book-card" onclick="openDetailBuku(this)" data-cover="<?= $b['cover'] ?>"
-                    data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
-                    data-kode="<?= htmlspecialchars($b['kode_buku']) ?>" data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
-                    data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
-                    data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
-                    data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
-                    data-status="<?= htmlspecialchars($b['status_buku']) ?>"
-                    data-deskripsi="<?= htmlspecialchars($b['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card book-card" onclick="openDetailBuku(this)" data-cover="<?= $b['cover'] ?>"
+                data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
+                data-kode="<?= htmlspecialchars($b['kode_buku']) ?>" data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
+                data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
+                data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
+                data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
+                data-status="<?= htmlspecialchars($b['status_buku']) ?>"
+                data-deskripsi="<?= htmlspecialchars($b['deskripsi'] ?? 'Belum ada deskripsi buku.') ?>">
 
-                    <img src="<?= $b['cover'] ?>" class="card-img-top" alt="cover">
+                <img src="<?= $b['cover'] ?>" class="card-img-top" alt="cover">
 
-                    <div class="card-body text-center">
-                        <div class="book-title"><?= $b['judul_buku'] ?></div>
-                        <div class="book-author"><?= $b['nama_penulis'] ?></div>
-                        <p class="text-muted small mt-2">
-                            <?php
+                <div class="card-body text-center">
+                    <div class="book-title"><?= $b['judul_buku'] ?></div>
+                    <div class="book-author"><?= $b['nama_penulis'] ?></div>
+                    <p class="text-muted small mt-2">
+                        <?php
                             $desc = $b['deskripsi'] ?? 'Belum ada deskripsi.';
                             $short = substr($desc, 0, 120) . '...(Baca selengkapnya)';
                             echo htmlspecialchars($short);
                             ?>
-                        </p>
-                        <div class="mt-2">
-                            <?php if ($b['status_buku'] == 'Dipinjam'): ?>
-                                <span class="badge-status bg-danger text-white">DIPINJAM</span>
-                            <?php else: ?>
-                                <span class="badge-status bg-success text-white">TERSEDIA</span>
-                            <?php endif; ?>
-                        </div>
+                    </p>
+                    <div class="mt-2">
+                        <?php if ($b['status_buku'] == 'Dipinjam'): ?>
+                        <span class="badge-status bg-danger text-white">DIPINJAM</span>
+                        <?php else: ?>
+                        <span class="badge-status bg-success text-white">TERSEDIA</span>
+                        <?php endif; ?>
                     </div>
-
                 </div>
+
             </div>
+        </div>
         <?php endforeach; ?>
-
         <?php if (count($buku) === 0): ?>
-            <div class="col-12">
-                <div class="alert alert-warning text-center mb-0">
-                    Tidak ada buku yang cocok dengan pencarian.
-                </div>
+        <div class="col-12">
+            <div class="alert alert-warning text-center mb-0">
+                Tidak ada buku yang cocok dengan pencarian.
             </div>
+        </div>
         <?php endif; ?>
     </div>
+    <?php if ($totalPages > 1): ?>
+    <nav>
+        <ul class="pagination justify-content-center mt-4">
+            <li class="page-item <?= ($page <= 1 ? 'disabled' : '') ?>">
+                <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page - 1])) ?>">
+                    Previous
+                </a>
+            </li>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= ($page == $i ? 'active' : '') ?>">
+                <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $i])) ?>">
+                    <?= $i ?>
+                </a>
+            </li>
+            <?php endfor; ?>
+            <li class="page-item <?= ($page >= $totalPages ? 'disabled' : '') ?>">
+                <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page + 1])) ?>">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <?php endif; ?>
 </div>
 <div class="modal fade" id="detailBukuModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -283,9 +326,10 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                             <option value="" hidden>-- Pilih Penulis --</option>
 
                             <?php foreach ($penulisList as $p): ?>
-                                <option value="<?= htmlspecialchars($p['nama_penulis']) ?>" <?= (isset($_GET['penulis']) && $_GET['penulis'] === $p['nama_penulis']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($p['nama_penulis']) ?>
-                                </option>
+                            <option value="<?= htmlspecialchars($p['nama_penulis']) ?>"
+                                <?= (isset($_GET['penulis']) && $_GET['penulis'] === $p['nama_penulis']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($p['nama_penulis']) ?>
+                            </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
