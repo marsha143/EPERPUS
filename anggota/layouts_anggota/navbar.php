@@ -55,6 +55,13 @@
                                 Riwayat peminjaman
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item <?= $page == 'peminjaman_anggota' ? 'active' : '' ?>"
+                                href="app_anggota?page=pengajuan_booking">
+                                <i class="material-icons opacity-6 me-2 text-md">format_textdirection_r_to_l</i>
+                                Pengajuan booking
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown dropdown-hover mx-2">

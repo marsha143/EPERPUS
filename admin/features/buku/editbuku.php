@@ -1,9 +1,12 @@
 <?php
 $data = mysqli_query($conn, "SELECT * FROM penulis");
 $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
+
+$data2 = mysqli_query($conn, "SELECT id, jenis_genre FROM genre");
+$genre = mysqli_fetch_all($data2, MYSQLI_ASSOC);
 if (isset($_GET['id_buku'])) {
     $id_buku = $_GET['id_buku'];
-    $query = " SELECT * FROM buku WHERE id_buku = $id_buku ";
+    $query = "SELECT * FROM buku WHERE id_buku = $id_buku";
     $result = mysqli_query($conn, $query);
     $data = mysqli_fetch_assoc($result);
     if (!$data) {
@@ -13,13 +16,14 @@ if (isset($_GET['id_buku'])) {
 if (isset($_POST['update'])) {
     $cover = $_POST['cover'];
     $judul_buku = $_POST['judul_buku'];
+    $id_genre = isset($_POST['id_genre']) ? (int) $_POST['id_genre'] : 0;
     $kode_buku = $_POST['kode_buku'];
     $isbn = $_POST['isbn'];
     $id_penulis = $_POST['id_penulis'];
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
     $deskripsi = $_POST['deskripsi'];
-    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku',`id_genre`='$id_genre', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -82,6 +86,23 @@ if (isset($_POST['update'])) {
                                         <input type="int" class="form-control" id="isbn" name="isbn"
                                             placeholder="masukkan keterangan" value="<?= $data['isbn'] ?>" required>
                                     </div>
+                                    
+                                    <div class="col-md-6">
+    <label class="form-label">Genre Buku</label>
+    <select name="id_genre" class="form-select js-example-basic-single" required>
+        <option value="" hidden>-- Pilih Genre --</option>
+
+        <?php foreach ($genre as $g): ?>
+            <?php 
+                $selected_genre = ($data['id_genre'] == $g['id']) ? 'selected' : '';
+            ?>
+            <option value="<?= $g['id'] ?>" <?= $selected_genre ?>>
+                <?= $g['jenis_genre'] ?>
+            </option>
+        <?php endforeach; ?>
+
+    </select>
+</div>
                                 </div>
                             </div>
                             <div class="mb-3">

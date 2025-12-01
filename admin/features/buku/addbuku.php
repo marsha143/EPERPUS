@@ -2,21 +2,25 @@
 $data = mysqli_query($conn, "SELECT id, nama_penulis FROM penulis");
 $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
+$data2 = mysqli_query($conn, "SELECT id, jenis_genre FROM genre");
+$genre = mysqli_fetch_all($data2, MYSQLI_ASSOC);
+
 if (isset($_POST['simpan'])) {
-    $cover        = $_POST['cover'];
-    $judul_buku   = $_POST['judul_buku'];
-    $kode_buku    = $_POST['kode_buku'];
-    $isbn         = $_POST['isbn'];
-    $id_penulis   = isset($_POST['id_penulis']) ? (int) $_POST['id_penulis'] : 0;
+    $cover = $_POST['cover'];
+    $judul_buku = $_POST['judul_buku'];
+    $kode_buku = $_POST['kode_buku'];
+    $isbn = $_POST['isbn'];
+    $id_penulis = isset($_POST['id_penulis']) ? (int) $_POST['id_penulis'] : 0;
+    $id_genre = isset($_POST['id_genre']) ? (int) $_POST['id_genre'] : 0;
     $tahun_terbit = $_POST['tahun_terbit'];
-    $penerbit     = $_POST['penerbit'];
-    $deskripsi    = $_POST['deskripsi'];
+    $penerbit = $_POST['penerbit'];
+    $deskripsi = $_POST['deskripsi'];
 
     $query = "
         INSERT INTO buku
-            (`cover`,`judul_buku`, `kode_buku`, `isbn`, `id_penulis`, `tahun_terbit`, `penerbit`, `deskripsi`)
+            (`cover`,`judul_buku`, `kode_buku`, `isbn`, `id_penulis`, `id_genre`,`tahun_terbit`, `penerbit`, `deskripsi`)
         VALUES
-            ('$cover','$judul_buku','$kode_buku','$isbn',$id_penulis,'$tahun_terbit','$penerbit','$deskripsi')
+            ('$cover','$judul_buku','$kode_buku','$isbn',$id_penulis, '$id_genre','$tahun_terbit','$penerbit','$deskripsi')
     ";
 
     $result = mysqli_query($conn, $query);
@@ -38,8 +42,11 @@ if (isset($_POST['simpan'])) {
 ?>
 
 <form action="" method="POST">
-    <div class="d-flex justify-content-center mt-5">
-        <body style="background-color: linen;">
+
+    <body style="background-color: linen;">
+        <div class="d-flex justify-content-center mt-5">
+
+
             <div class="container mt-5">
                 <div class="card">
                     <div class="card-header">
@@ -77,11 +84,25 @@ if (isset($_POST['simpan'])) {
 
                                         <div class="col-md-6">
                                             <label class="form-label">penulis</label>
-                                            <select name="id_penulis" class="form-select js-example-basic-single" required>
+                                            <select name="id_penulis" class="form-select js-example-basic-single"
+                                                required>
                                                 <option value="" hidden>-- Pilih penulis --</option>
                                                 <?php foreach ($penulis as $p): ?>
                                                     <option value="<?= $p['id'] ?>">
                                                         <?= $p['nama_penulis'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label">Genre</label>
+                                            <select name="id_genre" class="form-select js-example-basic-single"
+                                                required>
+                                                <option value="" hidden>-- Pilih genre --</option>
+                                                <?php foreach ($genre as $g): ?>
+                                                    <option value="<?= $g['id'] ?>">
+                                                        <?= $g['jenis_genre'] ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
@@ -116,19 +137,20 @@ if (isset($_POST['simpan'])) {
                     </div>
                 </div>
             </div>
-    </div>
-    </div>
+        </div>
+        </div>
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('.js-example-basic-single').select2();
-});
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+    });
 </script>
 </body>
+
 </html>
