@@ -55,8 +55,18 @@ $(document).ready(function() {
         integrity="sha512-BNa5lQ3zq9N4fB9npDPusVfrH0eSPo6e7i9oC8blKp8o7YjA5pq/2pA8H2qJkEv+fU3HkZfNwYgqZ3j2bW+U2g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<!-- FOTO -->
 <script>
+document.getElementById('fileToUpload').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
 
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.querySelector('.avatar-profile').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
 </script>
 </body>
 

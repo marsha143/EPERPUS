@@ -28,7 +28,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
-/* GRID ala Booksaw */
+/* GRID*/
 .book-grid {
     margin-top: 2.5rem;
     margin-bottom: 2.5rem;
@@ -133,7 +133,6 @@
     border-radius: 10px;
 }
 
-/* Supaya header modal rapi */
 #detailBukuModal .modal-title {
     font-weight: 600;
 }
@@ -200,14 +199,12 @@
 .kartu-anggota {
     position: relative;
     overflow: hidden;
-    /* soft gradient merah Takumi + biru muda */
     background: linear-gradient(135deg, #ffe3ea, #e7f0ff);
     border-radius: 18px;
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 
-/* strip warna di atas kartu (modern) */
 .kartu-anggota::before {
     content: "";
     position: absolute;
@@ -260,7 +257,7 @@
     flex: 1;
 }
 
-/* Tombol download biar kelihatan kartu */
+/* Tombol download */
 #kartu-anggota + .mt-3 .btn,
 #kartu-anggota .btn {
     border-radius: 999px;
@@ -268,7 +265,6 @@
     font-weight: 600;
 }
 
-/* Tombolnya merah Takumi */
 #kartu-anggota .btn-outline-primary {
     border-color: #d62828;
     color: #d62828;
@@ -278,7 +274,7 @@
     color: #fff;
 }
 
-/* PRINT: hanya kartu yang tercetak */
+/* PRINT */
 @media print {
     body {
         margin: 0;
@@ -301,11 +297,51 @@
         top: 50%;
         transform: translate(-50%, -50%);
         width: 90%;
-        max-width: 140mm; /* kira-kira selebar ID card besar */
-        box-shadow: none; /* supaya tidak ada bayangan di print */
+        max-width: 140mm;
+        box-shadow: none;
     }
 }
 
+.profile-photo .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-profile {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #f1f1f1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.avatar-upload-btn {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e91e63;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: 0.2s;
+}
+
+.avatar-upload-btn:hover {
+    background: #c2185b;
+    transform: scale(1.05);
+}
+
+.simpan{
+        background: #e91e63;
+            color: #fff;
+}
 </style>
 </head>
 

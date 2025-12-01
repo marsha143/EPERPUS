@@ -1,22 +1,4 @@
-<footer class="bg-light pt-5 pb-4 mt-5 border-top">
-    <div class="container text-center">
-        <p class="mb-3 text-muted" style="font-size: 15px;">
-            Layanan perpustakaan digital untuk mengdukung kemudahan akses peminjaman buku anda
-        </p>
-        <p class="fw-bold mb-2" style="font-size: 16px; color:#444;">
-            Ikuti Politeknik Takumi
-        </p>
-        <div class="d-flex justify-content-center gap-4 mb-4">
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-tiktok"></i></a>
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-youtube"></i></a>
-        </div>
-        <div class="text-muted" style="font-size: 14px;">
-            © 2025 EPERPUS<span class="text-danger">
-        </div>
 
-    </div>
-</footer>
 
 
 <!--   Core JS Files   -->
