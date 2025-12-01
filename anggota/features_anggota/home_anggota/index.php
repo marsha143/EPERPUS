@@ -127,37 +127,52 @@ if ($idAnggota) {
                         </div>
                         <!--KARTU ANGGOTA -->
                         <div class="col-lg-8">
-                            <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3"
-                                style="border-radius: 16px;">
-                                <div
-                                    class="d-flex justify-content-between align-items-center mb-3 kartu-anggota-header">
-                                    <div class="fw-bold">KARTU ANGGOTA EPERPUS</div>
+                            <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3">
+
+                                <!-- HEADER -->
+                                <div class="d-flex justify-content-between align-items-center kartu-anggota-header">
+                                    <div>
+                                        <div class="fw-bold title-kartu">KARTU ANGGOTA EPERPUS</div>
+                                        <small class="sub-title-kartu">Digital Member Card</small>
+                                    </div>
                                     <div class="badge badge-anggota">AKTIF</div>
                                 </div>
-                                <img src="<?= $fotoPath; ?>" alt="Foto Anggota"
-                                    class="rounded-circle shadow-sm kartu-anggota-foto" style="object-fit: cover;">
-                                <hr>
-                                <div class="mb-2">
-                                    <strong>Nama:</strong> <span class="text-muted"><?= $namaAnggota; ?></span>
+
+                                <!-- BODY -->
+                                <div class="kartu-anggota-body d-flex align-items-center">
+                                    <!-- Foto + ID -->
+                                    <div class="blok-foto text-center me-4">
+                                        <img src="<?= $fotoPath; ?>" alt="Foto Anggota" class="kartu-anggota-foto">
+                                        <div class="chip-id">ID: <?= $idAnggota; ?></div>
+                                    </div>
+
+                                    <!-- Data -->
+                                    <div class="flex-grow-1">
+                                        <div class="info-row">
+                                            <div class="info-label">Nama</div>
+                                            <div class="info-value"><?= $namaAnggota; ?></div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-label">Program Studi</div>
+                                            <div class="info-value"><?= $prodiAnggota; ?></div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-label">Alamat</div>
+                                            <div class="info-value"><?= $alamatAnggota; ?></div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-label">Tahun Bergabung</div>
+                                            <div class="info-value"><?= $tahunGabungAnggota; ?></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mb-2">
-                                    <strong>Program studi</strong> <span class="text-muted">:
-                                        <?= $prodiAnggota; ?></span>
-                                </div>
-                                <div class="mb-2">
-                                    <strong>Alamat</strong> <span class="text-muted">: <?= $alamatAnggota; ?></span>
-                                </div>
-                                <div class="mb-2">
-                                    <strong>Tahun Bergabung</strong> <span class="text-muted">:
-                                        <?= $tahunGabungAnggota; ?></span>
-                                </div>
-                                <div class="mb-2">
-                                    <strong>ID Anggota</strong> <span class="text-muted">: <?= $idAnggota; ?></span>
-                                </div>
+
+                                <!-- FOOTER: tombol di kanan bawah -->
+
                             </div>
-                            <div class="mt-3 text-center">
-                                <button onclick="window.print()" class="btn btn-outline-primary btn-sm w-100">
-                                    Download Kartu (PDF)
+                            <div class="kartu-anggota-footer d-flex justify-content-end">
+                                <button onclick="window.print()" class="btn btn-download-kartu btn-sm">
+                                    DOWNLOAD KARTU (PDF)
                                 </button>
                             </div>
                         </div>

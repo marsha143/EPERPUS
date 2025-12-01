@@ -195,84 +195,120 @@
 }
 
 /* === KARTU ANGGOTA EPERPUS === */
-
+/* KARTU UTAMA */
 .kartu-anggota {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ffe3ea, #e7f0ff);
     border-radius: 18px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    background: linear-gradient(145deg, #ffffff, #fff7f5);
+    border: 1px solid #f3e5e5;
+    max-width: 620px;
+    margin-inline: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 }
 
-.kartu-anggota::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -20%;
-    width: 140%;
-    height: 6px;
-    background: linear-gradient(90deg, #d62828, #243b64);
-}
-
-/* Header kartu */
-.kartu-anggota-header .fw-bold {
-    font-size: 14px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: #243b64; /* biru tua ala kampus */
-}
-
-/* Badge AKTIF */
-.badge-anggota {
-    background-color: rgba(214, 40, 40, 0.12); /* merah Takumi lembut */
-    color: #d62828;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-weight: 600;
-}
-
-/* Foto anggota */
-.kartu-anggota-foto {
-    width: 90px;
-    height: 90px;
-    border: 3px solid #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/* Baris data (Nama, Prodi, dst) jadi rapi dua kolom */
-#kartu-anggota .mb-2 {
-    display: flex;
-    gap: 6px;
-    font-size: 13px;
-}
-
-#kartu-anggota .mb-2 strong {
-    min-width: 120px;
-    color: #444;
-}
-
-#kartu-anggota .mb-2 .text-muted {
-    flex: 1;
-}
-
-/* Tombol download */
-#kartu-anggota + .mt-3 .btn,
-#kartu-anggota .btn {
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-#kartu-anggota .btn-outline-primary {
-    border-color: #d62828;
-    color: #d62828;
-}
-#kartu-anggota .btn-outline-primary:hover {
-    background-color: #d62828;
+/* HEADER */
+.kartu-anggota-header {
+    background: linear-gradient(90deg, #e91e63, #ff4343ff);
+    margin: -12px -12px 0 -12px;
+    padding: 12px 20px;
     color: #fff;
 }
+
+.title-kartu {
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+}
+
+.sub-title-kartu {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+/* BADGE AKTIF */
+.badge-anggota {
+    background-color: #ffe082;
+    color: #b71c1c;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* BODY */
+.kartu-anggota-body {
+    padding: 16px 30px 10px 20px;
+}
+
+.blok-foto {
+    min-width: 110px;
+}
+
+.kartu-anggota-foto {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    margin-bottom: 8px;
+}
+
+.chip-id {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fbe9e7;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #b71c1c;
+}
+
+/* INFO BARIS */
+.info-row {
+    display: flex;
+    font-size: 0.85rem;
+    padding: 5px 0;
+    border-bottom: 1px dashed #f1d6d0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    width: 40%;
+    font-weight: 600;
+    color: #757575;
+}
+
+.info-value {
+    flex: 1;
+    color: #424242;
+}
+
+/* FOOTER + TOMBOL DOWNLOAD */
+.kartu-anggota-footer {
+    border-top: 1px solid #f3e5e5;
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.btn-download-kartu {
+    border-radius: 999px;
+    padding-inline: 18px;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #e91e63);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-download-kartu:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+} 
 
 /* PRINT */
 @media print {
@@ -339,7 +375,7 @@
 }
 
 .simpan{
-        background: #e91e63;
+        background: #c2185b;
             color: #fff;
 }
 </style>
