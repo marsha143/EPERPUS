@@ -125,11 +125,8 @@ if ($idAnggota) {
                                 </div>
                             </div>
                         </div>
-                        <!--KARTU ANGGOTA -->
                         <div class="col-lg-8">
                             <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3">
-
-                                <!-- HEADER -->
                                 <div class="d-flex justify-content-between align-items-center kartu-anggota-header">
                                     <div>
                                         <div class="fw-bold title-kartu">KARTU ANGGOTA EPERPUS</div>
@@ -137,16 +134,11 @@ if ($idAnggota) {
                                     </div>
                                     <div class="badge badge-anggota">AKTIF</div>
                                 </div>
-
-                                <!-- BODY -->
                                 <div class="kartu-anggota-body d-flex align-items-center">
-                                    <!-- Foto + ID -->
                                     <div class="blok-foto text-center me-4">
                                         <img src="<?= $fotoPath; ?>" alt="Foto Anggota" class="kartu-anggota-foto">
                                         <div class="chip-id">ID: <?= $idAnggota; ?></div>
                                     </div>
-
-                                    <!-- Data -->
                                     <div class="flex-grow-1">
                                         <div class="info-row">
                                             <div class="info-label">Nama</div>
@@ -166,9 +158,6 @@ if ($idAnggota) {
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- FOOTER: tombol di kanan bawah -->
-
                             </div>
                             <div class="kartu-anggota-footer d-flex justify-content-end">
                                 <button onclick="window.print()" class="btn btn-download-kartu btn-sm">

@@ -27,12 +27,11 @@ $whereSQL = '';
 if (count($where) > 0) {
     $whereSQL = 'WHERE ' . implode(' AND ', $where);
 }
-// --- PAGINATION SETUP ---
-$limit = 12; // jumlah buku per halaman
+
+$limit = 12;
 $page = isset($_GET['hal']) ? (int)$_GET['hal'] : 1;
 $start = ($page - 1) * $limit;
 
-// HITUNG TOTAL DATA
 $sqlCount = "
     SELECT COUNT(*) AS total
     FROM buku b
@@ -239,7 +238,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
     <?php if ($totalPages > 1): ?>
     <nav>
         <ul class="pagination justify-content-center mt-4">
-            <li class="page-item <?= ($page <= 1 ? 'disabled' : '') ?>">
+            <li class="page-item <?= ($page <= 1 ? : '') ?>">
                 <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page - 1])) ?>">
                     Previous
                 </a>
@@ -251,7 +250,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                 </a>
             </li>
             <?php endfor; ?>
-            <li class="page-item <?= ($page >= $totalPages ? 'disabled' : '') ?>">
+            <li class="page-item <?= ($page >= $totalPages ? : '') ?>">
                 <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page + 1])) ?>">
                     Next
                 </a>

@@ -10,39 +10,66 @@ dotenv.config();
 const app = express();
 const port = 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Koneksi database
+// Koneksi DB
 const db = await mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASS || "",
   database: "eperpus"
 });
 
-// Regex untuk topik Takumi
-const takumiRegex = /(trimakasih|trima kasih|terima kasih|terimakasih|halo|helo|hallo|hai|takumi|politeknik takumi|kuliah|pelatihan|training|program|jurusan|biaya|beasiswa|pendaftaran|daftar|jepang|magang|kerja ke jepang)/i;
+// Konfigurasi
+const DENDA_PER_HARI = 1000;
+const MAKS_HARI_PINJAM = 14;
 
-// Memory chat per IP
+// Memory chat
 const memory = {};
 const MAX_MEMORY = 20;
 
-// Greeting awal
+// === PROSEDUR PEMINJAMAN TERBARU & FINAL (2 cara) ===
+const prosedurPeminjaman = `Ada **2 cara mudah** untuk meminjam buku di EPERPUS (keduanya 100% GRATIS):
+
+**1. Pinjam Langsung (paling cepat)**
+- Datang ke perpustakaan
+- Bawa buku yang ingin dipinjam
+- Serahkan buku + kartu mahasiswa ke petugas
+- Petugas akan langsung mencatat peminjaman di sistem
+- Buku bisa langsung dibawa pulang (maks. 14 hari)
+
+**2. Booking Dulu Lewat Web (praktis kalau takut kehabisan)**
+- Login ke web anggota EPERPUS
+- Cari & booking buku yang kamu inginkan
+- Datang ke perpustakaan (maks. 2×24 jam setelah booking)
+- Tunjukkan bukti booking + kartu mahasiswa ke petugas
+- Petugas akan meng-ACC dan menyerahkan buku fisiknya
+
+Kedua cara sama-sama gratis, tanpa biaya peminjaman apapun.  
+Hanya ada denda Rp 1.000/hari jika telat mengembalikan ya 
+
+Butuh bantuan cari buku atau mau saya bantu bookingkan? Langsung bilang saja!`;
+
+// === GREETING ===
 app.get("/greeting", (req, res) => {
   const userId = req.ip;
   if (!memory[userId]) memory[userId] = [];
 
-  const greeting = `Selamat Datang di Takumi Training Center!  
-Saya adalah AI Assistant resmi yang siap membantu menjawab semua pertanyaanmu seputar pelatihan, pendaftaran, biaya, dan karier ke Jepang.  
-Ada yang bisa dibantu hari ini?`;
+  const greeting = `Halo! Selamat datang di E-Perpus Politeknik Takumi  
+Saya **Pustakun**, AI Pustakawan resmi yang siap bantu kamu 24/7 untuk:  
+• Booking & peminjaman buku (langsung atau online)  
+• Cek status booking / peminjaman  
+• Hitung denda keterlambatan  
+• Rekomendasi buku terbaik  
+
+Mau pinjam buku atau ada yang ditanyakan hari ini?`;
 
   memory[userId].push({ role: "assistant", content: greeting });
   res.json({ reply: greeting.trim() });
 });
 
-// Chat utama
+// === CHAT UTAMA ===
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
   if (!message || message.trim() === "") return res.json({ reply: "Silakan ketik pertanyaan." });
@@ -52,123 +79,80 @@ app.post("/chat", async (req, res) => {
   if (memory[userId].length > MAX_MEMORY) memory[userId] = memory[userId].slice(-MAX_MEMORY);
 
   let reply = "";
+  const lowerMsg = message.toLowerCase();
 
   try {
-    // === DETAIL PELATIHAN SATU PER SATU ===
-    if (/detail|info|jelasin|ceritain|tentang|apa itu/i.test(message) && /pelatihan|program|kursus|kelas|training/i.test(message)) {
-      const match = message.match(/(?:detail|info|jelasin|ceritain|tentang|apa itu)\s*(?:pelatihan|program|kursus|kelas|training)?\s*([^?.!,]*)/i);
-      const namaDicari = match ? match[1].trim() : "";
+    // 1. Tanya cara pinjam / booking
+    if (/cara pinjam|pinjam buku|booking|book|prosedur|meminjam|gimana pinjam/i.test(lowerMsg)) {
+      reply = prosedurPeminjaman;
+    }
 
-      if (!namaDicari || namaDicari.length < 2) {
-        reply = `Maaf, nama pelatihan yang kamu maksud belum jelas
-Contoh:\n• detail pelatihan digital marketing\n• info bahasa jepang`;
-        memory[userId].push({ role: "assistant", content: reply });
-        return res.json({ reply });
-      }
+    // 2. Detail buku
+    else if (/detail|info|cari|judul buku/i.test(lowerMsg)) {
+      const match = message.match(/(?:detail|info|cari)\s*(?:buku)?\s*["']?([^"']+)["']?/i);
+      const judulCari = match ? match[1].trim() : "";
 
-      const [rows] = await db.query(`
-        SELECT * FROM pelatihan 
-        WHERE status_pelatihan = 'Aktif' 
-          AND LOWER(nama_pelatihan) LIKE ? 
-        LIMIT 1
-      `, [`%${namaDicari.toLowerCase()}%`]);
+      if (!judulCari || judulCari.length < 2) {
+        reply = "Mau cari buku apa? Tulis judul atau keyword ya.\nContoh: cari buku Rich Dad";
+      } else {
+        const [rows] = await db.query(`
+          SELECT judul, penulis, tahun, kategori, tersedia, jumlah_eksemplar 
+          FROM buku WHERE LOWER(judul) LIKE ? LIMIT 1
+        `, [`%${judulCari.toLowerCase()}%`]);
 
-      if (rows.length > 0) {
-        const p = rows[0];
-        reply = `
-<div style="background:#e8f5e9; padding:20px; border-radius:12px; border-left:6px solid #4caf50; font-family:Arial,sans-serif;">
-  <h3 style="color:#2e7d32; margin:0 0 15px 0;">${p.nama_pelatihan}</h3>
-  ${p.deskripsi_lengkap || p.deskripsi_pelatihan || '<p>Pelatihan berkualitas tinggi bersama instruktur berpengalaman.</p>'}
-  <p><strong>Level:</strong> ${p.level_pelatihan || "Semua Level"}</p>
-  <p><strong>Durasi:</strong> ${p.durasi || "-"}</p>
-  <p><strong>Biaya:</strong> Rp ${Number(p.harga_pelatihan).toLocaleString("id-ID")}</p>
-  <div style="margin-top:20px; text-align:center;">
-    <a href="https://pmb.takumi.ac.id" style="background:#388e3c;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;margin:0 10px;font-weight:bold;">Daftar Sekarang</a>
-    <a href="https://wa.link/s283dz" style="background:#25d366;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;margin:0 10px;">Chat WA</a>
-  </div>
+        if (rows.length > 0) {
+          const b = rows[0];
+          const status = b.tersedia ? "Tersedia" : "Sedang dipinjam";
+          reply = `
+<div style="background:#f8fff0;padding:20px;border-radius:12px;border-left:6px solid #4caf50;font-family:Arial;">
+  <h3 style="margin:0 0 12px;color:#2e7d32;">${b.judul}</h3>
+  <p><strong>Penulis:</strong> ${b.penulis || "-"}</p>
+  <p><strong>Tahun:</strong> ${b.tahun || "-"}</p>
+  <p><strong>Kategori:</strong> ${b.kategori || "Umum"}</p>
+  <p><strong>Status:</strong> <span style="color:${b.tersedia ? '#2e7d32' : '#d32f2f'};font-weight:bold;">${status}</span></p>
+  <p><strong>Tersedia:</strong> ${b.tersedia ? "Bisa langsung dipinjam atau di-booking" : "Coba booking dulu ya"}</p>
 </div>`;
-        memory[userId].push({ role: "assistant", content: reply });
-        return res.json({ reply });
-      } else {
-        reply = `Mohon maaf, pelatihan "${namaDicari}" belum tersedia saat ini. Nanti kalau dibuka saya kabari ya!`;
-        memory[userId].push({ role: "assistant", content: reply });
-        return res.json({ reply });
+        } else {
+          reply = `Maaf, buku "${judulCari}" belum ada di koleksi kami. Coba judul lain atau tanya saya rekomendasi ya!`;
+        }
       }
     }
 
-    // === BIAYA ===
-    else if (/biaya|harga|berapa/i.test(message)) {
-      const [rows] = await db.query("SELECT * FROM pelatihan WHERE status_pelatihan = 'Aktif'");
-      reply = `<strong>Biaya Pelatihan Takumi</strong><br><br>
-${rows.map(p => `• <strong>${p.nama_pelatihan}</strong>: Rp ${Number(p.harga_pelatihan).toLocaleString("id-ID")}`).join("<br>")}<br><br>
-Tersedia beasiswa 100%, diskon early bird, cicilan 0%.<br>
-Info lengkap: <a href="https://pmb.takumi.ac.id">pmb.takumi.ac.id</a>`;
-      memory[userId].push({ role: "assistant", content: reply });
-      return res.json({ reply });
-    }
-
-    // === DAFTAR PELATIHAN ===
-    else if (/pelatihan|program|jurusan|ada apa/i.test(message)) {
-      const [rows] = await db.query("SELECT * FROM pelatihan WHERE status_pelatihan='Aktif'");
-      if (rows.length === 0) {
-        reply = "Belum ada pelatihan aktif.";
-      } else {
-        reply = `<p>Di Takumi Training Center tersedia:</p><ul>${rows.map(p => `<li><strong>${p.nama_pelatihan}</strong>: ${p.keterangan_pelatihan}</li>`).join("")}</ul>
-<p>Semua program sudah include bahasa Jepang + peluang magang/ke Jepang!</p>
-<p>Detail: <a href="https://takumi.ac.id/program-studi/">https://takumi.ac.id/program-studi/</a></p>`;
-      }
-      memory[userId].push({ role: "assistant", content: reply });
-      return res.json({ reply });
-    }
-
-    // === TOPIK TAKUMI → OLLAMA ===
-    else if (takumiRegex.test(message)) {
-      const systemPrompt = `Kamu adalah Takumi-san, AI resmi Politeknik Takumi Training Center. 
-Jawab ramah, profesional, bahasa Indonesia, maksimal 3 paragraf. 
-Hanya bahas: program pelatihan, pendaftaran, biaya, beasiswa, magang & kerja ke Jepang. 
-Kalau di luar topik, arahkan ke WA: https://wa.me/6282258868305`;
-
-      const messages = [
-        { role: "system", content: systemPrompt },
-        ...memory[userId].slice(-10),
-        { role: "user", content: message }
-      ];
-
-      const response = await ollama.chat({
-        model: "qwen2.5:3b",     // atau "llama3.2", "phi3", dll
-        messages: messages
-      });
-
+    // 3. Rekomendasi buku (Ollama)
+    else if (/rekomendasi|saran|novel bagus|mau baca apa|rekomendasikan/i.test(lowerMsg)) {
+      const systemPrompt = `Kamu adalah pustakawan ramah di perpustakaan kampus. Berikan 3–5 rekomendasi buku sesuai minat pengguna. Gunakan bahasa Indonesia santai dan menarik. Sebutkan judul + penulis + 1 kalimat alasan.`;
+      const messages = [{ role: "system", content: systemPrompt }, ...memory[userId].slice(-10), { role: "user", content: message }];
+      const response = await ollama.chat({ model: "qwen2.5:3b", messages });
       reply = response.message.content.trim();
-
-      memory[userId].push({ role: "user", content: message });
-      memory[userId].push({ role: "assistant", content: reply });
-
-      return res.json({ reply });
     }
 
-    // === FALLBACK ===
+    // 4. Pertanyaan umum perpus (Ollama)
+    else if (/perpus|perpustakaan|pinjam|kembali|denda|telat|jam buka|booking|admin/i.test(lowerMsg)) {
+      const systemPrompt = `Kamu adalah Pustakun, AI Pustakawan Politeknik Takumi. Jawab ramah dan jelas dalam bahasa Indonesia. Jelaskan aturan peminjaman (ada 2 cara: langsung & booking), denda Rp 1.000/hari, batas 14 hari, dll. Kalau di luar topik perpus, arahkan ke petugas.`;
+      const messages = [{ role: "system", content: systemPrompt }, ...memory[userId].slice(-10), { role: "user", content: message }];
+      const response = await ollama.chat({ model: "qwen2.5:3b", messages });
+      reply = response.message.content.trim();
+    }
+
+    // 5. Fallback
     else {
-      reply = `Maaf, saya hanya bisa bantu soal Takumi Training Center (program, biaya, pendaftaran, magang Jepang). 
-Kalau ada pertanyaan lain, langsung chat admin ya: 
-<a href="https://wa.me/6282258868305">Chat WA Marketing Takumi</a>`;
-      memory[userId].push({ role: "assistant", content: reply });
-      return res.json({ reply });
+      reply = `Maaf, saya hanya bisa membantu urusan perpustakaan (booking, peminjaman, denda, rekomendasi buku, dll).  
+Kalau ada pertanyaan lain, silakan tanya langsung ke petugas perpustakaan ya!`;
     }
+
+    // Simpan ke memory
+    memory[userId].push({ role: "user", content: message });
+    if (reply) memory[userId].push({ role: "assistant", content: reply });
+
+    return res.json({ reply });
 
   } catch (err) {
-    console.error("Error:", err.message);
-    res.json({ reply: "Maaf, sedang ada gangguan teknis. Coba lagi sebentar ya!" });
+    console.error(err);
+    return res.json({ reply: "Maaf, sistem sedang bermasalah. Coba lagi dalam beberapa menit ya!" });
   }
 });
 
-// Home
-app.get("/", (_, res) => {
-  res.send("Takumi AI Server + Ollama GRATIS berjalan!");
-});
-
-// Jalankan server
+app.get("/", (_, res) => res.send("E-Perpus AI + Booking System berjalan!"));
 app.listen(port, () => {
-  console.log(`Server jalan di http://localhost:${port}`);
-  console.log("Full gratis pake Ollama lokal!");
+  console.log(`E-Perpus AI Server (dengan booking) berjalan di http://localhost:${port}`);
 });
