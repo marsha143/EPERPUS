@@ -240,7 +240,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
         <ul class="pagination justify-content-center mt-4">
             <li class="page-item <?= ($page <= 1 ? : '') ?>">
                 <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page - 1])) ?>">
-                    Previous
+                    Pre
                 </a>
             </li>
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>

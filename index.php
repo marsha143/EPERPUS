@@ -57,7 +57,7 @@ $jumlah_buku = $r['jumlah'];
                     </p>
                 </div>
 
-                <!-- Kanan: Kotak Chat -->
+                <!-- Kotak Chat -->
                 <div class="col-md-7">
                     <div class="ai-chat-box shadow-lg p-4">
                         <div class="chat-header p-3 mb-3 text-white rounded">
@@ -65,16 +65,46 @@ $jumlah_buku = $r['jumlah'];
                             <span class="chat-subtitle">Siap membantu menjawab pertanyaan Anda</span>
                         </div>
 
-                        <!-- Area Chat (bisa diganti iframe atau widget) -->
+                        <!-- Area Chat -->
                         <div class="chat-area mb-3 p-3 bg-light rounded border">
                             <div id="chat-box"></div>
                         </div>
 
                         <!-- Input -->
+                        <!-- PERTANYAAN POPULER -->
+                        <div class="popular-questions">
+                            <p class="popular-label">✨ Pertanyaan populer:</p>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <button type="button" class="popular-btn w-100"
+                                        onclick="sendQuick('Bagaimana cara meminjam buku di EPERPUS?')">
+                                        📚 Cara peminjaman
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="popular-btn w-100"
+                                        onclick="sendQuick('Bagaimana cara mengembalikan buku yang saya pinjam?')">
+                                        🔁 Cara Pengembalian
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="popular-btn w-100"
+                                        onclick="sendQuick('Bagaimana cara booking / reservasi buku di perpustakaan?')">
+                                        📝 Booking
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="popular-btn w-100"
+                                        onclick="sendQuick('Berapa denda keterlambatan pengembalian buku?')">
+                                        ⏱️Denda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                            <input type="text" id="user-input" class="form-control me-2"
-                                placeholder="Ketik pertanyaan kamu di sini...">
-                            <button id="send-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                        <input type="text" id="user-input" class="form-control me-2"
+                            placeholder="Ketik pertanyaan kamu di sini...">
+                        <button id="send-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
 
                     </div>
                 </div>
@@ -165,9 +195,12 @@ $jumlah_buku = $r['jumlah'];
             Ikuti Politeknik Takumi
         </p>
         <div class="d-flex justify-content-center gap-4 mb-4">
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-tiktok"></i></a>
-            <a href="#" class="text-danger" style="font-size: 28px;"><i class="bi bi-youtube"></i></a>
+            <a href="https://www.instagram.com/poltek.takumi/" class="text-danger" style="font-size: 28px;"><i
+                    class="bi bi-instagram"></i></a>
+            <a href="https://www.tiktok.com/@politeknik.takumi" class="text-danger" style="font-size: 28px;"><i
+                    class="bi bi-tiktok"></i></a>
+            <a href="https://www.youtube.com/@PoliteknikTakumi" class="text-danger" style="font-size: 28px;"><i
+                    class="bi bi-youtube"></i></a>
         </div>
         <div class="text-muted" style="font-size: 14px;">
             © 2025 EPERPUS<span class="text-danger">
@@ -252,7 +285,7 @@ window.addEventListener("load", async () => {
         const data = await res.json();
         addMessage(data.reply, "bot");
     } catch {
-        addMessage("Halo! Saya Takumi AI 👋", "bot");
+        addMessage("Halo! Saya EPERPUS AI 👋", "bot");
     }
 });
 

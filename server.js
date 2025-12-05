@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import ollama from 'ollama';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
@@ -21,138 +20,109 @@ const db = await mysql.createPool({
   database: "eperpus"
 });
 
-// Konfigurasi
-const DENDA_PER_HARI = 1000;
-const MAKS_HARI_PINJAM = 14;
+// === TOPIK YANG DIIZINKAN (HANYA BUKU & PERPUSTAKAAN) ===
+const topikDiizinkan = [
+  "buku", "novel", "komik", "manga", "pinjam", "booking", "kembali", "denda", 
+  "telat", "perpanjang", "perpus", "perpustakaan", "jam buka", "rekomendasi", 
+  "cari buku", "judul", "penulis", "kategori", "tersedia", "hilang", "rusak", "genre"
+];
 
-// Memory chat
+// === JAWABAN CEPAT & VARIASI (HANYA TENTANG BUKU) ===
+const jawabanCepat = {
+  "cara meminjam": ["Datang bawa buku + kartu mahasiswa → langsung bisa bawa pulang (maks 7 hari)", "Bisa langsung ke loket atau booking dulu lewat web biar aman"],
+  "booking": ["Login → cari buku → klik Booking → datang dalam 1×24 jam → buku langsung dikasih!", "Booking dulu biar nggak kehabisan. Setelah booking wajib ambil dalam 24 jam ya"],
+  "denda": ["Rp 500 per hari, maksimal Rp 50.000 per buku. Telat berapa pun nggak lebih dari 50 ribu", "Denda ringan kok: Rp 500/hari, maksimal Rp 50.000 aja"],
+  "berapa denda": ["Rp 500 per hari, maksimal Rp 50.000 per buku", "Denda Rp 500/hari, tapi tenang, nggak lebih dari Rp 50.000 kok"],
+  "jam buka": ["Senin–Jumat: 08.00–16.00, Sabtu: 09.00–14.00, Minggu TUTUP", "Buka Senin sampai Sabtu aja ya!"],
+  "buku jepang": ["Ada banyak! Manga, novel Jepang, kamus, sampai buku pelajaran bahasa Jepang", "Koleksi Jepang lengkap banget: One Piece, Naruto, sampai light novel ada!"],
+  "novel": ["Ada novel Indonesia, terjemahan Inggris, Jepang, Korea. Mau genre apa?", "Novel banyak! Dari romance, thriller, sampai fantasy ada semua"],
+  "komik": ["Ada One Piece, Naruto, Attack on Titan, sampai komik lokal juga!", "Komiknya up to date! Dari yang lama sampai terbaru ada"],
+  "terima kasih": ["Sama-sama! Senang bisa bantu soal buku", "Anytime! Kalau butuh rekomendasi lagi langsung tanya ya"]
+};
+
+// === CEK APAKAH PERTANYAAN BOLEH DIJAWAB ===
+function isTopikDiizinkan(pesan) {
+  const lower = pesan.toLowerCase();
+  return topikDiizinkan.some(kata => lower.includes(kata));
+}
+
+// === FUNGSI GEMMA3:1B (DENGAN PERINTAH KERAS: HANYA JAWAB TENTANG BUKU!) ===
+async function askGemma(userMessage, history = []) {
+  try {
+    const response = await fetch("http://localhost:11434/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gemma3:4b",
+        messages: [
+          { 
+            role: "system", 
+            content: "Kamu adalah Pustakun, AI KHUSUS perpustakaan. HANYA boleh jawab tentang buku, peminjaman, denda, booking, dan layanan perpus. Kalau pertanyaan di luar itu, jawab: 'Maaf, saya hanya bisa bantu urusan buku dan perpustakaan ya!'. Jawab singkat, ramah, bahasa Indonesia." 
+          },
+          ...history.slice(-10),
+          { role: "user", content: userMessage }
+        ],
+        stream: false,
+        options: { num_predict: 100, temperature: 0.7 }
+      })
+    });
+    if (!response.ok) return "Maaf, AI lagi istirahat sebentar...";
+    const data = await response.json();
+    return data.message?.content?.trim();
+  } catch {
+    return "AI lagi sibuk, coba lagi ya!";
+  }
+}
+
+// Memory
 const memory = {};
-const MAX_MEMORY = 20;
+const MAX_MEMORY = 30;
 
-// === PROSEDUR PEMINJAMAN TERBARU & FINAL (2 cara) ===
-const prosedurPeminjaman = `Ada **2 cara mudah** untuk meminjam buku di EPERPUS (keduanya 100% GRATIS):
-
-**1. Pinjam Langsung (paling cepat)**
-- Datang ke perpustakaan
-- Bawa buku yang ingin dipinjam
-- Serahkan buku + kartu mahasiswa ke petugas
-- Petugas akan langsung mencatat peminjaman di sistem
-- Buku bisa langsung dibawa pulang (maks. 14 hari)
-
-**2. Booking Dulu Lewat Web (praktis kalau takut kehabisan)**
-- Login ke web anggota EPERPUS
-- Cari & booking buku yang kamu inginkan
-- Datang ke perpustakaan (maks. 2×24 jam setelah booking)
-- Tunjukkan bukti booking + kartu mahasiswa ke petugas
-- Petugas akan meng-ACC dan menyerahkan buku fisiknya
-
-Kedua cara sama-sama gratis, tanpa biaya peminjaman apapun.  
-Hanya ada denda Rp 1.000/hari jika telat mengembalikan ya 
-
-Butuh bantuan cari buku atau mau saya bantu bookingkan? Langsung bilang saja!`;
-
-// === GREETING ===
-app.get("/greeting", (req, res) => {
-  const userId = req.ip;
-  if (!memory[userId]) memory[userId] = [];
-
-  const greeting = `Halo! Selamat datang di E-Perpus Politeknik Takumi  
-Saya **Pustakun**, AI Pustakawan resmi yang siap bantu kamu 24/7 untuk:  
-• Booking & peminjaman buku (langsung atau online)  
-• Cek status booking / peminjaman  
-• Hitung denda keterlambatan  
-• Rekomendasi buku terbaik  
-
-Mau pinjam buku atau ada yang ditanyakan hari ini?`;
-
-  memory[userId].push({ role: "assistant", content: greeting });
-  res.json({ reply: greeting.trim() });
-});
-
-// === CHAT UTAMA ===
+// === ROUTE CHAT ===
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
-  if (!message || message.trim() === "") return res.json({ reply: "Silakan ketik pertanyaan." });
+  if (!message?.trim()) return res.json({ reply: "Tulis pertanyaan tentang buku dulu yuk!" });
 
-  const userId = req.ip;
+  const userId = req.ip || "unknown";
   if (!memory[userId]) memory[userId] = [];
   if (memory[userId].length > MAX_MEMORY) memory[userId] = memory[userId].slice(-MAX_MEMORY);
 
+  const msg = message.toLowerCase().trim();
   let reply = "";
-  const lowerMsg = message.toLowerCase();
 
-  try {
-    // 1. Tanya cara pinjam / booking
-    if (/cara pinjam|pinjam buku|booking|book|prosedur|meminjam|gimana pinjam/i.test(lowerMsg)) {
-      reply = prosedurPeminjaman;
-    }
 
-    // 2. Detail buku
-    else if (/detail|info|cari|judul buku/i.test(lowerMsg)) {
-      const match = message.match(/(?:detail|info|cari)\s*(?:buku)?\s*["']?([^"']+)["']?/i);
-      const judulCari = match ? match[1].trim() : "";
-
-      if (!judulCari || judulCari.length < 2) {
-        reply = "Mau cari buku apa? Tulis judul atau keyword ya.\nContoh: cari buku Rich Dad";
-      } else {
-        const [rows] = await db.query(`
-          SELECT judul, penulis, tahun, kategori, tersedia, jumlah_eksemplar 
-          FROM buku WHERE LOWER(judul) LIKE ? LIMIT 1
-        `, [`%${judulCari.toLowerCase()}%`]);
-
-        if (rows.length > 0) {
-          const b = rows[0];
-          const status = b.tersedia ? "Tersedia" : "Sedang dipinjam";
-          reply = `
-<div style="background:#f8fff0;padding:20px;border-radius:12px;border-left:6px solid #4caf50;font-family:Arial;">
-  <h3 style="margin:0 0 12px;color:#2e7d32;">${b.judul}</h3>
-  <p><strong>Penulis:</strong> ${b.penulis || "-"}</p>
-  <p><strong>Tahun:</strong> ${b.tahun || "-"}</p>
-  <p><strong>Kategori:</strong> ${b.kategori || "Umum"}</p>
-  <p><strong>Status:</strong> <span style="color:${b.tersedia ? '#2e7d32' : '#d32f2f'};font-weight:bold;">${status}</span></p>
-  <p><strong>Tersedia:</strong> ${b.tersedia ? "Bisa langsung dipinjam atau di-booking" : "Coba booking dulu ya"}</p>
-</div>`;
-        } else {
-          reply = `Maaf, buku "${judulCari}" belum ada di koleksi kami. Coba judul lain atau tanya saya rekomendasi ya!`;
-        }
+  if (!isTopikDiizinkan(message)) {
+    reply = "Maaf, saya hanya bisa bantu urusan buku, peminjaman, denda, dan perpustakaan ya! Kalau ada pertanyaan tentang buku, langsung tanya aja";
+  }
+  // === JAWABAN CEPAT (dari cache) ===
+  else {
+    for (const key in jawabanCepat) {
+      if (msg.includes(key)) {
+        const pilihan = jawabanCepat[key];
+        reply = Array.isArray(pilihan) ? pilihan[Math.floor(Math.random() * pilihan.length)] : pilihan;
+        break;
       }
     }
 
-    // 3. Rekomendasi buku (Ollama)
-    else if (/rekomendasi|saran|novel bagus|mau baca apa|rekomendasikan/i.test(lowerMsg)) {
-      const systemPrompt = `Kamu adalah pustakawan ramah di perpustakaan kampus. Berikan 3–5 rekomendasi buku sesuai minat pengguna. Gunakan bahasa Indonesia santai dan menarik. Sebutkan judul + penulis + 1 kalimat alasan.`;
-      const messages = [{ role: "system", content: systemPrompt }, ...memory[userId].slice(-10), { role: "user", content: message }];
-      const response = await ollama.chat({ model: "qwen2.5:3b", messages });
-      reply = response.message.content.trim();
+    // === KALAU BELUM ADA DI CACHE → PAKAI AI ===
+    if (!reply) {
+      if (/rekomendasi|saran|novel|mau baca|bagus|rekomendasikan/i.test(msg)) {
+        reply = await askGemma(`Rekomendasi 3-4 buku untuk: "${message}". Jawab singkat dan menarik.`, memory[userId]);
+      } else {
+        reply = await askGemma(message, memory[userId]);
+      }
     }
-
-    // 4. Pertanyaan umum perpus (Ollama)
-    else if (/perpus|perpustakaan|pinjam|kembali|denda|telat|jam buka|booking|admin/i.test(lowerMsg)) {
-      const systemPrompt = `Kamu adalah Pustakun, AI Pustakawan Politeknik Takumi. Jawab ramah dan jelas dalam bahasa Indonesia. Jelaskan aturan peminjaman (ada 2 cara: langsung & booking), denda Rp 1.000/hari, batas 14 hari, dll. Kalau di luar topik perpus, arahkan ke petugas.`;
-      const messages = [{ role: "system", content: systemPrompt }, ...memory[userId].slice(-10), { role: "user", content: message }];
-      const response = await ollama.chat({ model: "qwen2.5:3b", messages });
-      reply = response.message.content.trim();
-    }
-
-    // 5. Fallback
-    else {
-      reply = `Maaf, saya hanya bisa membantu urusan perpustakaan (booking, peminjaman, denda, rekomendasi buku, dll).  
-Kalau ada pertanyaan lain, silakan tanya langsung ke petugas perpustakaan ya!`;
-    }
-
-    // Simpan ke memory
-    memory[userId].push({ role: "user", content: message });
-    if (reply) memory[userId].push({ role: "assistant", content: reply });
-
-    return res.json({ reply });
-
-  } catch (err) {
-    console.error(err);
-    return res.json({ reply: "Maaf, sistem sedang bermasalah. Coba lagi dalam beberapa menit ya!" });
   }
+
+  // Simpan memory
+  memory[userId].push({ role: "user", content: message });
+  memory[userId].push({ role: "assistant", content: reply });
+
+  res.json({ reply });
 });
 
-app.get("/", (_, res) => res.send("E-Perpus AI + Booking System berjalan!"));
+app.get("/", (req, res) => res.send("Pustakun AI — HANYA JAWAB TENTANG BUKU & PERPUSTAKAAN!"));
 app.listen(port, () => {
-  console.log(`E-Perpus AI Server (dengan booking) berjalan di http://localhost:${port}`);
+  console.log(`Pustakun AI (gemma3:4b) berjalan di http://localhost:${port}`);
+  console.log(`Hanya jawab tentang buku!`);
 });

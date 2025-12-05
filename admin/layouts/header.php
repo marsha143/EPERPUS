@@ -84,6 +84,39 @@ footer a:hover {
     transform: translateY(-3px);
 }
 
+/* ==== PERTANYAAN POPULER ==== */
+.popular-questions {
+    margin-bottom: 14px;
+}
+
+.popular-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.popular-btn {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e1e4f0;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.popular-btn:hover {
+    border-color: #ff4b8f;          /* aksen pink */
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
+}
 </style>
 
 </head>
