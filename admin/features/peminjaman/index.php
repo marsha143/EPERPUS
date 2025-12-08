@@ -47,34 +47,38 @@ if (isset($_POST['cari'])) {
 }
 
 if (isset($_POST['kembalikan'])) {
-  $id = $_POST['id'];
+    $id = $_POST['id'];
 
-  $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
-  $p = mysqli_fetch_assoc($data);
+    $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
+    $p = mysqli_fetch_assoc($data);
 
-  $jatuh_tempo = $p['tanggal_kembali'];
-  $hari_ini = date('Y-m-d');
+    $id_buku = $p['id_buku'];   // <-- penting
 
-  $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
-  if ($terlambat < 0) {
-    $terlambat = 0;
-  }
+    // ========= HITUNG DENDA ==========
+    $jatuh_tempo = $p['tanggal_kembali'];
+    $hari_ini = date('Y-m-d');
+    $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
+    if ($terlambat < 0) $terlambat = 0;
 
-  $denda_per_hari = 500;
-  $denda = $terlambat * $denda_per_hari;
+    $denda = $terlambat * 500;
 
-  $query = "UPDATE peminjaman SET 
-              status='Dikembalikan',
-              tanggal_dikembalikan='$hari_ini',
-              denda='$denda'
-              WHERE id='$id'";
-  mysqli_query($conn, $query);
+    // ========= UPDATE PEMINJAMAN ==========
+    mysqli_query($conn, "
+        UPDATE peminjaman SET 
+        status='Dikembalikan',
+        tanggal_dikembalikan='$hari_ini',
+        denda='$denda'
+        WHERE id='$id'
+    "); 
 
-  echo "<script>
+    // ========= TAMBAHKAN STOK ==========
+    mysqli_query($conn, "UPDATE buku SET Qty = Qty + 1 WHERE id_buku='$id_buku'");
+
+    echo "<script>
             alert('Buku berhasil dikembalikan! Denda: Rp $denda');
             window.location.href='app?page=peminjaman';
           </script>";
-  exit;
+    exit;
 }
 ?>
 

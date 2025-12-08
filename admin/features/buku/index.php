@@ -14,7 +14,6 @@ if (isset($_POST['cari'])) {
         $query = "DELETE FROM `buku` WHERE id_buku = $id ";
         $result = mysqli_query($conn, $query);
         if ($result) {
-
             echo "
         <script>
         alert('data  berhasil dihapus');
@@ -72,6 +71,7 @@ if (isset($_POST['cari'])) {
                                     <th>nama penulis</th>
                                     <th>tahun terbit</th>
                                     <th>penerbit</th>
+                                    <th>Quantity</th>
                                     <th>aksi</th>
                                 </tr>
                             </thead>
@@ -86,6 +86,7 @@ if (isset($_POST['cari'])) {
                                         <td><?= $b['nama_penulis'] ?></td>
                                         <td><?= $b['tahun_terbit'] ?></td>
                                         <td><?= $b['penerbit'] ?></td>
+                                        <td><?= $b['Qty'] ?> Pcs</td>
                                         <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"
                                                 class="btn btn-warning btn-sm ms-3"><i
                                                     class="fa-solid fa-pen-to-square"></i>edit</a>

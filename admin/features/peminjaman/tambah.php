@@ -1,28 +1,49 @@
 <?php
 if (isset($_POST['simpan'])) {
-    $id_buku = $_POST['id_buku'];
-    $id_anggota = $_POST['id_anggota'];
-    $tanggal_pinjam = $_POST['tanggal_pinjam'];
-    $tanggal_kembali = $_POST['tanggal_kembali'];
+  $id_buku = $_POST['id_buku'];
+  $id_anggota = $_POST['id_anggota'];
+  $tanggal_pinjam = $_POST['tanggal_pinjam'];
+  $tanggal_kembali = $_POST['tanggal_kembali'];
 
-    $query = "INSERT INTO `peminjaman`(`id_buku`, `id_anggota`, `tanggal_pinjam`, `tanggal_kembali`) VALUES ('$id_buku','$id_anggota','$tanggal_pinjam','$tanggal_kembali')";
-    $result = mysqli_query($conn, $query);
-    if ($result) {
+  // 1. CEK QTY BUKU
+  $cekQty = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku = '$id_buku'");
+  $b = mysqli_fetch_assoc($cekQty);
 
-        echo "
+  if ($b['Qty'] <= 0) {
+    echo "
         <script>
-        alert('data  berhasil disimpan');
-        window.location.href = 'app?page=peminjaman'
+        alert('Gagal meminjam! Stok buku habis (Qty 0).');
+        window.location.href = 'app?page=peminjaman&view=tambah';
+        </script>";
+    exit;
+  }
+
+  // 2. SIMPAN PEMINJAMAN
+  $query = "INSERT INTO peminjaman (id_buku, id_anggota, tanggal_pinjam, tanggal_kembali)
+              VALUES ('$id_buku','$id_anggota','$tanggal_pinjam','$tanggal_kembali')";
+  $result = mysqli_query($conn, $query);
+
+  if ($result) {
+
+    // 3. KURANGI QTY BUKU
+    mysqli_query($conn, "UPDATE buku SET Qty = Qty - 1 WHERE id_buku = '$id_buku'");
+
+    echo "
+        <script>
+        alert('Peminjaman berhasil! Stok buku dikurangi 1.');
+        window.location.href = 'app?page=peminjaman';
+        </script>";
+    exit;
+
+  } else {
+    echo "
+        <script>
+        alert('Peminjaman gagal disimpan.');
         </script>
         ";
-    } else {
-        echo "
-         <script>
-        alert('data tidak berhasil disimpan');
-        </script>
-        ";
-    }
+  }
 }
+
 
 $data = mysqli_query($conn, "SELECT * FROM buku");
 $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
@@ -80,7 +101,7 @@ $anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function() {
+  $(document).ready(function () {
     $('.js-example-basic-single').select2();
-});
+  });
 </script>

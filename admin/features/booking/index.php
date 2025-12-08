@@ -1,4 +1,9 @@
 <?php
+// Hapus booking yang lebih dari 24 jam
+mysqli_query($conn, "
+    DELETE FROM booking 
+    WHERE waktu_booking < NOW() - INTERVAL 24 HOUR
+");
 // Ambil semua request booking
 $sql = "
     SELECT b.*, 
@@ -21,22 +26,37 @@ if (isset($_POST['acc_booking'])) {
     $id_anggota = $_POST['id_anggota'];
     $id_buku = $_POST['id_buku'];
 
+    // CEK STOK
+    $cek = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku='$id_buku'");
+    $stok = mysqli_fetch_assoc($cek)['Qty'];
+
+    if ($stok <= 0) {
+        echo "<script>
+                alert('Stok habis! Buku tidak bisa dipinjam.');
+                window.location.href='app?page=booking';
+              </script>";
+        exit;
+    }
+
+    // KURANGI STOK
+    mysqli_query($conn, "UPDATE buku SET Qty = Qty - 1 WHERE id_buku='$id_buku'");
+
+    // MASUK PEMINJAMAN
     $today = date('Y-m-d');
     $jatuh_tempo = date('Y-m-d', strtotime('+7 days'));
 
-    // insert ke peminjaman
     mysqli_query($conn, "
         INSERT INTO peminjaman (id_buku, id_anggota, tanggal_pinjam, tanggal_kembali, status)
         VALUES ('$id_buku', '$id_anggota', '$today', '$jatuh_tempo', 'Dipinjam')
     ");
 
-    // hapus booking request
+    // HAPUS BOOKING
     mysqli_query($conn, "DELETE FROM booking WHERE id='$id_booking'");
 
     echo "<script>
-            alert('Booking di-ACC dan langsung masuk peminjaman!');
+            alert('Booking di-ACC & stok dikurangi!');
             window.location.href='app?page=booking';
-        </script>";
+          </script>";
     exit;
 }
 

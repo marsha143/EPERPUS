@@ -22,8 +22,9 @@ if (isset($_POST['update'])) {
     $id_penulis = $_POST['id_penulis'];
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
+    $Qty = isset($_POST['Qty']) ? (int) $_POST['Qty'] : 0;
     $deskripsi = $_POST['deskripsi'];
-    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku',`id_genre`='$id_genre', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku',`id_genre`='$id_genre', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit', `penerbit`='$penerbit', `Qty`='$Qty' ,`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -86,47 +87,43 @@ if (isset($_POST['update'])) {
                                         <input type="int" class="form-control" id="isbn" name="isbn"
                                             placeholder="masukkan keterangan" value="<?= $data['isbn'] ?>" required>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
-    <label class="form-label">Genre Buku</label>
-    <select name="id_genre" class="form-select js-example-basic-single" required>
-        <option value="" hidden>-- Pilih Genre --</option>
+                                        <label class="form-label">Genre Buku</label>
+                                        <select name="id_genre" class="form-select js-example-basic-single" required>
+                                            <option value="" hidden>-- Pilih Genre --</option>
 
-        <?php foreach ($genre as $g): ?>
-            <?php 
-                $selected_genre = ($data['id_genre'] == $g['id']) ? 'selected' : '';
-            ?>
-            <option value="<?= $g['id'] ?>" <?= $selected_genre ?>>
-                <?= $g['jenis_genre'] ?>
-            </option>
-        <?php endforeach; ?>
+                                            <?php foreach ($genre as $g): ?>
+                                                <?php
+                                                $selected_genre = ($data['id_genre'] == $g['id']) ? 'selected' : '';
+                                                ?>
+                                                <option value="<?= $g['id'] ?>" <?= $selected_genre ?>>
+                                                    <?= $g['jenis_genre'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
 
-    </select>
-</div>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">penulis</label>
-                                        <select name="id_penulis" class="form-select js-example-basic-single"
-                                            required>
+                                        <select name="id_penulis" class="form-select js-example-basic-single" required>
                                             <option value="" hidden>-- Pilih penulis --</option>
                                             <?php foreach ($penulis as $p): ?>
-                                            <?php 
-            $selected = ($data['id_penulis'] == $p['id']) ? 'selected' : '';
-                                            ?>
-                                            <option value="<?= $p['id'] ?>" <?= $selected ?>>
-                                                <?= $p['nama_penulis'] ?>
-                                            </option>
+                                                <?php $selected = ($data['id_penulis'] == $p['id']) ? 'selected' : ''; ?>
+                                                <option value="<?= $p['id'] ?>" <?= $selected ?>>
+                                                    <?= $p['nama_penulis'] ?>
+                                                </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <input type="date" class="form-control" id="tahun_terbit" name="tahun_terbit"
-                                            placeholder="masukkan keterangan"
-                                            value="<?= $data['tahun_terbit'] ?>" required>
-                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control" id="tahun_terbit" name="tahun_terbit"
+                                        placeholder="masukkan keterangan" value="<?= $data['tahun_terbit'] ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -136,6 +133,11 @@ if (isset($_POST['update'])) {
                                         <input type="text" class="form-control" id="penerbit" name="penerbit"
                                             placeholder="masukkan penerbit" value="<?= $data['penerbit'] ?>" required>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="Qty" class="form-label">Qty</label>
+                                    <input type="number" class="form-control" id="Qty" name="Qty"
+                                        placeholder="masukkan jumlah buku" value="<?= $data['Qty'] ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -163,13 +165,13 @@ if (isset($_POST['update'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('.js-example-basic-single').select2();
-});
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+    });
 </script>
 </body>
 

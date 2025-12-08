@@ -14,6 +14,7 @@ if (isset($_POST['simpan'])) {
     $id_genre = isset($_POST['id_genre']) ? (int) $_POST['id_genre'] : 0;
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
+    $Qty = isset($_POST['Qty']) ? (int) $_POST['id_genre'] : 0;
     $deskripsi = $_POST['deskripsi'];
 
     $query = "
@@ -117,6 +118,11 @@ if (isset($_POST['simpan'])) {
                                             <label for="penerbit" class="form-label">penerbit</label>
                                             <input type="int" class="form-control" id="penerbit" name="penerbit"
                                                 placeholder="masukkan penerbit" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="Qty" class="form-label">Qty</label>
+                                            <input type="int" class="form-control" id="Qty" name="Qty"
+                                                placeholder="masukkan jumlah buku" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="deskripsi" class="form-label">deskripsi</label>
