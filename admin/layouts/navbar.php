@@ -17,7 +17,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">account_balance</i>
                         </div>
-                        <span class="nav-link-text ms-1">Home</span>
+                        <span class="nav-link-text ms-1">Beranda</span>
                     </a>
                 </li>
 
@@ -27,7 +27,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">table_view</i>
                         </div>
-                        <span class="nav-link-text ms-1">Books</span>
+                        <span class="nav-link-text ms-1">Daftar Buku</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -75,14 +75,14 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
                         </div>
-                        <span class="nav-link-text ms-1">Proses booking</span>
+                        <span class="nav-link-text ms-1">Pemesanan Buku</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-white" href="logout" class="nav-link text-body font-weight-bold px-0">
-                        <i class="material-icons opacity-10">dashboard</i>
-                        <span class="nav-link-text ms-1">logout</span>
+                        <i class="material-icons opacity-10">Dasbor</i>
+                        <span class="nav-link-text ms-1">Keluar</span>
                     </a>
                 </li>
             </ul>

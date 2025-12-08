@@ -187,7 +187,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Daftar Buku</h5>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
-            Search Buku
+            Cari Buku
         </button>
     </div>
 
@@ -240,7 +240,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
         <ul class="pagination justify-content-center mt-4">
             <li class="page-item <?= ($page <= 1 ? : '') ?>">
                 <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page - 1])) ?>">
-                    Pre
+                    Sebelumnya
                 </a>
             </li>
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -252,7 +252,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
             <?php endfor; ?>
             <li class="page-item <?= ($page >= $totalPages ? : '') ?>">
                 <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['hal' => $page + 1])) ?>">
-                    Next
+                    Berikutnya
                 </a>
             </li>
         </ul>
@@ -301,7 +301,7 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Search Buku</h5>
+                <h5 class="modal-title">Cari Buku</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -351,8 +351,8 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
 
             </form>

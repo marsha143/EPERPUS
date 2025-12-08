@@ -79,7 +79,7 @@ if (isset($_POST['tolak_booking'])) {
 
         <!-- HEADER -->
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Permintaan Booking</h5>
+            <h5 class="mb-0">Pemesanan Buku</h5>
         </div>
 
         <div class="card-body">
@@ -116,7 +116,7 @@ if (isset($_POST['tolak_booking'])) {
                                         <input type="hidden" name="id_anggota" value="<?= $b['id_anggota'] ?>">
 
                                         <button class="btn btn-success btn-sm" name="acc_booking">
-                                            ACC
+                                            Terima
                                         </button>
                                     </form>
 

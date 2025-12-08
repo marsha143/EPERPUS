@@ -42,7 +42,7 @@ $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
                     <tbody>
                         <?php if (empty($booking)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-4">Belum ada pengajuan booking.</td>
+                                <td colspan="6" class="text-center py-4">Belum ada pengajuan pemesanan buku.</td>
                             </tr>
                         <?php else: ?>
                             <?php $no = 1;

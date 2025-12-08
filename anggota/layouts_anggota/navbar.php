@@ -27,7 +27,7 @@
                     <a class="nav-link ps-2 d-flex cursor-pointer align-items-center" id="dropdownMenuPages2"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="material-icons opacity-6 me-2 text-md">dashboard</i>
-                        Pages
+                        Halaman
                         <img src="./assets/img/down-arrow-white.svg" alt="down-arrow"
                             class="arrow ms-auto ms-md-2 d-lg-block d-none">
                         <img src="./assets/img/down-arrow-dark.svg" alt="down-arrow"
@@ -38,14 +38,14 @@
                             <a class="dropdown-item <?= $page == 'home_anggota' ? 'active' : '' ?>"
                                 href="app_anggota?page=home_anggota">
                                 <i class="material-icons opacity-6 me-2 text-md">home</i>
-                                Home
+                                Beranda
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item <?= $page == 'buku_anggota' ? 'active' : '' ?>"
                                 href="app_anggota?page=buku_anggota">
                                 <i class="material-icons opacity-6 me-2 text-md">table_view</i>
-                                Books
+                                Koleksi Buku
                             </a>
                         </li>
                         <li>
@@ -59,7 +59,7 @@
                             <a class="dropdown-item <?= $page == 'peminjaman_anggota' ? 'active' : '' ?>"
                                 href="app_anggota?page=pengajuan_booking">
                                 <i class="material-icons opacity-6 me-2 text-md">format_textdirection_r_to_l</i>
-                                Pengajuan booking
+                                Pengajuan Pemesanan Buku
                             </a>
                         </li>
                     </ul>
@@ -83,7 +83,7 @@
                             </a>
                         </li>
                         <li class="nav-item my-auto ms-3 ms-lg-0">
-                            <a href="logout" class="btn btn-sm bg-white mb-0 me-1 mt-2 mt-md-0">Logout</a>
+                            <a href="logout" class="btn btn-sm bg-white mb-0 me-1 mt-2 mt-md-0">Keluar</a>
                         </li>
                     </ul>
                 </li>
