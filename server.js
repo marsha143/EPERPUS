@@ -12,7 +12,6 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Koneksi DB
 const db = await mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
@@ -20,14 +19,12 @@ const db = await mysql.createPool({
   database: "eperpus"
 });
 
-// === TOPIK YANG DIIZINKAN (HANYA BUKU & PERPUSTAKAAN) ===
 const topikDiizinkan = [
   "buku", "novel", "komik", "manga", "pinjam", "booking", "kembali", "denda", 
   "telat", "perpanjang", "perpus", "perpustakaan", "jam buka", "rekomendasi", 
   "cari buku", "judul", "penulis", "kategori", "tersedia", "hilang", "rusak", "genre"
 ];
 
-// === JAWABAN CEPAT & VARIASI (HANYA TENTANG BUKU) ===
 const jawabanCepat = {
   "cara meminjam": ["Datang bawa buku + kartu mahasiswa → langsung bisa bawa pulang (maks 7 hari)", "Bisa langsung ke loket atau booking dulu lewat web biar aman"],
   "booking": ["Login → cari buku → klik Booking → datang dalam 1×24 jam → buku langsung dikasih!", "Booking dulu biar nggak kehabisan. Setelah booking wajib ambil dalam 24 jam ya"],
@@ -40,13 +37,12 @@ const jawabanCepat = {
   "terima kasih": ["Sama-sama! Senang bisa bantu soal buku", "Anytime! Kalau butuh rekomendasi lagi langsung tanya ya"]
 };
 
-// === CEK APAKAH PERTANYAAN BOLEH DIJAWAB ===
 function isTopikDiizinkan(pesan) {
   const lower = pesan.toLowerCase();
   return topikDiizinkan.some(kata => lower.includes(kata));
 }
 
-// === FUNGSI GEMMA3:1B (DENGAN PERINTAH KERAS: HANYA JAWAB TENTANG BUKU!) ===
+
 async function askGemma(userMessage, history = []) {
   try {
     const response = await fetch("http://localhost:11434/api/chat", {
@@ -94,7 +90,7 @@ app.post("/chat", async (req, res) => {
   if (!isTopikDiizinkan(message)) {
     reply = "Maaf, saya hanya bisa bantu urusan buku, peminjaman, denda, dan perpustakaan ya! Kalau ada pertanyaan tentang buku, langsung tanya aja";
   }
-  // === JAWABAN CEPAT (dari cache) ===
+
   else {
     for (const key in jawabanCepat) {
       if (msg.includes(key)) {
@@ -104,7 +100,7 @@ app.post("/chat", async (req, res) => {
       }
     }
 
-    // === KALAU BELUM ADA DI CACHE → PAKAI AI ===
+
     if (!reply) {
       if (/rekomendasi|saran|novel|mau baca|bagus|rekomendasikan/i.test(msg)) {
         reply = await askGemma(`Rekomendasi 3-4 buku untuk: "${message}". Jawab singkat dan menarik.`, memory[userId]);
@@ -114,7 +110,7 @@ app.post("/chat", async (req, res) => {
     }
   }
 
-  // Simpan memory
+
   memory[userId].push({ role: "user", content: message });
   memory[userId].push({ role: "assistant", content: reply });
 

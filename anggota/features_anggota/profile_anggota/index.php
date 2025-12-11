@@ -7,7 +7,6 @@ $res  = mysqli_query($conn, $sql);
 $dataUser = mysqli_fetch_assoc($res);
 
 
-// ambil foto
 $foto = $dataUser['image'] ?? "default.png";
 if (isset($_POST['upload'])) {
     if (isset($_FILES['fileToUpload']) && $_FILES['fileToUpload']['error'] === 0) {
@@ -25,7 +24,6 @@ if (isset($_POST['upload'])) {
             $namaBaru    = "anggota_".$idAnggota."_".time().".".$ext;
             $target_file = $target_dir . $namaBaru;
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                // simpan nama file ke database 
                 mysqli_query(
                     $conn,
                     "UPDATE anggota SET image='$namaBaru' WHERE id_anggota=$idAnggota"

@@ -72,7 +72,7 @@
 .lottie-buku {
     display: block;
     margin: 0 auto;
-    transform: translateX(20px); /* ubah angka 20 sesuai selera */
+    transform: translateX(20px);
 }
 footer a {
     text-decoration: none;
@@ -84,7 +84,7 @@ footer a:hover {
     transform: translateY(-3px);
 }
 
-/* ==== PERTANYAAN POPULER ==== */
+
 .popular-questions {
     margin-bottom: 14px;
 }

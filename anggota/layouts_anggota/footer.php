@@ -50,7 +50,6 @@ $(document).ready(function() {
 </script>
 
 
-<!-- HTML2CANVAS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
         integrity="sha512-BNa5lQ3zq9N4fB9npDPusVfrH0eSPo6e7i9oC8blKp8o7YjA5pq/2pA8H2qJkEv+fU3HkZfNwYgqZ3j2bW+U2g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>

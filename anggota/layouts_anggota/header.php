@@ -28,7 +28,6 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
-/* GRID*/
 .book-grid {
     margin-top: 2.5rem;
     margin-bottom: 2.5rem;
@@ -75,7 +74,6 @@
 }
 
 
-/* --- Rekomendasi slider --- */
 .rekom-wrapper {
     border: none;
     border-radius: 20px;
@@ -106,7 +104,6 @@
     color: #6c757d;
 }
 
-/* Tombol carousel */
 #rekomCarousel .carousel-control-prev,
 #rekomCarousel .carousel-control-next {
     width: 5%;
@@ -117,7 +114,6 @@
     filter: invert(1) grayscale(100%);
 }
 
-/* --- Modal deskripsi scroll --- */
 .modal-desc-wrapper {
     max-height: 220px;
     overflow-y: auto;
@@ -136,15 +132,13 @@
 #detailBukuModal .modal-title {
     font-weight: 600;
 }
-/* Wrapper pagination */
 .pagination {
     gap: 6px;
 }
 
-/* --- PREVIOUS & NEXT (kotak) --- */
 .pagination .page-item:first-child .page-link,
 .pagination .page-item:last-child .page-link {
-    border-radius: 6px !important;      /* kotak rounded */
+    border-radius: 6px !important;     
     padding: 8px 14px;
     font-weight: 500;
     color: #555;
@@ -153,21 +147,17 @@
     transition: 0.2s ease;
 }
 
-/* Hover effect untuk Previous & Next */
 .pagination .page-item:first-child .page-link:hover,
 .pagination .page-item:last-child .page-link:hover {
     background: #f5f5f5;
 }
 
-/* Disabled state */
 .pagination .page-item.disabled .page-link {
     color: #aaa !important;
     background: #f0f0f0 !important;
     border-color: #ddd !important;
 }
 
-
-/* --- ANGKA (lingkaran) --- */
 .pagination .page-item:not(:first-child):not(:last-child) .page-link {
     width: 40px;
     height: 40px;
@@ -182,20 +172,17 @@
     transition: 0.2s ease;
 }
 
-/* Hover angka */
 .pagination .page-item:not(:first-child):not(:last-child) .page-link:hover {
     background: #f8f8f8;
 }
 
-/* Active number (warna pink seperti gambar) */
 .pagination .page-item.active .page-link {
     background: #e91e63 !important;      /* warna pink */
     border-color: #e91e63 !important;
     color: white !important;
 }
 
-/* === KARTU ANGGOTA EPERPUS === */
-/* KARTU UTAMA */
+/* === KARTU ANGGOTA EPERPUS ===*/
 .kartu-anggota {
     border-radius: 18px;
     overflow: hidden;
@@ -206,7 +193,6 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 }
 
-/* HEADER */
 .kartu-anggota-header {
     background: linear-gradient(90deg, #e91e63, #ff4343ff);
     margin: -12px -12px 0 -12px;
@@ -224,7 +210,6 @@
     opacity: 0.9;
 }
 
-/* BADGE AKTIF */
 .badge-anggota {
     background-color: #ffe082;
     color: #b71c1c;
@@ -234,7 +219,6 @@
     font-weight: 600;
 }
 
-/* BODY */
 .kartu-anggota-body {
     padding: 16px 30px 10px 20px;
 }
@@ -263,7 +247,6 @@
     color: #b71c1c;
 }
 
-/* INFO BARIS */
 .info-row {
     display: flex;
     font-size: 0.85rem;
@@ -286,7 +269,6 @@
     color: #424242;
 }
 
-/* FOOTER + TOMBOL DOWNLOAD */
 .kartu-anggota-footer {
     border-top: 1px solid #f3e5e5;
     padding-top: 8px;
@@ -310,23 +292,19 @@
     transform: translateY(-1px);
 } 
 
-/* PRINT */
 @media print {
     body {
         margin: 0;
     }
 
-    /* Sembunyikan semua elemen */
     body * {
         visibility: hidden !important;
     }
 
-    /* Tampilkan hanya kartu */
     #kartu-anggota, #kartu-anggota * {
         visibility: visible !important;
     }
 
-    /* Posisikan kartu di tengah halaman dan cukup besar */
     #kartu-anggota {
         position: fixed;
         left: 50%;
