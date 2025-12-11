@@ -133,13 +133,13 @@
     font-weight: 600;
 }
 .pagination {
-    gap: 6px;
+    gap: 12px;
 }
 
 .pagination .page-item:first-child .page-link,
 .pagination .page-item:last-child .page-link {
     border-radius: 6px !important;     
-    padding: 8px 14px;
+    padding: 8px 50px;
     font-weight: 500;
     color: #555;
     background: #fff;
@@ -161,7 +161,7 @@
 .pagination .page-item:not(:first-child):not(:last-child) .page-link {
     width: 40px;
     height: 40px;
-    border-radius: 50% !important;     /* bulat */
+    border-radius: 50% !important;   
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,7 +177,7 @@
 }
 
 .pagination .page-item.active .page-link {
-    background: #e91e63 !important;      /* warna pink */
+    background: #e91e63 !important;    
     border-color: #e91e63 !important;
     color: white !important;
 }
