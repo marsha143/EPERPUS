@@ -117,8 +117,10 @@ footer a:hover {
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
     transform: translateY(-1px);
 }
+.text-pink {
+    color: #e91e63 ;
+}
 </style>
-
 </head>
 
 <body class="index-page bg-gray-200">

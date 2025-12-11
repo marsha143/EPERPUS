@@ -22,18 +22,19 @@ const db = await mysql.createPool({
 const topikDiizinkan = [
   "buku", "novel", "komik", "manga", "pinjam", "booking", "kembali", "denda", 
   "telat", "perpanjang", "perpus", "perpustakaan", "jam buka", "rekomendasi", 
-  "cari buku", "judul", "penulis", "kategori", "tersedia", "hilang", "rusak", "genre"
+  "cari buku", "judul", "penulis", "kategori", "romance", "tersedia","thriller", "fantasy", "hilang", "rusak", "genre"
 ];
 
 const jawabanCepat = {
   "cara meminjam": ["Datang bawa buku + kartu mahasiswa → langsung bisa bawa pulang (maks 7 hari)", "Bisa langsung ke loket atau booking dulu lewat web biar aman"],
   "booking": ["Login → cari buku → klik Booking → datang dalam 1×24 jam → buku langsung dikasih!", "Booking dulu biar nggak kehabisan. Setelah booking wajib ambil dalam 24 jam ya"],
-  "denda": ["Rp 500 per hari, maksimal Rp 50.000 per buku. Telat berapa pun nggak lebih dari 50 ribu", "Denda ringan kok: Rp 500/hari, maksimal Rp 50.000 aja"],
-  "berapa denda": ["Rp 500 per hari, maksimal Rp 50.000 per buku", "Denda Rp 500/hari, tapi tenang, nggak lebih dari Rp 50.000 kok"],
+  "denda": ["Denda ringan kok: Rp 500/hari, tapi jangan lupa mengembalikan buku ya!"],
+  "berapa denda": ["Denda ringan kok: Rp 500/hari, tapi jangan lupa mengembalikan buku ya!"],
   "jam buka": ["Senin–Jumat: 08.00–16.00, Sabtu: 09.00–14.00, Minggu TUTUP", "Buka Senin sampai Sabtu aja ya!"],
   "buku jepang": ["Ada banyak! Manga, novel Jepang, kamus, sampai buku pelajaran bahasa Jepang", "Koleksi Jepang lengkap banget: One Piece, Naruto, sampai light novel ada!"],
   "novel": ["Ada novel Indonesia, terjemahan Inggris, Jepang, Korea. Mau genre apa?", "Novel banyak! Dari romance, thriller, sampai fantasy ada semua"],
   "komik": ["Ada One Piece, Naruto, Attack on Titan, sampai komik lokal juga!", "Komiknya up to date! Dari yang lama sampai terbaru ada"],
+  "cara mengembalikan": ["Bisa langsung mendatangi admin perpustakaan ya!"],
   "terima kasih": ["Sama-sama! Senang bisa bantu soal buku", "Anytime! Kalau butuh rekomendasi lagi langsung tanya ya"]
 };
 
