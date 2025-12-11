@@ -39,6 +39,33 @@ window.location.href = 'app_anggota?page=profile_anggota'
         }
     }
 }
+if (isset($_POST['gantiPassword'])) {
+
+    $passLama = $_POST['password_lama'];
+    $passBaru = $_POST['password_baru'];
+    $passKonf = $_POST['password_konfirmasi'];
+
+    $cek = mysqli_query($conn, "SELECT password FROM anggota WHERE id_anggota=$idAnggota");
+    $row = mysqli_fetch_assoc($cek);
+
+    if (!password_verify($passLama, $row['password'])) {
+        echo "<script>alert('Password lama salah!');</script>";
+    } 
+    elseif ($passBaru != $passKonf) {
+        echo "<script>alert('Konfirmasi password baru tidak cocok!');</script>";
+    } 
+    else {
+        $hash = password_hash($passBaru, PASSWORD_DEFAULT);
+
+        mysqli_query($conn, "UPDATE anggota SET password='$hash' WHERE id_anggota=$idAnggota");
+
+        echo "<script>
+                alert('Password berhasil diperbarui!');
+                window.location.href='app_anggota?page=profile_anggota';
+              </script>";
+        exit;
+    }
+}
 ?>
 
 <div class="container mt-4">
@@ -104,10 +131,45 @@ $fotoPath = "uploads/" . (!empty($dataUser['image']) ? $dataUser['image'] : "def
                     <input type="text" class="form-control"
                         value="<?= htmlspecialchars($dataUser['waktu_bergabung']) ?>" disabled>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    Ganti kata sandi
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPassword">
+                    Ganti Kata Sandi
                 </button>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalPassword" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ganti Kata Sandi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Password Lama</label>
+                            <input type="password" name="password_lama" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Password Baru</label>
+                            <input type="password" name="password_baru" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Konfirmasi Password Baru</label>
+                            <input type="password" name="password_konfirmasi" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" name="gantiPassword" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+<?php include('./anggota/layouts_anggota/footer.php'); ?>
