@@ -77,13 +77,13 @@ $jumlah_buku = $r['jumlah'];
                             <div class="row g-2">
                                 <div class="col-6">
                                     <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Bagaimana cara meminjam buku di EPERPUS?')">
+                                        onclick="sendQuick('Bagaimana cara pinjam buku di EPERPUS?')">
                                         📚 Cara peminjaman
                                     </button>
                                 </div>
                                 <div class="col-6">
                                     <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Bagaimana cara mengembalikan buku yang saya pinjam?')">
+                                        onclick="sendQuick('Bagaimana cara kembalikan buku?')">
                                         🔁 Cara Pengembalian
                                     </button>
                                 </div>

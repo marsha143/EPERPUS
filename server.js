@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -12,114 +12,156 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use("/covers", express.static("covers"));
+
 const db = await mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASS || "",
-  database: "eperpus"
+  database: "eperpus",
+  waitForConnections: true,
+  connectionLimit: 10,
 });
 
-const topikDiizinkan = [
-  "buku", "novel", "komik", "manga", "pinjam", "booking", "kembali", "denda", 
-  "telat", "perpanjang", "perpus", "perpustakaan", "jam buka", "rekomendasi", 
-  "cari buku", "judul", "penulis", "kategori", "romance", "tersedia","thriller", "fantasy", "hilang", "rusak", "genre"
+const kataKunciPerpus = [
+  "buku","novel","komik","manga","pinjam","booking","kembali","denda","telat",
+  "jam buka","perpus","perpustakaan","rekomendasi","saran","cari","judul","penulis","genre",
+  "romance","thriller","fantasy","horor","misteri","fiksi","romansa","best","populer"
 ];
 
-const jawabanCepat = {
-  "cara meminjam": ["Datang bawa buku + kartu mahasiswa → langsung bisa bawa pulang (maks 7 hari)", "Bisa langsung ke loket atau booking dulu lewat web biar aman"],
-  "booking": ["Login → cari buku → klik Booking → datang dalam 1×24 jam → buku langsung dikasih!", "Booking dulu biar nggak kehabisan. Setelah booking wajib ambil dalam 24 jam ya"],
-  "denda": ["Denda ringan kok: Rp 500/hari, tapi jangan lupa mengembalikan buku ya!"],
-  "berapa denda": ["Denda ringan kok: Rp 500/hari, tapi jangan lupa mengembalikan buku ya!"],
-  "jam buka": ["Senin–Jumat: 08.00–16.00, Sabtu: 09.00–14.00, Minggu TUTUP", "Buka Senin sampai Sabtu aja ya!"],
-  "buku jepang": ["Ada banyak! Manga, novel Jepang, kamus, sampai buku pelajaran bahasa Jepang", "Koleksi Jepang lengkap banget: One Piece, Naruto, sampai light novel ada!"],
-  "novel": ["Ada novel Indonesia, terjemahan Inggris, Jepang, Korea. Mau genre apa?", "Novel banyak! Dari romance, thriller, sampai fantasy ada semua"],
-  "komik": ["Ada One Piece, Naruto, Attack on Titan, sampai komik lokal juga!", "Komiknya up to date! Dari yang lama sampai terbaru ada"],
-  "cara mengembalikan": ["Bisa langsung mendatangi admin perpustakaan ya!"],
-  "terima kasih": ["Sama-sama! Senang bisa bantu soal buku", "Anytime! Kalau butuh rekomendasi lagi langsung tanya ya"]
-};
-
-function isTopikDiizinkan(pesan) {
+function isTopikPerpus(pesan) {
   const lower = pesan.toLowerCase();
-  return topikDiizinkan.some(kata => lower.includes(kata));
+  return kataKunciPerpus.some(k => lower.includes(k));
 }
 
+const salam = ["Halo booklover!", "Hai hai!", "Hiii! Perpus online siap bantu", "Yo! Mau cari buku apa?"];
+const terimaKasih = ["Sama-sama ya!", "Anytime!", "Seneng banget bisa bantu", "Sip! Happy reading"];
+const dadah = ["Dadah! Jangan lupa balikin buku ya", "Bye!", "Sampai jumpa lagi, bookworm!"];
 
-async function askGemma(userMessage, history = []) {
+function cekUcapanRamah(pesan) {
+  const l = pesan.toLowerCase().trim();
+  if (/terima ?kasih|makasih|thanks|thx|makasi|tq|trims/i.test(l))
+    return terimaKasih[Math.floor(Math.random() * terimaKasih.length)];
+  if (/halo|hai|hi|hey|pagi|siang|sore|malam|ass?alam/i.test(l) && l.split(" ").length <= 5)
+    return salam[Math.floor(Math.random() * salam.length)] + " Ada yang bisa dibantu soal buku?";
+  if (/bye|dadah|dah|sampai jumpa|babay/i.test(l))
+    return dadah[Math.floor(Math.random() * dadah.length)];
+  return null;
+}
+
+async function rekomendasiBuku(genreHint = "") {
   try {
-    const response = await fetch("http://localhost:11434/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gemma3:4b",
-        messages: [
-          { 
-            role: "system", 
-            content: "Kamu adalah Pustakun, AI KHUSUS perpustakaan. HANYA boleh jawab tentang buku, peminjaman, denda, booking, dan layanan perpus. Kalau pertanyaan di luar itu, jawab: 'Maaf, saya hanya bisa bantu urusan buku dan perpustakaan ya!'. Jawab singkat, ramah, bahasa Indonesia." 
-          },
-          ...history.slice(-10),
-          { role: "user", content: userMessage }
-        ],
-        stream: false,
-        options: { num_predict: 100, temperature: 0.7 }
-      })
+    let sql = `
+      SELECT 
+        b.judul_buku,
+        b.cover,
+        p.nama_penulis,
+        g.jenis_genre
+      FROM buku b
+      JOIN penulis p ON b.id_penulis = p.id
+      JOIN genre g ON b.id_genre = g.id
+      WHERE b.judul_buku IS NOT NULL AND b.judul_buku != ''
+    `;
+
+    const params = [];
+
+    if (genreHint) {
+      sql += ` AND g.jenis_genre LIKE ?`;
+      params.push(`%${genreHint}%`);
+    }
+
+    sql += ` ORDER BY RAND() LIMIT 6`;
+
+    const [rows] = await db.execute(sql, params);
+
+    if (rows.length === 0) {
+      return genreHint 
+        ? `Buku genre "${genreHint}" lagi kosong nih. Coba genre lain yuk!`
+        : "Koleksi buku lagi kosong nih. Coba nanti lagi ya!";
+    }
+
+    let teks = "Ini beberapa rekomendasi buku dari perpustakaan kita:\n\n";
+    rows.forEach((book, i) => {
+      teks += `${i + 1}. *${book.judul_buku}*\n`;
+      teks += `   Penulis: ${book.nama_penulis}\n`;
+      teks += `   Genre: ${book.jenis_genre}\n`;
+      if (book.cover && book.cover.trim() !== "") {
+        teks += `   Cover: http://localhost:3000/covers/${book.cover}\n`;
+      }
+      teks += "\n";
     });
-    if (!response.ok) return "Maaf, AI lagi istirahat sebentar...";
-    const data = await response.json();
-    return data.message?.content?.trim();
-  } catch {
-    return "AI lagi sibuk, coba lagi ya!";
+    teks += "Untuk detailnya langsung ke halaman koleksi buku ya!";
+    return teks;
+
+  } catch (err) {
+    console.error("Error rekomendasi:", err);
+    return "Maaf, lagi ada masalah ambil data buku. Coba lagi dalam 10 detik ya!";
   }
 }
 
-// Memory
-const memory = {};
-const MAX_MEMORY = 30;
 
-// === ROUTE CHAT ===
 app.post("/chat", async (req, res) => {
-  const { message } = req.body;
-  if (!message?.trim()) return res.json({ reply: "Tulis pertanyaan tentang buku dulu yuk!" });
+  const { message } = req.body || {};
+  const pesan = (message || "").toString().trim();
 
-  const userId = req.ip || "unknown";
-  if (!memory[userId]) memory[userId] = [];
-  if (memory[userId].length > MAX_MEMORY) memory[userId] = memory[userId].slice(-MAX_MEMORY);
+  if (!pesan) {
+    return res.json({ reply: "Hai! Mau cari buku, minta rekomendasi, atau tanya perpus?" });
+  }
 
-  const msg = message.toLowerCase().trim();
   let reply = "";
 
 
-  if (!isTopikDiizinkan(message)) {
-    reply = "Maaf, saya hanya bisa bantu urusan buku, peminjaman, denda, dan perpustakaan ya! Kalau ada pertanyaan tentang buku, langsung tanya aja";
+  const ucapan = cekUcapanRamah(pesan);
+  if (ucapan) {
+    reply = ucapan;
   }
 
+  else if (!isTopikPerpus(pesan)) {
+    reply = "Maaf ya, aku cuma bisa bantu urusan buku, peminjaman, denda, dan layanan perpustakaan aja";
+  }
+
+  else if (/rekomendasi|rekom|saran|bagus|mau baca|novel bagus|best|populer|seru|keren|romance|thriller|fantasy|horror|misteri|romansa/i.test(pesan.toLowerCase())) {
+    const genreHint = pesan.toLowerCase().match(/(romance|thriller|fantasy|horror|misteri|romansa|fantasi|self improvement)/i)?.[0] || "";
+    reply = await rekomendasiBuku(genreHint);
+  }
   else {
-    for (const key in jawabanCepat) {
-      if (msg.includes(key)) {
-        const pilihan = jawabanCepat[key];
-        reply = Array.isArray(pilihan) ? pilihan[Math.floor(Math.random() * pilihan.length)] : pilihan;
-        break;
-      }
-    }
-
-
-    if (!reply) {
-      if (/rekomendasi|saran|novel|mau baca|bagus|rekomendasikan/i.test(msg)) {
-        reply = await askGemma(`Rekomendasi 3-4 buku untuk: "${message}". Jawab singkat dan menarik.`, memory[userId]);
-      } else {
-        reply = await askGemma(message, memory[userId]);
-      }
-    }
+    const jawabanUmum = {
+      pinjam: "Bawa kartu mahasiswa + buku → langsung ke loket. Proses cepet kok!",
+      kembalikan: "Bawa kartu mahasiswa + buku → langsung ke loket. Pengembalian selesai!",
+      booking: "Bisa booking lewat web, datang ambil dalam 1×24 jam ya!",
+      denda: "Denda Rp500/hari per buku. Masih ringan kan?",
+      "jam buka": "Senin–Jumat: 08.00–16.00\nSabtu–Minggu & tanggal merah: Tutup"
+    };
+    const lower = pesan.toLowerCase();
+    reply = jawabanUmum.pinjam && lower.includes("pinjam") ? jawabanUmum.pinjam :
+            jawabanUmum.booking && lower.includes("booking") ? jawabanUmum.booking :
+            jawabanUmum.kembalikan && lower.includes("kembalikan") ? jawabanUmum.kembalikan :
+            jawabanUmum.denda && lower.includes("denda") ? jawabanUmum.denda :
+            jawabanUmum["jam buka"] && lower.includes("jam") ? jawabanUmum["jam buka"] :
+            "Maaf aku kurang paham, coba tanya soal buku atau perpus ya!";
   }
-
-
-  memory[userId].push({ role: "user", content: message });
-  memory[userId].push({ role: "assistant", content: reply });
 
   res.json({ reply });
 });
 
-app.get("/", (req, res) => res.send("Pustakun AI — HANYA JAWAB TENTANG BUKU & PERPUSTAKAAN!"));
+app.get("/test-db", async (req, res) => {
+  try {
+    const [rows] = await db.execute("SELECT COUNT(*) as total FROM buku");
+    res.json({ status: "Database Connected!", total_buku: rows[0].total });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send(`
+    <h1>Pustakun AI + eperpus</h1>
+    <p>Database Connected! Rekomendasi & pencarian buku langsung dari koleksi kampus</p>
+    <p><a href="/test-db">Test Koneksi DB</a></p>
+  `);
+});
+
 app.listen(port, () => {
-  console.log(`Pustakun AI (gemma3:4b) berjalan di http://localhost:${port}`);
-  console.log(`Hanya jawab tentang buku!`);
+  console.log(`Pustakun AI berjalan di http://localhost:${port}`);
+  console.log(`Rekomendasi buku langsung dari tabel buku + penulis + genre`);
 });

@@ -8,6 +8,10 @@ $e = mysqli_query($conn, "SELECT COUNT(*) AS jumlah FROM peminjaman WHERE status
 $o = mysqli_fetch_assoc($e) ?: ['jumlah' => 0];
 $jumlah_peminjaman = (int)$o['jumlah'];
 
+$a = mysqli_query($conn, "SELECT COUNT(*) AS jumlah FROM booking WHERE status='Dibooking'");
+$b = mysqli_fetch_assoc($a) ?: ['jumlah' => 0];
+$jumlah_pemesanan = (int)$b['jumlah'];
+
 $labelsKunjungan = [];
 $dataKunjungan   = [];
 $start = new DateTime(date('Y-m-d', strtotime('-29 days')));
@@ -84,6 +88,22 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                     </div>
                     <div class="card-footer">
                         <p class="mb-0">Buku yang sedang dipinjam</p>
+                    </div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-header">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Pemesanan buku</p>
+                            <h1 class="text-gradient text-primary"><?=$jumlah_pemesanan?>+</h1>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <p class="mb-0">Pemesanan yang harus ditindaklanjuti</p>
                     </div>
                 </div>
             </div>
