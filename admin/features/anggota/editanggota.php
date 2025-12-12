@@ -17,7 +17,8 @@ if (isset($_POST['update'])) {
     $alamat = $_POST['alamat'];
     $noHP = $_POST['noHP'];
     $jenis_kelamin = $_POST['jenis_kelamin'];
-    $query = "UPDATE anggota SET `nama`='$nama', `nim_nidn`='$nim_nidn', `program_studi`='$program_studi',`waktu_bergabung`='$waktu_bergabung',`alamat`='$alamat',`noHP`='$noHP',`jenis_kelamin`='$jenis_kelamin',`updated_at`=NOW() WHERE `id_anggota`='$id_anggota'";
+    $email_anggota = $_POST['email'];
+    $query = "UPDATE anggota SET `nama`='$nama', `nim_nidn`='$nim_nidn', `program_studi`='$program_studi',`waktu_bergabung`='$waktu_bergabung',`alamat`='$alamat',`noHP`='$noHP',`jenis_kelamin`='$jenis_kelamin',`email`='$email_anggota',`updated_at`=NOW() WHERE `id_anggota`='$id_anggota'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -57,12 +58,12 @@ if (isset($_POST['update'])) {
                                     <div class="col-md-6">
                                         <label for="nama" class="form-label">nama</label>
                                         <input type="text" class="form-control" id="nama" name="nama"
-                                            placeholder="masukkan nama anggota" value="<?= $data['nama']?>" required>
+                                            placeholder="masukkan nama anggota" value="<?= $data['nama'] ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="nim_nidn" class="form-label">nim/nidn</label>
                                         <input type="int" class="form-control" id="nim_nidn" name="nim_nidn"
-                                            placeholder="masukkan nim/nidn" value="<?= $data['nim_nidn']?>" required>
+                                            placeholder="masukkan nim/nidn" value="<?= $data['nim_nidn'] ?>" required>
                                     </div>
                                 </div>
                             </div>
@@ -106,16 +107,22 @@ if (isset($_POST['update'])) {
                                             required>
                                     </div>
                                 </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">email</label>
+                                        <input type="text" class="form-control" id="email" name="email"
+                                            placeholder="masukkan email anggota" value="<?= $data['email'] ?>" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <input type="hidden" name="id_anggota" value="<?= $data['id_anggota'] ?>">
-                        <button type="submit" name="update" class="btn btn-primary"><i
-                                class="fa-solid fa-download"></i>Simpan</button>
-                        <a href="app?page=anggota" class="btn btn-secondary"><i
-                                class="fa-solid fa-arrow-left"></i>kembali</a>
-                    </div>
+                        <div class="card-footer text-end">
+                            <input type="hidden" name="id_anggota" value="<?= $data['id_anggota'] ?>">
+                            <button type="submit" name="update" class="btn btn-primary"><i
+                                    class="fa-solid fa-download"></i>Simpan</button>
+                            <a href="app?page=anggota" class="btn btn-secondary"><i
+                                    class="fa-solid fa-arrow-left"></i>kembali</a>
+                        </div>
                 </form>
             </div>
         </div>
@@ -123,7 +130,7 @@ if (isset($_POST['update'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 </body>
 
 </html>

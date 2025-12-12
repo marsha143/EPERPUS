@@ -70,6 +70,7 @@ if (isset($_POST['cari'])) {
                                     <th>alamat</th>
                                     <th>no hp</th>
                                     <th>jenis kelamin</th>
+                                    <th>email</th>
                                     <th>aksi</th>
                                 </tr>
                             </thead>
@@ -83,6 +84,7 @@ if (isset($_POST['cari'])) {
                                     <td><?= $a['alamat'] ?></td>
                                     <td><?= $a['noHP'] ?></td>
                                     <td><?= $a['jenis_kelamin'] ?></td>
+                                    <td><?= $a['email'] ?></td>
                                     <td><a href="app?page=anggota&view=editanggota&id_anggota=<?= $a['id_anggota']?>"
                                             class="btn btn-warning btn-sm ms-3"><i
                                                 class="fa-solid fa-pen-to-square"></i>edit</a>

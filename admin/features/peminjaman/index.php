@@ -1,5 +1,10 @@
 <?php
 
+if (isset($_GET['send_email'])) {
+  include "send_email_late.php";
+  exit;
+}
+
 $filter = $_GET['filter'] ?? 'all';
 $where = '';
 
@@ -13,13 +18,13 @@ $sql = "SELECT p.*,
         a.nama AS nama_anggota, 
         a.nim_nidn AS nim_nidn, 
         b.judul_buku AS judul_buku,
-        b.kode_buku AS kode_buku
+        b.kode_buku AS kode_buku, 
+        a.email AS email
         FROM peminjaman p
         JOIN anggota a ON a.id_anggota = p.id_anggota
         JOIN buku b ON b.id_buku = p.id_buku
         $where
         ORDER BY p.id DESC";
-
 $result = mysqli_query($conn, $sql);
 $peminjaman = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -32,7 +37,8 @@ if (isset($_POST['cari'])) {
       a.nama AS nama_anggota,
       a.nim_nidn AS nim_nidn,
       b.judul_buku AS judul_buku,
-      b.kode_buku AS kode_buku
+      b.kode_buku AS kode_buku,
+      a.email AS email
     FROM peminjaman p
     JOIN anggota a ON a.id_anggota = p.id_anggota
     JOIN buku b ON b.id_buku = p.id_buku
@@ -59,7 +65,7 @@ if (isset($_POST['kembalikan'])) {
   $hari_ini = date('Y-m-d');
   $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
   if ($terlambat < 0)
-      $terlambat = 0;
+    $terlambat = 0;
 
   $denda = $terlambat * 500;
 
@@ -125,6 +131,7 @@ if (isset($_POST['kembalikan'])) {
             </tr>
           </thead>
           <tbody>
+
             <?php foreach ($peminjaman as $no => $p): ?>
               <tr>
                 <td><?= $no + 1 ?></td>
@@ -162,14 +169,33 @@ if (isset($_POST['kembalikan'])) {
                   </span>
                 </td>
                 <td>
+
+                  <?php
+                  $jatuh_tempo = $p['tanggal_kembali'];
+                  $hari_ini = date('Y-m-d');
+                  $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
+                  $telat = $terlambat > 0;
+                  ?>
+
                   <?php if ($p['status'] == 'Dipinjam'): ?>
-                    <form method="post" onsubmit="return confirm('Kembalikan buku ini?');">
+
+                    <!-- Tombol Kembalikan -->
+                    <form method="post" style="display:inline;" onsubmit="return confirm('Kembalikan buku ini?');">
                       <input type="hidden" name="id" value="<?= $p['id'] ?>">
                       <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
                     </form>
+
+                    <!-- Tombol Kirim Email jika terlambat -->
+                    <?php if ($telat): ?>
+                      <a href="app?page=peminjaman&send_email=1&id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-1">
+                        Kirim Notifikasi
+                      </a>
+                    <?php endif; ?>
+
                   <?php else: ?>
                     <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
                   <?php endif; ?>
+
                 </td>
               </tr>
             <?php endforeach; ?>

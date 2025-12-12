@@ -8,11 +8,12 @@ if (isset($_POST['simpan'])) {
     $alamat = $_POST['alamat'];
     $noHP = $_POST['noHP'];
     $jenis_kelamin = $_POST['jenis_kelamin'];
+    $email_anggota = $_POST['email'];
     $username = $_POST['username'];
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    $query = "INSERT INTO `anggota`(`nama`,`nim_nidn`, `program_studi`, `waktu_bergabung`, `alamat`, `noHP`, `jenis_kelamin`, `username`, `password`, `role`) VALUES ('$nama','$nim_nidn','$program_studi', '$waktu_bergabung ','$alamat','$noHP','$jenis_kelamin','$username','$password','$role')";
+    $query = "INSERT INTO `anggota`(`nama`,`nim_nidn`, `program_studi`, `waktu_bergabung`, `alamat`, `noHP`, `jenis_kelamin`, `username`,`email`, `password`, `role`) VALUES ('$nama','$nim_nidn','$program_studi', '$waktu_bergabung ','$alamat','$noHP','$jenis_kelamin','$username','$$email_anggota','$password','$role')";
     $result = mysqli_query($conn, $query);
     if ($result) {
 
@@ -96,6 +97,11 @@ if (isset($_POST['simpan'])) {
                                                 name="jenis_kelamin" placeholder="masukkan jenis kelamin" required>
                                         </div>
                                         <div class="col-md-6">
+                                            <label for="email" class="form-label">email</label>
+                                            <input type="text" class="form-control" id="emai" name="email"
+                                                placeholder="masukkan email" required>
+                                        </div>
+                                        <div class="col-md-6">
                                             <label for="role" class="form-label">Pilih Role</label>
                                             <input type="text" class="form-control" id="role" name="role"
                                                 placeholder="masukkan Pilih Role" required>
@@ -118,5 +124,5 @@ if (isset($_POST['simpan'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 </body>
