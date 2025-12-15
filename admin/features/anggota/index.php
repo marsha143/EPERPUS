@@ -89,13 +89,13 @@ if (isset($_POST['cari'])) {
                                             class="btn btn-warning btn-sm ms-3"><i
                                                 class="fa-solid fa-pen-to-square"></i>edit</a>
 
-
                                         <form action="" method="POST" style="display: inline"
                                             onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                             <input type="hidden" name="id_anggota" value="<?= $a['id_anggota'] ?>">
                                             <button class="btn btn-danger btn-sm " name="delete"><i
                                                     class="fa-solid fa-trash"></i>hapus</button>
                                         </form>
+                                        
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
