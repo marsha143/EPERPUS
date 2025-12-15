@@ -126,13 +126,14 @@ if ($idAnggota) {
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3">
+                            <div id="kartu-anggota" class="card kartu-anggota shadow-sm border-0 p-3 position-relative">
                                 <div class="d-flex justify-content-between align-items-center kartu-anggota-header">
                                     <div>
                                         <div class="fw-bold title-kartu">KARTU ANGGOTA EPERPUS</div>
                                         <small class="sub-title-kartu">Digital Member Card</small>
                                     </div>
-                                    <div class="badge badge-anggota">AKTIF</div>
+                                    <img src="./assets/img/logo-takumi.png" class="navbar-brand-img h-100"
+                                        alt="main_logo">
                                 </div>
                                 <div class="kartu-anggota-body d-flex align-items-center">
                                     <div class="blok-foto text-center me-4">
@@ -158,10 +159,19 @@ if ($idAnggota) {
                                         </div>
                                     </div>
                                 </div>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=ID:<?= $idAnggota ?>|Nama:<?= urlencode($namaAnggota) ?>|Prodi:<?= urlencode($prodiAnggota) ?>"
+                                    crossorigin="anonymous" class="position-absolute bottom-0 end-0 m-2"
+                                    style="width:90px;height:90px" alt="QR Anggota">
+
                             </div>
-                            <div class="kartu-anggota-footer d-flex justify-content-end">
-                                <button onclick="window.print()" class="btn btn-download-kartu btn-sm">
-                                    DOWNLOAD KARTU (PDF)
+                            <div class="text-end mt-3">
+                                <button type="button" onclick="downloadKartuImg('png')" class="btn btn-primary btn-sm">
+                                    DOWNLOAD PNG
+                                </button>
+
+                                <button type="button" onclick="downloadKartuImg('jpg')"
+                                    class="btn btn-outline-primary btn-sm">
+                                    DOWNLOAD JPG
                                 </button>
                             </div>
                         </div>
@@ -170,3 +180,4 @@ if ($idAnggota) {
             </div>
         </div>
     </div>
+    <?php include('./anggota/layouts_anggota/footer.php'); ?>

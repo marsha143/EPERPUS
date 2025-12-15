@@ -132,13 +132,14 @@
 #detailBukuModal .modal-title {
     font-weight: 600;
 }
+
 .pagination {
     gap: 12px;
 }
 
 .pagination .page-item:first-child .page-link,
 .pagination .page-item:last-child .page-link {
-    border-radius: 6px !important;     
+    border-radius: 6px !important;
     padding: 8px 50px;
     font-weight: 500;
     color: #555;
@@ -161,7 +162,7 @@
 .pagination .page-item:not(:first-child):not(:last-child) .page-link {
     width: 40px;
     height: 40px;
-    border-radius: 50% !important;   
+    border-radius: 50% !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,7 +178,7 @@
 }
 
 .pagination .page-item.active .page-link {
-    background: #e91e63 !important;    
+    background: #e91e63 !important;
     border-color: #e91e63 !important;
     color: white !important;
 }
@@ -190,11 +191,11 @@
     border: 1px solid #f3e5e5;
     max-width: 620px;
     margin-inline: auto;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 
 .kartu-anggota-header {
-    background: linear-gradient(90deg, #e91e63, #ff4343ff);
+    background: linear-gradient(90deg, #27aae1, #4b88a2ff);
     margin: -12px -12px 0 -12px;
     padding: 12px 20px;
     color: #fff;
@@ -210,15 +211,6 @@
     opacity: 0.9;
 }
 
-.badge-anggota {
-    background-color: #ffe082;
-    color: #b71c1c;
-    border-radius: 999px;
-    padding: 4px 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
 .kartu-anggota-body {
     padding: 16px 30px 10px 20px;
 }
@@ -230,10 +222,9 @@
 .kartu-anggota-foto {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
     object-fit: cover;
     border: 3px solid #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     margin-bottom: 8px;
 }
 
@@ -244,7 +235,7 @@
     background: #fbe9e7;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #b71c1c;
+    color: #2699ceff;
 }
 
 .info-row {
@@ -284,13 +275,13 @@
     background: linear-gradient(90deg, #e91e63);
     border: none;
     color: #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn-download-kartu:hover {
     filter: brightness(1.05);
     transform: translateY(-1px);
-} 
+}
 
 @media print {
     body {
@@ -301,7 +292,8 @@
         visibility: hidden !important;
     }
 
-    #kartu-anggota, #kartu-anggota * {
+    #kartu-anggota,
+    #kartu-anggota * {
         visibility: visible !important;
     }
 
@@ -327,7 +319,7 @@
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid #f1f1f1;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-upload-btn {
@@ -343,7 +335,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: 0.2s;
 }
 
@@ -352,9 +344,14 @@
     transform: scale(1.05);
 }
 
-.simpan{
-        background: #c2185b;
-            color: #fff;
+.simpan {
+    background: #c2185b;
+    color: #fff;
+}
+
+.edit {
+    background: #f0f2f5;
+    border-radius: 7px;
 }
 </style>
 </head>

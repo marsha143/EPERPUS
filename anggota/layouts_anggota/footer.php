@@ -39,6 +39,7 @@ function openDetailBuku(card) {
     modal.show();
 }
 </script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
@@ -51,24 +52,52 @@ $(document).ready(function() {
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-        integrity="sha512-BNa5lQ3zq9N4fB9npDPusVfrH0eSPo6e7i9oC8blKp8o7YjA5pq/2pA8H2qJkEv+fU3HkZfNwYgqZ3j2bW+U2g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        crossorigin="anonymous"></script>
 
-<!-- FOTO -->
+
 <script>
-document.getElementById('fileToUpload').addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
+const fileInput = document.getElementById('fileToUpload');
+if (fileInput) {
+    fileInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        document.querySelector('.avatar-profile').src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-});
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.querySelector('.avatar-profile');
+            if (img) img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
 </script>
+
+
+<script>
+function downloadKartuImg(format = 'png') {
+    const kartu = document.getElementById('kartu-anggota');
+
+    if (!kartu) {
+        alert('Kartu anggota tidak ditemukan');
+        return;
+    }
+
+    html2canvas(kartu, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL(
+            format === 'jpg' ? 'image/jpeg' : 'image/png'
+        );
+        link.download = 'kartu_anggota.' + format;
+        link.click();
+    });
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

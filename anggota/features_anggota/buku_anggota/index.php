@@ -22,6 +22,11 @@ if (!empty($_GET['tahun'])) {
 if (!empty($_GET['kode_buku'])) {
     $where[] = "b.kode_buku LIKE '%" . $_GET['kode_buku'] . "%'";
 }
+if (!empty($_GET['genre'])) {
+    $where[] = "b.id_genre = '" . $_GET['genre'] . "'";
+}
+
+
 
 $whereSQL = '';
 if (count($where) > 0) {
@@ -96,6 +101,14 @@ $qPenulis = mysqli_query($conn, "
     ORDER BY penulis.nama_penulis ASC
 ");
 $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
+
+$qGenre = mysqli_query($conn, "
+    SELECT id, jenis_genre 
+    FROM genre 
+    ORDER BY jenis_genre ASC
+");
+$genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
+
 ?>
 
 
@@ -316,6 +329,19 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Genre</label>
+                        <select name="genre" class="form-select js-example-basic-single">
+                            <option value="" hidden>-- Pilih Genre --</option>
+                            <?php foreach ($genreList as $g): ?>
+                            <option value="<?= htmlspecialchars($g['id']) ?>"
+                                <?= (isset($_GET['genre']) && $_GET['genre'] == $g['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($g['jenis_genre']) ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">ISBN</label>
                         <input type="text" name="isbn" class="form-control" placeholder="Masukkan ISBN">
                     </div>
@@ -323,7 +349,6 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                         <label class="form-label">Penulis</label>
                         <select name="penulis" class="form-select js-example-basic-single">
                             <option value="" hidden>-- Pilih Penulis --</option>
-
                             <?php foreach ($penulisList as $p): ?>
                             <option value="<?= htmlspecialchars($p['nama_penulis']) ?>"
                                 <?= (isset($_GET['penulis']) && $_GET['penulis'] === $p['nama_penulis']) ? 'selected' : '' ?>>
@@ -347,14 +372,12 @@ $penulisList = mysqli_fetch_all($qPenulis, MYSQLI_ASSOC);
                         <label class="form-label">Kode Buku</label>
                         <input type="text" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
-
             </form>
 
         </div>

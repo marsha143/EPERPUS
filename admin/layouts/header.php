@@ -113,7 +113,7 @@ footer a:hover {
 }
 
 .popular-btn:hover {
-    border-color: #ff4b8f;          /* aksen pink */
+    border-color: #ff4b8f;         
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
     transform: translateY(-1px);
 }

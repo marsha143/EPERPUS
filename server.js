@@ -34,9 +34,9 @@ function isTopikPerpus(pesan) {
   return kataKunciPerpus.some(k => lower.includes(k));
 }
 
-const salam = ["Halo booklover!", "Hai hai!", "Hiii! Perpus online siap bantu", "Yo! Mau cari buku apa?"];
-const terimaKasih = ["Sama-sama ya!", "Anytime!", "Seneng banget bisa bantu", "Sip! Happy reading"];
-const dadah = ["Dadah! Jangan lupa balikin buku ya", "Bye!", "Sampai jumpa lagi, bookworm!"];
+const salam = ["Yokoso! Selamat datang di Perpustakaan Takumi!", "Hiii! Perpus online siap bantu", "Hai, ada yang bisa kami bantu hari ini?"];
+const terimaKasih = ["No problem! Kapan pun butuh bantuan, hubungi kami.", "Terima kasih kembali, silakan hubungi kami jika butuh bantuan.", "Seneng banget bisa bantu", "Sip! Happy reading"];
+const dadah = ["Dadah! Sehat selalu ya", "Selamat beraktivitas, sampai bertemu lagi.","Bye-bye! Jaga kesehatan!","Sayonara! Sampai bertemu kembali!", "Sampai jumpa lagi, bookworm!"];
 
 function cekUcapanRamah(pesan) {
   const l = pesan.toLowerCase().trim();
@@ -77,7 +77,7 @@ async function rekomendasiBuku(genreHint = "") {
     if (rows.length === 0) {
       return genreHint 
         ? `Buku genre "${genreHint}" lagi kosong nih. Coba genre lain yuk!`
-        : "Koleksi buku lagi kosong nih. Coba nanti lagi ya!";
+        : "Mau lihat detailnya? Jangan lupa cek koleksi buku ya!";
     }
 
     let teks = "Ini beberapa rekomendasi buku dari perpustakaan kita:\n\n";
@@ -126,11 +126,11 @@ app.post("/chat", async (req, res) => {
   }
   else {
     const jawabanUmum = {
-      pinjam: "Bawa kartu mahasiswa + buku → langsung ke loket. Proses cepet kok!",
-      kembalikan: "Bawa kartu mahasiswa + buku → langsung ke loket. Pengembalian selesai!",
-      booking: "Bisa booking lewat web, datang ambil dalam 1×24 jam ya!",
-      denda: "Denda Rp500/hari per buku. Masih ringan kan?",
-      "jam buka": "Senin–Jumat: 08.00–16.00\nSabtu–Minggu & tanggal merah: Tutup"
+      pinjam: "Untuk meminjam buku, kamu cukup membawa kartu perpustakaan beserta buku yang ingin dipinjam, lalu serahkan kepada admin perpustakaan. Admin akan mendata peminjamanmu terlebih dahulu, jadi pastikan kartu perpustakaanmu dibawa, ya! Prosesnya cepat dan tidak rumit, jadi kamu bisa langsung membawa pulang buku pilihanmu setelah data dicatat.",
+      kembalikan: "Kamu bisa melakukan booking buku langsung melalui website perpustakaan. Caranya: login terlebih dahulu, lalu buka menu 'Pengajuan Pemesanan Buku'. Setelah itu, klik tombol 'Tambah Buku', pilih judul buku yang kamu inginkan, dan klik 'Simpan'. Setelah permintaan terkirim, admin perpustakaan akan memproses pemesananmu. Kamu juga bisa memantau status pemesanan melalui halaman akunmu. Dengan fitur ini, kamu tidak perlu khawatir kehabisan buku!",
+      booking:  "Kamu bisa melakukan booking buku langsung melalui website perpustakaan. Caranya: login terlebih dahulu, lalu buka menu 'Pengajuan Pemesanan Buku'. Setelah itu, klik tombol 'Tambah Buku', pilih judul buku yang kamu inginkan, dan klik 'Simpan'. Setelah permintaan terkirim, admin perpustakaan akan memproses pemesananmu. Jika di ACC, kamu dapat langsung menemui admin perpustakaan untuk mengambil buku. Dengan fitur ini, kamu tidak perlu khawatir kehabisan buku!",
+      denda:  "Perpustakaan menerapkan denda keterlambatan sebesar Rp500 per hari untuk setiap buku yang terlambat dikembalikan. Nominal ini memang kecil, tetapi tetap lebih baik jika kamu mengembalikan buku tepat waktu agar tidak menumpuk ya! Denda ini juga membantu memastikan buku dapat kembali dipinjam oleh anggota lain tepat pada waktunya. Jadi yuk, biasakan mengatur jadwal pengembalian agar tidak lupa!",
+        "jam buka": "Perpustakaan Takumi buka setiap hari Senin hingga Jumat mulai pukul 08.00 sampai 16.00. Pada hari Sabtu, Minggu, serta tanggal merah, perpustakaan tutup. Kamu bisa berkunjung, meminjam buku, atau berkonsultasi dengan admin selama jam operasional tersebut. Jangan lupa cek jadwal sebelum datang ya!"
     };
     const lower = pesan.toLowerCase();
     reply = jawabanUmum.pinjam && lower.includes("pinjam") ? jawabanUmum.pinjam :
@@ -156,12 +156,11 @@ app.get("/test-db", async (req, res) => {
 app.get("/", (req, res) => {
   res.send(`
     <h1>Pustakun AI + eperpus</h1>
-    <p>Database Connected! Rekomendasi & pencarian buku langsung dari koleksi kampus</p>
     <p><a href="/test-db">Test Koneksi DB</a></p>
   `);
 });
 
 app.listen(port, () => {
   console.log(`Pustakun AI berjalan di http://localhost:${port}`);
-  console.log(`Rekomendasi buku langsung dari tabel buku + penulis + genre`);
+  console.log(`Rekomendasi buku`);
 });
