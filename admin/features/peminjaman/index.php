@@ -1,7 +1,7 @@
 <?php
 
-if (isset($_GET['send_email'])) {
-  include "send_email_late.php";
+if (isset($_GET['send_email_late'])) {
+  require 'send_email_late.php';
   exit;
 }
 
@@ -94,6 +94,10 @@ if (isset($_POST['kembalikan'])) {
     <div class="card-header d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Peminjaman</h5>
       <div>
+        <a href="app?page=peminjaman&send_email_late=1"
+          onclick="return confirm('Kirim notifikasi ke semua peminjaman terlambat?')" class="btn btn-danger btn-sm">
+          Kirim Notifikasi Terlambat
+        </a>
         <a href="app?page=peminjaman&view=tambah" class="btn btn-primary btn-sm">+ Pinjam Buku</a>
         <a href="app?page=peminjaman&filter=all" class="btn btn-secondary btn-sm">Semua</a>
         <a href="app?page=peminjaman&filter=dipinjam" class="btn btn-warning btn-sm">Dipinjam</a>
@@ -184,14 +188,6 @@ if (isset($_POST['kembalikan'])) {
                       <input type="hidden" name="id" value="<?= $p['id'] ?>">
                       <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
                     </form>
-
-                    <!-- Tombol Kirim Email jika terlambat -->
-                    <?php if ($telat): ?>
-                      <a href="app?page=peminjaman&send_email=1&id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-1">
-                        Kirim Notifikasi
-                      </a>
-                    <?php endif; ?>
-
                   <?php else: ?>
                     <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
                   <?php endif; ?>
