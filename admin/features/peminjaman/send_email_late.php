@@ -10,7 +10,8 @@ require __DIR__ . '/../../../config/db.php';
 $query = "
     SELECT p.id, p.tanggal_kembali,
            a.nama, a.email,
-           b.judul_buku
+           b.judul_buku,
+           b.cover
     FROM peminjaman p
     JOIN anggota a ON a.id_anggota = p.id_anggota
     JOIN buku b ON b.id_buku = p.id_buku
@@ -54,6 +55,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $nama = $row['nama'];
     $judul = $row['judul_buku'];
     $jatuh_tempo = $row['tanggal_kembali'];
+    $cover = $row['cover'];
 
     $hari_ini = date('Y-m-d');
     $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
@@ -67,13 +69,19 @@ while ($row = mysqli_fetch_assoc($result)) {
         $mail->Subject = "Peringatan Pengembalian Buku Terlambat";
         $mail->Body = "
             <h3>Halo $nama,</h3>
+            
             <p>Anda terlambat mengembalikan buku.</p>
+
+            <img src='$cover'
+                    width='150'
+                    style='border-radius:6px;margin-bottom:10px'><br>
+
             <p>
                 <b>Judul:</b> $judul <br>
                 <b>Jatuh Tempo:</b> $jatuh_tempo <br>
                 <b>Denda Saat Ini:</b> Rp $denda
             </p>
-            <p>Segera kembalikan buku ke perpustakaan.</p>
+            <p>Gapapa ga usah di kembaliin, tunggu denda nya 50.000 Rp dlu baru kembaliin yaah (>w<). </p>
         ";
 
         $mail->send();
