@@ -25,7 +25,8 @@ if (isset($_POST['acc_booking'])) {
     $id_booking = $_POST['id'];
     $id_anggota = $_POST['id_anggota'];
     $id_buku = $_POST['id_buku'];
-
+    $_GET['id_booking'] = $id_booking;
+    include "send_email_acc.php";
     // CEK STOK
     $cek = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku='$id_buku'");
     $stok = mysqli_fetch_assoc($cek)['Qty'];
@@ -37,6 +38,7 @@ if (isset($_POST['acc_booking'])) {
               </script>";
         exit;
     }
+    
 
     // KURANGI STOK
     mysqli_query($conn, "UPDATE buku SET Qty = Qty - 1 WHERE id_buku='$id_buku'");
@@ -49,27 +51,37 @@ if (isset($_POST['acc_booking'])) {
         INSERT INTO peminjaman (id_buku, id_anggota, tanggal_pinjam, tanggal_kembali, status)
         VALUES ('$id_buku', '$id_anggota', '$today', '$jatuh_tempo', 'Dipinjam')
     ");
+    
 
     // HAPUS BOOKING
     mysqli_query($conn, "DELETE FROM booking WHERE id='$id_booking'");
-
     echo "<script>
             alert('Booking di-ACC & stok dikurangi!');
             window.location.href='app?page=booking';
           </script>";
     exit;
+
 }
 
 
+
 // TOLAK BOOKING
-if (isset($_POST['tolak_booking'])) {
-    $id = $_POST['id'];
-    mysqli_query($conn, "DELETE FROM booking WHERE id='$id'");
+if (isset($_POST['kirim_tolak'])) {
+    $id_booking = $_POST['id_booking'];
+    $alasan = $_POST['alasan'];
+
+    // kirim email
+    $_POST['id_booking'] = $id_booking;
+    $_POST['alasan'] = $alasan;
+    include "send_email_tolak.php";
+
+    // hapus booking
+    mysqli_query($conn, "DELETE FROM booking WHERE id='$id_booking'");
 
     echo "<script>
-            alert('Booking ditolak!');
-            window.location.href='app?page=booking';
-        </script>";
+        alert('Booking ditolak & email terkirim');
+        window.location.href='app?page=booking';
+    </script>";
     exit;
 }
 ?>
@@ -119,15 +131,12 @@ if (isset($_POST['tolak_booking'])) {
                                             Terima
                                         </button>
                                     </form>
-
                                     <!-- TOLAK -->
-                                    <form method="post" action="" onsubmit="return confirm('Tolak booking ini?');">
-                                        <input type="hidden" name="id" value="<?= $b['id'] ?>">
-
-                                        <button class="btn btn-danger btn-sm" name="tolak_booking">
-                                            Tolak
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalTolak" data-id="<?= $b['id'] ?>"
+                                        data-nama="<?= htmlspecialchars($b['nama_anggota']) ?>">
+                                        Tolak
+                                    </button>
 
                                 </td>
 
@@ -138,5 +147,48 @@ if (isset($_POST['tolak_booking'])) {
                 </table>
             </div>
         </div>
+        <div class="modal fade" id="modalTolak" tabindex="-1">
+            <div class="modal-dialog">
+                <form method="post" action="app?page=booking">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tolak Booking</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <input type="hidden" name="id_booking" id="tolak_id">
+
+                            <div class="mb-2">
+                                <label>Alasan Penolakan</label>
+                                <textarea name="alasan" class="form-control" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger" name="kirim_tolak">
+                                Kirim Penolakan
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const modalTolak = document.getElementById('modalTolak');
+
+    modalTolak.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        const id = button.getAttribute('data-id');
+
+        modalTolak.querySelector('#tolak_id').value = id;
+    });
+</script>

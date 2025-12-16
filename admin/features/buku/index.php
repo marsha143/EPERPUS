@@ -29,6 +29,31 @@ if (isset($_POST['cari'])) {
         }
     }
 }
+if (isset($_GET['id_buku'])) {
+    $id_buku = $_GET['id_buku'];
+
+    $hasil = mysqli_query($conn, $query_qty);
+    $data_qty = mysqli_fetch_assoc($hasil);
+    if (!$data_qty) {
+        header("Location: app");
+    }
+}
+if (isset($_POST['+'])) {
+    $id_buku = (int) $_POST['id_buku'];
+    $query_qty = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku = $id_buku");
+    $qty_query = mysqli_fetch_assoc($query_qty);
+    $qty_tambah = $qty_query['Qty'] + 1;
+
+    $query = "UPDATE buku SET `Qty`='$qty_tambah' ,`updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    if (mysqli_query($conn, $query)) {
+        echo "
+            <script> 
+                alert('data berhasil diubah.');
+                window.location.href = 'app?page=buku';
+            </script>
+            ";
+    }
+}
 ?>
 
 <div class="container mt-5">
@@ -86,7 +111,13 @@ if (isset($_POST['cari'])) {
                                         <td><?= $b['nama_penulis'] ?></td>
                                         <td><?= $b['tahun_terbit'] ?></td>
                                         <td><?= $b['penerbit'] ?></td>
-                                        <td><?= $b['Qty'] ?> Pcs</td>
+                                        <form action="" method="POST" style="display:inline;">
+                                            <td><?= $b['Qty'] ?> Pcs <input type="hidden" name="id_buku"
+                                                    value="<?= $b['id_buku'] ?>">
+                                                <button type="submit" name="+"
+                                                    class="btn btn-link p-0 text-success fw-bold fs-5">+</button>
+                                            </td>
+                                        </form>
                                         <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"
                                                 class="btn btn-warning btn-sm ms-3"><i
                                                     class="fa-solid fa-pen-to-square"></i>edit</a>
