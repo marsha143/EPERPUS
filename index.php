@@ -42,76 +42,95 @@ $jumlah_buku = $r['jumlah'];
             </div>
         </div>
     </section>
-    <section class="ai-chat-section py-5 mt-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-5 text-center mx-auto mb-4">
-                    <dotlottie-wc class="lottie-buku"
-                        src="https://lottie.host/e72dc47c-1505-4f3c-94c4-f09f4e525def/Xdp7tUP0iw.lottie"
-                        style="width: 300px; height: 300px;" autoplay loop>
-                    </dotlottie-wc>
-                    <h2 class="fw-bold mt-3 text-primary">Tanya AI Perpustakaan</h2>
-                    <p class="text-muted px-3">
-                        Punya pertanyaan tentang perpustakaan, buku, atau layanan kami?
-                        Tanyakan langsung ke asisten AI kami!
-                    </p>
-                </div>
+<section class="ai-chat-section py-5 mt-5">
+    <div class="container">
+        <div class="row align-items-center">
 
-                <!-- Kotak Chat -->
-                <div class="col-md-7">
-                    <div class="ai-chat-box shadow-lg p-4">
-                        <div class="chat-header p-3 mb-3 text-white rounded">
-                            <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Asisten AI</h5>
-                            <span class="chat-subtitle">Siap membantu menjawab pertanyaan Anda</span>
-                        </div>
+            <!-- INFO AI -->
+            <div class="col-md-5 text-center mx-auto mb-4">
+                <dotlottie-wc class="lottie-buku"
+                    src="https://lottie.host/e72dc47c-1505-4f3c-94c4-f09f4e525def/Xdp7tUP0iw.lottie"
+                    style="width: 300px; height: 300px;" autoplay loop>
+                </dotlottie-wc>
 
-                        <!-- Area Chat -->
-                        <div class="chat-area mb-3 p-3 bg-light rounded border">
-                            <div id="chat-box"></div>
-                        </div>
+                <h2 class="fw-bold mt-3 text-primary">Tanya AI Perpustakaan</h2>
+                <p class="text-muted px-3">
+                    Punya pertanyaan tentang perpustakaan, buku, atau layanan kami?
+                    Tanyakan langsung ke asisten AI kami!
+                </p>
+            </div>
 
-                        <!-- Input -->
-                        <!-- PERTANYAAN POPULER -->
-                        <div class="popular-questions">
-                            <p class="popular-label">✨ Pertanyaan populer:</p>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Bagaimana cara pinjam buku di EPERPUS?')">
-                                        📚 Cara peminjaman
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Bagaimana cara kembalikan buku?')">
-                                        🔁 Cara Pengembalian
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Bagaimana cara booking / reservasi buku di perpustakaan?')">
-                                        📝 Booking
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button type="button" class="popular-btn w-100"
-                                        onclick="sendQuick('Berapa denda keterlambatan pengembalian buku?')">
-                                        ⏱️Denda
-                                    </button>
-                                </div>
+            <!-- CHAT BOX -->
+            <div class="col-md-7">
+                <div class="ai-chat-box shadow-lg p-4 ai-theme">
+
+                    <!-- HEADER -->
+                    <div class="chat-header ai-header mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="ai-icon"><i class="fas fa-robot"></i></span>
+                            <div>
+                                <h6 class="mb-0 text-white">Asisten AI</h6>
+                                <small class="chat-subtitle text-white-50">
+                                    Siap membantu menjawab pertanyaan Anda
+                                </small>
                             </div>
                         </div>
-
-                        <input type="text" id="user-input" class="form-control me-2"
-                            placeholder="Ketik pertanyaan kamu di sini...">
-                        <button id="send-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-
                     </div>
-                </div>
 
+                    <!-- CHAT AREA -->
+                    <div class="chat-area mb-3 p-3 bg-light rounded border">
+                        <div id="chat-box">
+                            <!-- Bubble chat muncul di sini -->
+                        </div>
+                    </div>
+
+                    <!-- POPULAR QUESTION -->
+                    <div class="popular-questions mb-3">
+                        <p class="popular-label mb-2">✨ Pertanyaan populer:</p>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button class="popular-btn w-100"
+                                    onclick="sendQuick('Bagaimana cara pinjam buku di EPERPUS?')">
+                                    📚 Cara peminjaman
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="popular-btn w-100"
+                                    onclick="sendQuick('Bagaimana cara kembalikan buku?')">
+                                    🔁 Cara Pengembalian
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="popular-btn w-100"
+                                    onclick="sendQuick('Bagaimana cara booking buku?')">
+                                    📝 Booking
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="popular-btn w-100"
+                                    onclick="sendQuick('Berapa denda keterlambatan?')">
+                                    ⏱️ Denda
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INPUT -->
+                    <div class="d-flex gap-2">
+                        <input type="text" id="user-input" class="form-control"
+                            placeholder="Ketik pertanyaan kamu di sini...">
+                        <button id="send-btn" class="btn btn-primary px-3">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                </div>
             </div>
+
         </div>
-    </section>
+    </div>
+</section>
+
 
     <section class="my-5 py-5">
         <div class="container">

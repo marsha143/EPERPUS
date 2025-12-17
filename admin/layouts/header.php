@@ -50,25 +50,83 @@
   100% { transform: translateY(0); }
 }
 
-.ai-chat-box {
+/* ====== TEMA DASAR AI ====== */
+.ai-theme {
   border-radius: 18px;
-  background: #fff;
+  background: #ffffff;
 }
 
-.chat-header {
-  background: #e91e63   ;
-  border-radius: 12px;
+/* HEADER CHAT (MENIRU AI BIRU) */
+/* HEADER */
+.ai-header {
+  background: linear-gradient(135deg, #ec407a, #d81b60);
+  padding: 14px;
+  border-radius: 16px;
 }
 
+.ai-icon {
+  background: rgba(255,255,255,0.2);
+  padding: 8px;
+  border-radius: 50%;
+  color: white;
+}
+
+/* CHAT AREA */
 .chat-area {
-  height: 220px;
+  height: 320px;
   overflow-y: auto;
 }
 
-.chat-subtitle {
-  font-size: 0.85rem;
-  opacity: 0.9;
+/* AI MESSAGE */
+.ai-message {
+  background: #F1E7E7;
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  max-width: 90%;
+  color: #444;
 }
+
+/* USER MESSAGE */
+.user-message {
+  background: #ec407a;
+  color: white;
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  max-width: 90%;
+  margin-left: auto;
+}
+
+/* POPULAR BUTTON */
+.popular-btn {
+  background: #fce4ec;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.popular-btn:hover {
+  background: #f8bbd0;
+}
+
+.ai-icon {
+  background: rgba(255,255,255,0.2);
+  padding: 6px 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.book-cover img {
+  max-width: 120px;
+  border-radius: 10px;
+  margin: 8px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+
 .lottie-buku {
     display: block;
     margin: 0 auto;

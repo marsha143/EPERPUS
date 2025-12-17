@@ -91,6 +91,7 @@ $qHistori = mysqli_query($conn, "
     SELECT * FROM request_update_anggota
     WHERE id_anggota = $idAnggota
     ORDER BY tanggal_request DESC
+    LIMIT 1
 ");
 $histori = [];
 while ($row = mysqli_fetch_assoc($qHistori)) {

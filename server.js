@@ -12,8 +12,6 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use("/covers", express.static("covers"));
-
 const db = await mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
@@ -23,15 +21,39 @@ const db = await mysql.createPool({
   connectionLimit: 10,
 });
 
+app.get("/cover/:url(*)", async (req, res) => {
+  try {
+    const imageUrl = decodeURIComponent(req.params.url);
+
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      return res.status(404).send("Image not found");
+    }
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+
+    res.setHeader(
+      "Content-Type",
+      response.headers.get("content-type") || "image/jpeg"
+    );
+    res.setHeader("Cache-Control", "public, max-age=86400");
+
+    res.send(buffer);
+  } catch (err) {
+    console.error("Cover error:", err.message);
+    res.status(500).send("Failed to load image");
+  }
+});
+
+
 const kataKunciPerpus = [
   "buku","novel","komik","manga","pinjam","booking","kembali","denda","telat",
-  "jam buka","perpus","perpustakaan","rekomendasi","saran","cari","judul","penulis","genre",
-  "romance","thriller","fantasy","horor","misteri","fiksi","romansa","best","populer"
+  "jam buka","perpus","perpustakaan","rekomendasi","saran","cari","judul",
+  "penulis","genre","romance","thriller","fantasy","horor","misteri","fiksi"
 ];
 
 function isTopikPerpus(pesan) {
-  const lower = pesan.toLowerCase();
-  return kataKunciPerpus.some(k => lower.includes(k));
+  return kataKunciPerpus.some(k => pesan.toLowerCase().includes(k));
 }
 
 const salam = ["Yokoso! Selamat datang di Perpustakaan Takumi!", "Hiii! Perpus online siap bantu", "Hai, ada yang bisa kami bantu hari ini?"];
@@ -60,10 +82,10 @@ async function rekomendasiBuku(genreHint = "") {
       FROM buku b
       JOIN penulis p ON b.id_penulis = p.id
       JOIN genre g ON b.id_genre = g.id
-      WHERE b.judul_buku IS NOT NULL AND b.judul_buku != ''
+      WHERE b.judul_buku IS NOT NULL
     `;
 
-    const params = [];
+     const params = [];
 
     if (genreHint) {
       sql += ` AND g.jenis_genre LIKE ?`;
@@ -74,28 +96,26 @@ async function rekomendasiBuku(genreHint = "") {
 
     const [rows] = await db.execute(sql, params);
 
-    if (rows.length === 0) {
-      return genreHint 
-        ? `Buku genre "${genreHint}" lagi kosong nih. Coba genre lain yuk!`
-        : "Mau lihat detailnya? Jangan lupa cek koleksi buku ya!";
+    if (!rows.length) {
+      return "Buku belum tersedia untuk genre tersebut 😅";
     }
 
-    let teks = "Ini beberapa rekomendasi buku dari perpustakaan kita:\n\n";
-    rows.forEach((book, i) => {
-      teks += `${i + 1}. *${book.judul_buku}*\n`;
-      teks += `   Penulis: ${book.nama_penulis}\n`;
-      teks += `   Genre: ${book.jenis_genre}\n`;
-      if (book.cover && book.cover.trim() !== "") {
-        teks += `   Cover: http://localhost:3000/covers/${book.cover}\n`;
-      }
-      teks += "\n";
-    });
-    teks += "Untuk detailnya langsung ke halaman koleksi buku ya!";
-    return teks;
+    let teks = "📚 Rekomendasi Buku Untuk Kamu:\n\n";
+    rows.forEach((b, i) => {
+      teks += `${i + 1}. ${b.judul_buku}\n`;
+      teks += `   Penulis: ${b.nama_penulis}\n`;
+      teks += `   Genre: ${b.jenis_genre}\n`;
 
+      if (b.cover) {
+        teks += `   http://localhost:3000/cover/${encodeURIComponent(b.cover)}\n`;
+      }
+      teks += "Ketersediaan atau informasi buku lainnya bisa langsung cek di halaman Koleksi buku ya!📚\n";
+    });
+
+    return teks;
   } catch (err) {
-    console.error("Error rekomendasi:", err);
-    return "Maaf, lagi ada masalah ambil data buku. Coba lagi dalam 10 detik ya!";
+    console.error(err);
+    return "⚠️ Gagal mengambil data buku.";
   }
 }
 
