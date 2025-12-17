@@ -98,6 +98,7 @@ if (isset($_POST['kembalikan'])) {
           onclick="return confirm('Kirim notifikasi ke semua peminjaman terlambat?')" class="btn btn-danger btn-sm">
           Kirim Notifikasi Terlambat
         </a>
+        <a href="app?page=peminjaman&view=export_exel" class="btn btn-primary">Export Excel</a>  
         <a href="app?page=peminjaman&view=tambah" class="btn btn-primary btn-sm">+ Pinjam Buku</a>
         <a href="app?page=peminjaman&filter=all" class="btn btn-secondary btn-sm">Semua</a>
         <a href="app?page=peminjaman&filter=dipinjam" class="btn btn-warning btn-sm">Dipinjam</a>

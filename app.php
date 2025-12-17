@@ -1,3 +1,14 @@
+<?php
+
+$page = $_GET['page'] ?? 'dashboard';
+$view = $_GET['view'] ?? null;
+
+/* ====== KHUSUS EXPORT ====== */
+if ($page === 'peminjaman' && $view === 'export_exel') {
+    require 'admin/features/peminjaman/export_exel.php';
+    exit; // ⬅️ PALING PENTING
+}
+?>
 <?php include("./config/db.php"); ?>
 
 <?php include('./admin/layouts/header.php'); ?>
