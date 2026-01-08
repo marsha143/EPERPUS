@@ -20,7 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true }
+                y: { beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0
+                    }
+                 }
             }
         }
     });
