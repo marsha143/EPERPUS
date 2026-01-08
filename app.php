@@ -6,7 +6,7 @@ $view = $_GET['view'] ?? null;
 /* ====== KHUSUS EXPORT ====== */
 if ($page === 'peminjaman' && $view === 'export_exel') {
     require 'admin/features/peminjaman/export_exel.php';
-    exit; // ⬅️ PALING PENTING
+    exit; 
 }
 ?>
 <?php include("./config/db.php"); ?>

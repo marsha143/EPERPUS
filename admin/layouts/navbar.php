@@ -40,6 +40,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white <?php if ($page == 'kondisi_buku')
+                        echo 'active bg-gradient-primary'; ?>" href="app?page=kondisi_buku">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">table_view</i>
+                        </div>
+                        <span class="nav-link-text ms-1">kondisi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white <?php if ($page == 'penulis')
                         echo 'active bg-gradient-primary'; ?>" href="app?page=penulis">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

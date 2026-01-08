@@ -1,42 +1,70 @@
 <?php
+$range = $_GET['range'] ?? 'harian';
+$startDate = $_GET['start'] ?? null;
+$endDate = $_GET['end'] ?? null;
 
-function rupiah($angka) {
-  return 'Rp. ' . number_format((int)$angka, 0, ',', '.');
+/* DEFAULT JIKA GA PILIH TANGGAL */
+if (!$startDate || !$endDate) {
+    $startDate = date('Y-m-d', strtotime('-29 days'));
+    $endDate = date('Y-m-d');
+}
+
+$whereTanggal = "created_at BETWEEN '$startDate 00:00:00' AND '$endDate 23:59:59'";
+
+$sql = match ($range) {
+    'mingguan' => "
+        SELECT YEARWEEK(created_at,1) label, COUNT(*) total
+        FROM kunjungan
+        WHERE $whereTanggal
+        GROUP BY label
+        ORDER BY label
+    ",
+    'bulanan' => "
+        SELECT DATE_FORMAT(created_at,'%Y-%m') label, COUNT(*) total
+        FROM kunjungan
+        WHERE $whereTanggal
+        GROUP BY label
+        ORDER BY label
+    ",
+    default => "
+        SELECT DATE(created_at) label, COUNT(*) total
+        FROM kunjungan
+        WHERE $whereTanggal
+        GROUP BY label
+        ORDER BY label
+    "
+};
+
+$labels = [];
+$data = [];
+
+$res = mysqli_query($conn, $sql);
+while ($r = mysqli_fetch_assoc($res)) {
+
+    if ($range === 'harian') {
+        $labels[] = date('d M', strtotime($r['label']));
+    } elseif ($range === 'mingguan') {
+        $labels[] = 'Minggu ' . substr($r['label'], -2);
+    } else {
+        $labels[] = date('M Y', strtotime($r['label'] . '-01'));
+    }
+
+    $data[] = (int) $r['total'];
+}
+
+
+function rupiah($angka)
+{
+    return 'Rp. ' . number_format((int) $angka, 0, ',', '.');
 }
 
 $e = mysqli_query($conn, "SELECT COUNT(*) AS jumlah FROM peminjaman WHERE status='Dipinjam'");
 $o = mysqli_fetch_assoc($e) ?: ['jumlah' => 0];
-$jumlah_peminjaman = (int)$o['jumlah'];
+$jumlah_peminjaman = (int) $o['jumlah'];
 
 $a = mysqli_query($conn, "SELECT COUNT(*) AS jumlah FROM booking WHERE status='Dibooking'");
 $b = mysqli_fetch_assoc($a) ?: ['jumlah' => 0];
-$jumlah_pemesanan = (int)$b['jumlah'];
-
-$labelsKunjungan = [];
-$dataKunjungan   = [];
-$start = new DateTime(date('Y-m-d', strtotime('-29 days')));
-$map = [];
-for ($i = 0; $i < 30; $i++) {
-  $d = (clone $start)->modify("+$i day")->format('Y-m-d');
-  $map[$d] = 0;
-}
-
-$sqlKunj = "
-  SELECT DATE(created_at) AS tgl, COUNT(*) AS jumlah
-  FROM kunjungan
-  WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-  GROUP BY DATE(created_at)
-  ORDER BY tgl
-";
-if ($res = mysqli_query($conn, $sqlKunj)) {
-  while ($row = mysqli_fetch_assoc($res)) {
-    $map[$row['tgl']] = (int)$row['jumlah'];
-  }
-}
-foreach ($map as $tgl => $jumlah) {
-  $labelsKunjungan[] = date('d M', strtotime($tgl));
-  $dataKunjungan[]   = $jumlah;
-}
+$jumlah_pemesanan = (int) $b['jumlah'];
 
 $sqlTelat = "
   SELECT 
@@ -64,11 +92,45 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
             <div class="col-8">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <h6 class="mb-0">Grafik Kunjungan (30 Hari Terakhir)</h6>
+                        <h6 class="mb-0">
+                            Grafik Kunjungan
+                            (
+                            <?= date('d M Y', strtotime($startDate)) ?> –
+                            <?= date('d M Y', strtotime($endDate)) ?>)
+                        </h6>
+                        <div class="btn-group">
+                            <a href="?range=harian&start=<?= $startDate ?>&end=<?= $endDate ?>">Harian</a>
+                            <a href="?range=mingguan&start=<?= $startDate ?>&end=<?= $endDate ?>">Mingguan</a>
+                            <a href="?range=bulanan&start=<?= $startDate ?>&end=<?= $endDate ?>">Bulanan</a>
+                        </div>
+
+                        <form method="GET" class="d-flex align-items-center gap-2">
+
+                            <!-- RANGE -->
+                            <input type="hidden" name="range" value="<?= $range ?>">
+
+                            <input type="date" name="start" value="<?= $_GET['start'] ?? '' ?>"
+                                class="form-control form-control-sm">
+
+                            <span>–</span>
+
+                            <input type="date" name="end" value="<?= $_GET['end'] ?? '' ?>"
+                                class="form-control form-control-sm">
+                            <div class="filter-tanggal">
+                                <button class="btn btn-sm btn-primary">
+                                    Apply
+                                </button>
+                            </div>
+                        </form>
+
                     </div>
                     <div class="card-body" style="min-height:240px;">
                         <canvas id="chartKunjungan" style="min-height:240px;"></canvas>
                     </div>
+                    <script>
+                        window.chartLabels = <?= json_encode($labels) ?>;
+                        window.chartData = <?= json_encode($data) ?>;
+                    </script>
                     <div class="card-footer">
                         <p class="mb-0">Kunjungan perpustakaan</p>
                     </div>
@@ -83,7 +145,7 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Peminjaman aktif</p>
-                            <h1 class="text-gradient text-primary"><?=$jumlah_peminjaman?>+</h1>
+                            <h1 class="text-gradient text-primary"><?= $jumlah_peminjaman ?>+</h1>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -99,7 +161,7 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Pemesanan buku</p>
-                            <h1 class="text-gradient text-primary"><?=$jumlah_pemesanan?>+</h1>
+                            <h1 class="text-gradient text-primary"><?= $jumlah_pemesanan ?>+</h1>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -142,23 +204,23 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                                 </thead>
                                 <tbody>
                                     <?php if (empty($peminjaman)): ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">Tidak ada pinjaman yang melewati
-                                            jatuh tempo 🎉</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted">Tidak ada pinjaman yang melewati
+                                                jatuh tempo 🎉</td>
+                                        </tr>
                                     <?php else: ?>
-                                    <?php foreach ($peminjaman as $i => $p): ?>
-                                    <tr>
-                                        <td><?= $i + 1 ?></td>
-                                        <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
-                                        <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
-                                        <td><?= htmlspecialchars($p['judul_buku']) ?></td>
-                                        <td><?= htmlspecialchars($p['kode_buku']) ?></td>
-                                        <td><strong class="text-danger"><?= rupiah($p['denda_berjalan']) ?></strong>
-                                        </td>
-                                        <td><?= htmlspecialchars($p['jatuh_tempo']) ?></td>
-                                    </tr>
-                                    <?php endforeach; ?>
+                                        <?php foreach ($peminjaman as $i => $p): ?>
+                                            <tr>
+                                                <td><?= $i + 1 ?></td>
+                                                <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
+                                                <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
+                                                <td><?= htmlspecialchars($p['judul_buku']) ?></td>
+                                                <td><?= htmlspecialchars($p['kode_buku']) ?></td>
+                                                <td><strong class="text-danger"><?= rupiah($p['denda_berjalan']) ?></strong>
+                                                </td>
+                                                <td><?= htmlspecialchars($p['jatuh_tempo']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     <?php endif; ?>
                                 </tbody>
                             </table>
@@ -169,4 +231,5 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
         </div>
     </div>
 </main>
+
 <?php include('./admin/layouts/footer.php'); ?>
