@@ -13,6 +13,7 @@ if (isset($_GET['id_buku'])) {
         header("Location: app");
     }
 }
+
 if (isset($_POST['update'])) {
     $cover = $_POST['cover'];
     $judul_buku = $_POST['judul_buku'];
@@ -40,6 +41,7 @@ if (isset($_POST['update'])) {
             </script>
             ";
     }
+    
 }
 
 ?>
