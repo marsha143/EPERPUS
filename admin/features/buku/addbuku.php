@@ -23,7 +23,38 @@ if (isset($_POST['simpan'])) {
         VALUES
             ('$cover','$judul_buku','$kode_buku','$isbn',$id_penulis, '$id_genre','$tahun_terbit','$penerbit','$deskripsi')
     ";
+$cekKode = mysqli_query(
+    $conn,
+    "SELECT id_buku FROM buku 
+     WHERE kode_buku = '$kode_buku' 
+     AND id_buku != '$id_buku'"
+);
 
+if (mysqli_num_rows($cekKode) > 0) {
+    echo "
+        <script>
+            alert('Kode buku sudah digunakan, silakan gunakan kode lain.');
+            history.back();
+        </script>
+    ";
+    exit;
+}
+$cekISBN = mysqli_query(
+    $conn,
+    "SELECT id_buku FROM buku 
+     WHERE isbn = '$isbn' 
+     AND id_buku != '$id_buku'"
+);
+
+if (mysqli_num_rows($cekISBN) > 0) {
+    echo "
+        <script>
+            alert('ISBN buku sudah digunakan, silakan gunakan ISBN lain.');
+            history.back();
+        </script>
+    ";
+    exit;
+}
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
