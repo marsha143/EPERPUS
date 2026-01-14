@@ -22,6 +22,26 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link text-white <?php if ($page == 'peminjaman')
+                        echo 'active bg-gradient-primary'; ?>" href="app?page=peminjaman">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Proses peminjaman</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white <?php if ($page == 'booking')
+                        echo 'active bg-gradient-primary'; ?>" href="app?page=booking">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pemesanan Buku</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link text-white <?php if ($page == 'buku')
                         echo 'active bg-gradient-primary'; ?>" href="app?page=buku">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -30,15 +50,7 @@
                         <span class="nav-link-text ms-1">Daftar Buku</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'genre')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=genre">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">table_view</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Genre</span>
-                    </a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link text-white <?php if ($page == 'kondisi_buku')
                         echo 'active bg-gradient-primary'; ?>" href="app?page=kondisi_buku">
@@ -48,6 +60,17 @@
                         <span class="nav-link-text ms-1">kondisi buku</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white <?php if ($page == 'genre')
+                        echo 'active bg-gradient-primary'; ?>" href="app?page=genre">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">table_view</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Genre</span>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link text-white <?php if ($page == 'penulis')
                         echo 'active bg-gradient-primary'; ?>" href="app?page=penulis">
@@ -75,26 +98,6 @@
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
                         <span class="nav-link-text ms-1">Anggota request</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'peminjaman')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=peminjaman">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Proses peminjaman</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'booking')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=booking">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Pemesanan Buku</span>
                     </a>
                 </li>
 

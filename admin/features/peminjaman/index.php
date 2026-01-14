@@ -58,7 +58,7 @@ if (isset($_POST['kembalikan'])) {
   $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
   $p = mysqli_fetch_assoc($data);
 
-  $id_buku = $p['id_buku'];   // <-- penting
+  $id_buku = $p['id_buku'];   
 
   // ========= HITUNG DENDA ==========
   $jatuh_tempo = $p['tanggal_kembali'];

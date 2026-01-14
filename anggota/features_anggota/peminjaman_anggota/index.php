@@ -10,7 +10,8 @@ $sql = "
     p.tanggal_pinjam,
     p.tanggal_kembali,
     p.tanggal_dikembalikan,
-    p.status
+    p.status,
+    p.denda
   FROM peminjaman p
   JOIN buku b ON p.id_buku = b.id_buku
   WHERE p.id_anggota = $idAnggota
@@ -35,6 +36,7 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
                             <th style="min-width:120px">Tgl Pinjam</th>
                             <th style="min-width:120px">Jatuh Tempo</th>
                             <th style="min-width:140px">Status</th>
+                            <th style="min-width:140px">Denda</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,6 +64,7 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
                                     <?= htmlspecialchars($row['tanggal_dikembalikan']) ?></small>
                                 <?php endif; ?>
                             </td>
+                            <td>Rp. <?= htmlspecialchars($row['denda']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                         <?php endif; ?>
@@ -73,4 +76,3 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 </div>
 </div>
 </div>
-
