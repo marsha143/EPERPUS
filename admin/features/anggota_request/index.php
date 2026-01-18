@@ -1,86 +1,113 @@
 <?php
 
-/* =======================
-   PROSES ACC / TOLAK
-======================= */
+/* =====================================================
+   ACC PENDAFTARAN ANGGOTA
+===================================================== */
+if (isset($_POST['acc_request'])) {
 
-if (isset($_POST['acc_profile'])) {
     $idRequest = (int)$_POST['id_request'];
-    $idAnggota = (int)$_POST['id_anggota'];
 
-    // ambil data request
+    // Ambil data request
     $req = mysqli_fetch_assoc(mysqli_query($conn, "
-        SELECT alamat_baru, no_hp_baru 
-        FROM request_update_anggota 
+        SELECT * FROM anggota_request
         WHERE id_request = $idRequest
+        AND status = 'Pending'
+        LIMIT 1
     "));
 
-    // update data anggota
-    mysqli_query($conn, "
-        UPDATE anggota SET
-            alamat = '{$req['alamat_baru']}',
-            noHP  = '{$req['no_hp_baru']}'
-        WHERE id_anggota = $idAnggota
-    ");
+    if ($req) {
 
-    // update status request
-    mysqli_query($conn, "
-        UPDATE request_update_anggota 
-        SET status = 'Disetujui'
-        WHERE id_request = $idRequest
-    ");
+        // Masukkan ke tabel anggota
+        mysqli_query($conn, "
+            INSERT INTO anggota (
+                username,
+                password,
+                nama,
+                nim_nidn,
+                program_studi,
+                alamat,
+                noHP,
+                jenis_kelamin,
+                email,
+                role
+            ) VALUES (
+                '{$req['username']}',
+                '{$req['password']}',
+                '{$req['nama']}',
+                '{$req['nim_nidn']}',
+                '{$req['program_studi']}',
+                '{$req['alamat']}',
+                '{$req['noHP']}',
+                '{$req['jenis_kelamin']}',
+                '{$req['email']}',
+                'anggota'
+            )
+        ");
 
-    echo "<script>
-        alert('Perubahan profile DISSETUJUI');
-        window.location.href='app?page=anggota';
-    </script>";
-    exit;
+        // Update status request
+        mysqli_query($conn, "
+            UPDATE anggota_request
+            SET status = 'Disetujui'
+            WHERE id_request = $idRequest
+        ");
+
+        echo "<script>
+            alert('Pendaftaran anggota BERHASIL DISETUJUI');
+            window.location.href='anggota.php';
+        </script>";
+        exit;
+    }
 }
 
-if (isset($_POST['tolak_profile'])) {
+
+/* =====================================================
+   TOLAK PENDAFTARAN ANGGOTA
+===================================================== */
+if (isset($_POST['tolak_request'])) {
+
     $idRequest = (int)$_POST['id_request'];
 
     mysqli_query($conn, "
-        UPDATE request_update_anggota 
+        UPDATE anggota_request
         SET status = 'Ditolak'
         WHERE id_request = $idRequest
     ");
 
     echo "<script>
-        alert('Perubahan profile DITOLAK');
-        window.location.href='app?page=anggota';
+        alert('Pendaftaran anggota DITOLAK');
+        window.location.href='anggota_request.php';
     </script>";
     exit;
 }
 
-/* =======================
-   AMBIL DATA REQUEST
-======================= */
 
+/* =====================================================
+   AMBIL DATA REQUEST
+===================================================== */
 $qReq = mysqli_query($conn, "
     SELECT 
-        r.id_request,
-        r.id_anggota,
-        r.alamat_baru,
-        r.no_hp_baru,
-        r.status,
-        r.tanggal_request,
-        a.nama,
-        a.nim_nidn,
-        a.program_studi,
-        a.alamat,
-        a.noHP
-    FROM request_update_anggota r
-    JOIN anggota a ON r.id_anggota = a.id_anggota
-    ORDER BY r.tanggal_request DESC
+        id_request,
+        username,
+        nama,
+        nim_nidn,
+        program_studi,
+        alamat,
+        noHP,
+        jenis_kelamin,
+        email,
+        status,
+        waktu_request
+    FROM anggota_request
+    ORDER BY waktu_request DESC
 ");
 
 $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
 ?>
+
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header">
-            <h4>Permintaan Perubahan Profile Anggota</h4>
+            <h4>Permohonan Pendaftaran Anggota</h4>
         </div>
 
         <div class="card-body">
@@ -91,10 +118,10 @@ $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
                             <th>Nama</th>
                             <th>NIM / NIDN</th>
                             <th>Program Studi</th>
-                            <th>Alamat</th>
                             <th>No HP</th>
+                            <th>Email</th>
                             <th>Status</th>
-                            <th>Aksi</th>
+                            <th width="160">Aksi</th>
                         </tr>
                     </thead>
 
@@ -102,7 +129,7 @@ $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
                     <?php if (count($requests) == 0): ?>
                         <tr>
                             <td colspan="7" class="text-center text-muted">
-                                Tidak ada permintaan perubahan
+                                Tidak ada permohonan pendaftaran
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -112,23 +139,13 @@ $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
                             <td><?= htmlspecialchars($r['nama']) ?></td>
                             <td><?= htmlspecialchars($r['nim_nidn']) ?></td>
                             <td><?= htmlspecialchars($r['program_studi']) ?></td>
+                            <td><?= htmlspecialchars($r['noHP']) ?></td>
+                            <td><?= htmlspecialchars($r['email']) ?></td>
 
                             <td>
-                                <small class="text-muted">Lama:</small><br>
-                                <?= htmlspecialchars($r['alamat']) ?><br><br>
-                                <small class="text-success">Baru:</small><br>
-                                <?= htmlspecialchars($r['alamat_baru']) ?>
-                            </td>
-
-                            <td>
-                                <small class="text-muted">Lama:</small><br>
-                                <?= htmlspecialchars($r['noHP']) ?><br><br>
-                                <small class="text-success">Baru:</small><br>
-                                <?= htmlspecialchars($r['no_hp_baru']) ?>
-                            </td>
-
-                            <td>
-                                <?php if ($r['status'] == 'Disetujui'): ?>
+                                <?php if ($r['status'] == 'Pending'): ?>
+                                    <span class="badge bg-warning">Pending</span>
+                                <?php elseif ($r['status'] == 'Disetujui'): ?>
                                     <span class="badge bg-success">Disetujui</span>
                                 <?php else: ?>
                                     <span class="badge bg-danger">Ditolak</span>
@@ -136,20 +153,19 @@ $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
                             </td>
 
                             <td>
-                                <?php if ($r['status'] == 'Menunggu'): ?>
+                                <?php if ($r['status'] == 'Pending'): ?>
                                 <form method="POST" class="d-inline">
                                     <input type="hidden" name="id_request" value="<?= $r['id_request'] ?>">
-                                    <input type="hidden" name="id_anggota" value="<?= $r['id_anggota'] ?>">
-                                    <button name="acc_profile" class="btn btn-success btn-sm"
-                                        onclick="return confirm('Setujui perubahan ini?')">
+                                    <button name="acc_request" class="btn btn-success btn-sm"
+                                        onclick="return confirm('Setujui pendaftaran ini?')">
                                         ACC
                                     </button>
                                 </form>
 
                                 <form method="POST" class="d-inline">
                                     <input type="hidden" name="id_request" value="<?= $r['id_request'] ?>">
-                                    <button name="tolak_profile" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Tolak perubahan ini?')">
+                                    <button name="tolak_request" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Tolak pendaftaran ini?')">
                                         Tolak
                                     </button>
                                 </form>
@@ -166,3 +182,4 @@ $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
         </div>
     </div>
 </div>
+

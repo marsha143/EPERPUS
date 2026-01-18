@@ -35,75 +35,102 @@
                     <a class="nav-link text-white <?php if ($page == 'booking')
                         echo 'active bg-gradient-primary'; ?>" href="app?page=booking">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+                            <i class="material-icons opacity-10">event_note</i>
+
                         </div>
                         <span class="nav-link-text ms-1">Pemesanan Buku</span>
                     </a>
                 </li>
 
+                <?php $Buku = in_array($page, ['buku', 'kondisi_buku', 'genre', 'penulis']);?>
                 <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'buku')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=buku">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">table_view</i>
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center
+        <?= $Buku ? 'active bg-gradient-primary' : '' ?>" data-bs-toggle="collapse" href="#menuBuku" role="button"
+                        aria-expanded="<?= $Buku ? 'true' : 'false' ?>" aria-controls="menuBuku">
+                        <div class="d-flex align-items-center">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">menu_book</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Buku</span>
                         </div>
-                        <span class="nav-link-text ms-1">Daftar Buku</span>
                     </a>
+
+                    <div class="collapse <?= $Buku ? 'show' : '' ?>" id="menuBuku">
+                        <ul class="nav ms-4">
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'buku' ? 'active' : '' ?>"
+                                    href="app?page=buku">
+                                    Daftar Buku
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'kondisi_buku' ? 'active' : '' ?>"
+                                    href="app?page=kondisi_buku">
+                                    Kondisi Buku
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'genre' ? 'active' : '' ?>"
+                                    href="app?page=genre">
+                                    Genre
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'penulis' ? 'active' : '' ?>"
+                                    href="app?page=penulis">
+                                    Penulis
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'kondisi_buku')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=kondisi_buku">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">table_view</i>
-                        </div>
-                        <span class="nav-link-text ms-1">kondisi buku</span>
-                    </a>
-                </li>
+                <?php $Anggota = in_array($page, ['anggota', 'pendaftaran', 'anggota_request']); ?>
 
                 <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'genre')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=genre">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">table_view</i>
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center
+        <?= $Anggota ? 'active bg-gradient-primary' : '' ?>" data-bs-toggle="collapse" href="#menuAnggota"
+                        role="button" aria-expanded="<?= $Anggota ? 'true' : 'false' ?>" aria-controls="menuAnggota">
+                        <div class="d-flex align-items-center">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">group</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Anggota</span>
                         </div>
-                        <span class="nav-link-text ms-1">Genre</span>
                     </a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'penulis')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=penulis">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">receipt_long</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Penulis</span>
-                    </a>
-                </li>
+                    <div class="collapse <?= $Anggota ? 'show' : '' ?>" id="menuAnggota">
+                        <ul class="nav ms-4">
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'anggota' ? 'active' : '' ?>"
+                                    href="app?page=anggota">
+                                    Data Anggota
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'anggota')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=anggota">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">receipt_long</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Anggota</span>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'pendaftaran' ? 'active' : '' ?>"
+                                    href="app?page=pendaftaran">
+                                    Permohonan pendaftaran
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white <?php if ($page == 'anggota_request')
-                        echo 'active bg-gradient-primary'; ?>" href="app?page=anggota_request">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">receipt_long</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Anggota request</span>
-                    </a>
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'anggota_request' ? 'active' : '' ?>"
+                                    href="app?page=anggota_request">
+                                    Permohonan ubah profile
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-white" href="logout" class="nav-link text-body font-weight-bold px-0">
-                        <i class="material-icons opacity-10">Dasbor</i>
+                        <i class="material-icons opacity-10">logout</i>
                         <span class="nav-link-text ms-1">Keluar</span>
                     </a>
                 </li>
@@ -111,4 +138,3 @@
         </div>
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <!-- Navbar -->

@@ -196,7 +196,6 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
 
         </div>
     </div>
-
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Daftar Buku</h5>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
