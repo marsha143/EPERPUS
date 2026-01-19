@@ -97,6 +97,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'admin' ? 'active' : '' ?>"
+                                    href="app?page=pengaturan_denda">
+                                    pengaturan denda
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-white <?= ($page=='anggota_request' && $view=='pendaftaran') ? 'active' : '' ?>"
                                     href="app?page=anggota_request&view=pendaftaran">
                                     Permohonan pendaftaran
