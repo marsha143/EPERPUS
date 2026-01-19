@@ -28,6 +28,7 @@
 <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
 </head>
@@ -178,6 +179,73 @@ footer a:hover {
 .text-pink {
     color: #e91e63 ;
 }
+.navbar-nav .nav-link {
+    position: relative;
+    z-index: 1;
+}
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #ffd6df, #fbe4ea);
+}
+
+.hero-card {
+    background: rgba(255,255,255,0.85);
+    padding: 50px 60px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 700px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    animation: fadeUp 1s ease;
+}
+
+.hero-card h1 {
+    font-size: 36px;
+    color: #b06b78;
+    margin-bottom: 5px;
+}
+
+.hero-card h2 {
+    font-size: 24px;
+    color: #c38c98;
+    margin-bottom: 20px;
+}
+
+.hero-card p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.btn-daftar {
+    display: inline-block;
+    background: #d87c8c;
+    color: #fff;
+    padding: 14px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-daftar:hover {
+    background: #c56a79;
+    transform: translateY(-3px);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 </style>
 </head>
 

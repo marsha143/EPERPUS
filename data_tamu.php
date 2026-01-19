@@ -1,10 +1,11 @@
-<?php
+<?php 
 include("./config/db.php");
 include('./admin/layouts/header.php');
 
 if (isset($_POST['simpan'])) {
 
     $nim_nidn = trim($_POST['nim_nidn'] ?? '');
+
     if ($nim_nidn === '') {
         echo "<script>
             alert('NIM / NIDN wajib diisi');
@@ -13,16 +14,20 @@ if (isset($_POST['simpan'])) {
         exit;
     }
 
-    $status = 'Tamu';
-    $redirect = 'pendaftaran?nim_nidn=' . urlencode($nim_nidn);
+    $status   = 'Tamu';
+    $redirect = 'landing_page';
 
-    $cek = mysqli_prepare($conn, "SELECT 1 FROM anggota WHERE nim_nidn = ? LIMIT 1");
+    $cek = mysqli_prepare($conn, "
+        SELECT 1 FROM anggota 
+        WHERE nim_nidn = ? 
+        LIMIT 1
+    ");
     mysqli_stmt_bind_param($cek, "s", $nim_nidn);
     mysqli_stmt_execute($cek);
     mysqli_stmt_store_result($cek);
 
     if (mysqli_stmt_num_rows($cek) > 0) {
-        $status = 'Anggota';
+        $status   = 'Anggota';
         $redirect = 'data_tamu';
     }
 
@@ -43,7 +48,6 @@ if (isset($_POST['simpan'])) {
     exit;
 }
 ?>
-
 
 
 <section>

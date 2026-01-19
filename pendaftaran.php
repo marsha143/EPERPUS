@@ -2,8 +2,6 @@
 include("./config/db.php");
 include('./admin/layouts/header.php');
 
-$nim_auto = $_GET['nim_nidn'] ?? '';
-
 if (isset($_POST['simpan'])) {
 
     $nama          = trim($_POST['nama']);
@@ -15,6 +13,9 @@ if (isset($_POST['simpan'])) {
     $email         = trim($_POST['email']);
     $username      = trim($_POST['username']);
     $password      = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+
+    $waktu_bergabung = date('Y-m-d H:i:s');
 
     $cek = mysqli_prepare($conn,
         "SELECT 1 FROM anggota WHERE nim_nidn = ?
@@ -70,6 +71,7 @@ if (isset($_POST['simpan'])) {
     }
     mysqli_stmt_close($cek);
 
+
     $cek = mysqli_prepare($conn,
         "SELECT 1 FROM anggota WHERE noHP = ?
          UNION
@@ -88,16 +90,15 @@ if (isset($_POST['simpan'])) {
     }
     mysqli_stmt_close($cek);
 
-
     $stmt = mysqli_prepare($conn, "
         INSERT INTO anggota_request
-        (nama, nim_nidn, program_studi, alamat, noHP, jenis_kelamin, email, username, password, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
+        (nama, nim_nidn, program_studi, alamat, noHP, jenis_kelamin, email, username, password, waktu_bergabung, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
     ");
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sssssssss",
+        "ssssssssss",
         $nama,
         $nim_nidn,
         $program_studi,
@@ -106,7 +107,8 @@ if (isset($_POST['simpan'])) {
         $jenis_kelamin,
         $email,
         $username,
-        $password
+        $password,
+        $waktu_bergabung
     );
 
     mysqli_stmt_execute($stmt);
@@ -120,72 +122,76 @@ if (isset($_POST['simpan'])) {
 ?>
 
 <form method="POST">
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h3>Pendaftaran Anggota (Request)</h3>
-        </div>
-
-        <div class="card-body row g-3">
-
-            <div class="col-md-6">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control" required>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>Pendaftaran Anggota</h3>
             </div>
 
-            <div class="col-md-6">
-                <label>Nama</label>
-                <input type="text" name="nama" class="form-control" required>
+            <div class="card-body row g-3">
+
+                <div class="col-md-6">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Nama</label>
+                    <input type="text" name="nama" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>NIM / NIDN</label>
+                    <input type="text" name="nim_nidn" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Program Studi</label>
+                    <select name="program_studi" class="form-control">
+                        <option value="">-- Pilih --</option>
+                        <option value="Teknologi Informasi">Teknologi Informasi</option>
+                        <option value="Bisnis Digital">Bisnis Digital</option>
+                        <option value="Bahasa Jepang">Bahasa Jepang</option>
+                        <option value="Mekatronika">Mekatronika</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>No HP</label>
+                    <input type="text" name="noHP" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Jenis Kelamin</label>
+                    <select name="jenis_kelamin" class="form-control">
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+
+                <div class="col-md-12">
+                    <label>Alamat</label>
+                    <input type="text" name="alamat" class="form-control">
+                </div>
+
             </div>
 
-            <div class="col-md-6">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" required>
+            <div class="card-footer text-end">
+                <button type="submit" name="simpan" class="btn btn-primary">
+                    Kirim Request
+                </button>
             </div>
-
-            <div class="col-md-6">
-                <label>NIM / NIDN</label>
-                <input type="text" name="nim_nidn"
-                       value="<?= htmlspecialchars($nim_auto) ?>"
-                       class="form-control" readonly required>
-            </div>
-
-            <div class="col-md-6">
-                <label>Program Studi</label>
-                <input type="text" name="program_studi" class="form-control">
-            </div>
-
-            <div class="col-md-6">
-                <label>No HP</label>
-                <input type="text" name="noHP" class="form-control">
-            </div>
-
-            <div class="col-md-6">
-                <label>Jenis Kelamin</label>
-                <select name="jenis_kelamin" class="form-control">
-                    <option value="">-- Pilih --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-            </div>
-
-            <div class="col-md-6">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control">
-            </div>
-
-            <div class="col-md-12">
-                <label>Alamat</label>
-                <input type="text" name="alamat" class="form-control">
-            </div>
-
-        </div>
-
-        <div class="card-footer text-end">
-            <button type="submit" name="simpan" class="btn btn-primary">
-                Kirim Request
-            </button>
         </div>
     </div>
-</div>
 </form>

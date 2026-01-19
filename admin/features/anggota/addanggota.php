@@ -72,9 +72,17 @@ if (isset($_POST['simpan'])) {
                                                 placeholder="masukkan nim/nidn" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="program_studi" class="form-label">program studi</label>
-                                            <input type="text" class="form-control" id="program_studi"
-                                                name="program_studi" placeholder="masukkan program studi" required>
+                                            <div class="col-md-6">
+                                                <label>Program Studi</label>
+                                                <select type="text" class="form-control" id="program_studi"
+                                                name="program_studi" required>
+                                                    <option value="">-- Pilih --</option>
+                                                    <option value="Teknologi Informasi">Teknologi Informasi</option>
+                                                    <option value="Bisnis Digital">Bisnis Digital</option>
+                                                    <option value="Bahasa Jepang">Bahasa Jepang</option>
+                                                    <option value="Mekatronika">Mekatronika</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="label" class="form-label">waktu bergabung</label>
@@ -92,9 +100,13 @@ if (isset($_POST['simpan'])) {
                                                 placeholder="masukkan noHP" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="jenis_kelamin" class="form-label">jenis kelamin</label>
-                                            <input type="text" class="form-control" id="jenis_kelamin"
-                                                name="jenis_kelamin" placeholder="masukkan jenis kelamin" required>
+                                                <label>Jenis Kelamin</label>
+                                                <select type="text" class="form-control" id="jenis_kelamin"
+                                                name="jenis_kelamin" required>
+                                                    <option value="">-- Pilih --</option>
+                                                    <option value="Laki-Laki">Laki-Laki</option>
+                                                    <option value="Perempuan">Perempuan</option>
+                                                </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="email" class="form-label">email</label>
@@ -124,5 +136,5 @@ if (isset($_POST['simpan'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-    </script>
+</script>
 </body>
