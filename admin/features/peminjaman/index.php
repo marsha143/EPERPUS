@@ -1,17 +1,23 @@
 <?php
-
+$q = mysqli_query($conn, "
+    SELECT nilai 
+    FROM pengaturan_denda 
+    WHERE nama_setting='denda_harian'
+");
+$setting = mysqli_fetch_assoc($q);
+$denda_harian = $setting['nilai'] ?? 0;
 if (isset($_GET['send_email_late'])) {
-  require 'send_email_late.php';
-  exit;
+    require 'send_email_late.php';
+    exit;
 }
 
 $filter = $_GET['filter'] ?? 'all';
 $where = '';
 
 if ($filter == 'dipinjam') {
-  $where = "WHERE p.status='Dipinjam'";
+    $where = "WHERE p.status='Dipinjam'";
 } elseif ($filter == 'dikembalikan') {
-  $where = "WHERE p.status='Dikembalikan'";
+    $where = "WHERE p.status='Dikembalikan'";
 }
 
 $sql = "SELECT p.*, 
@@ -30,8 +36,8 @@ $peminjaman = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 if (isset($_POST['cari'])) {
 
-  $keyword = $_POST['cari'];
-  $data = mysqli_query($conn, "
+    $keyword = $_POST['cari'];
+    $data = mysqli_query($conn, "
     SELECT 
     p.*,
       a.nama AS nama_anggota,
@@ -48,29 +54,29 @@ if (isset($_POST['cari'])) {
       OR b.judul_buku LIKE '%$keyword%'
       OR b.kode_buku LIKE '%$keyword%' 
   ");
-  $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
+    $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 }
 
 if (isset($_POST['kembalikan'])) {
-  $id = $_POST['id'];
+    $id = $_POST['id'];
 
-  $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
-  $p = mysqli_fetch_assoc($data);
+    $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
+    $p = mysqli_fetch_assoc($data);
 
-  $id_buku = $p['id_buku'];   
+    $id_buku = $p['id_buku'];
 
-  // ========= HITUNG DENDA ==========
-  $jatuh_tempo = $p['tanggal_kembali'];
-  $hari_ini = date('Y-m-d');
-  $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
-  if ($terlambat < 0)
-    $terlambat = 0;
+    // ========= HITUNG DENDA ==========
+    $jatuh_tempo = $p['tanggal_kembali'];
+    $hari_ini = date('Y-m-d');
+    $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
+    if ($terlambat < 0)
+        $terlambat = 0;
 
-  $denda = $terlambat * 500;
+    $denda = $terlambat * $denda_harian;
 
-  // ========= UPDATE PEMINJAMAN ==========
-  mysqli_query($conn, "
+    // ========= UPDATE PEMINJAMAN ==========
+    mysqli_query($conn, "
         UPDATE peminjaman SET 
         status='Dikembalikan',
         tanggal_dikembalikan='$hari_ini',
@@ -78,14 +84,14 @@ if (isset($_POST['kembalikan'])) {
         WHERE id='$id'
     ");
 
-  // ========= TAMBAHKAN STOK ==========
-  mysqli_query($conn, "UPDATE buku SET Qty = Qty + 1 WHERE id_buku='$id_buku'");
+    // ========= TAMBAHKAN STOK ==========
+    mysqli_query($conn, "UPDATE buku SET Qty = Qty + 1 WHERE id_buku='$id_buku'");
 
-  echo "<script>
+    echo "<script>
             alert('Buku berhasil dikembalikan!');
             window.location.href='app?page=peminjaman';
           </script>";
-  exit;
+    exit;
 }
 ?>
 
@@ -139,64 +145,62 @@ if (isset($_POST['kembalikan'])) {
                     <tbody>
 
                         <?php foreach ($peminjaman as $no => $p): ?>
-                        <tr>
-                            <td><?= $no + 1 ?></td>
-                            <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
-                            <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
-                            <td><?= htmlspecialchars($p['judul_buku']) ?></td>
-                            <td><?= htmlspecialchars($p['kode_buku']) ?></td>
-                            <td>Rp.
-                                <?php
-                  $denda_harian = 500;
+                            <tr>
+                                <td><?= $no + 1 ?></td>
+                                <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
+                                <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
+                                <td><?= htmlspecialchars($p['judul_buku']) ?></td>
+                                <td><?= htmlspecialchars($p['kode_buku']) ?></td>
+                                <td>Rp.
+                                    <?php
+                                    if ($p['status'] == 'Dipinjam') {
+                                        $jatuh_tempo = $p['tanggal_kembali'];
+                                        $hari_ini = date('Y-m-d');
 
-                  if ($p['status'] == 'Dipinjam') {
-                    $jatuh_tempo = $p['tanggal_kembali'];
-                    $hari_ini = date('Y-m-d');
+                                        $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
+                                        if ($terlambat < 0)
+                                            $terlambat = 0;
 
-                    $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
-                    if ($terlambat < 0)
-                      $terlambat = 0;
+                                        $denda_berjalan = $terlambat * $denda_harian;
+                                    } else {
+                                        $denda_berjalan = $p['denda'];
+                                    }
+                                    echo $denda_berjalan;
+                                    ?>
+                                </td>
+                                <td><?= $p['tanggal_pinjam'] ?></td>
+                                <td><?= $p['tanggal_kembali'] ?></td>
+                                <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>
+                                <td>
+                                    <span
+                                        class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'bg-warning text-dark' : 'bg-success text-white' ?>"
+                                        disabled>
+                                        <?= $p['status'] ?>
+                                    </span>
+                                </td>
+                                <td>
 
-                    $denda_berjalan = $terlambat * $denda_harian;
-                  } else {
-                    $denda_berjalan = $p['denda'];
-                  }
-                  echo $denda_berjalan;
-                  ?>
-                            </td>
-                            <td><?= $p['tanggal_pinjam'] ?></td>
-                            <td><?= $p['tanggal_kembali'] ?></td>
-                            <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>
-                            <td>
-                                <span
-                                    class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'bg-warning text-dark' : 'bg-success text-white' ?>"
-                                    disabled>
-                                    <?= $p['status'] ?>
-                                </span>
-                            </td>
-                            <td>
+                                    <?php
+                                    $jatuh_tempo = $p['tanggal_kembali'];
+                                    $hari_ini = date('Y-m-d');
+                                    $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
+                                    $telat = $terlambat > 0;
+                                    ?>
+                                    <?php if ($p['status'] == 'Dipinjam'): ?>
 
-                                <?php
-                  $jatuh_tempo = $p['tanggal_kembali'];
-                  $hari_ini = date('Y-m-d');
-                  $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
-                  $telat = $terlambat > 0;
-                  ?>
-                                <?php if ($p['status'] == 'Dipinjam'): ?>
+                                        <!-- Tombol Kembalikan -->
+                                        <form method="post" style="display:inline;"
+                                            onsubmit="return confirm('Kembalikan buku ini? Denda: Rp <?= number_format($denda_berjalan) ?>');">
+                                            <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                                            <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
+                                        </form>
 
-                                <!-- Tombol Kembalikan -->
-                                <form method="post" style="display:inline;"
-                                    onsubmit="return confirm('Kembalikan buku ini? Denda: Rp <?= number_format($denda_berjalan) ?>');">
-                                    <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                    <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
-                                </form>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
+                                    <?php endif; ?>
 
-                                <?php else: ?>
-                                <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
-                                <?php endif; ?>
-
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

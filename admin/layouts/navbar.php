@@ -42,7 +42,7 @@
                     </a>
                 </li>
 
-                <?php $Buku = in_array($page, ['buku', 'kondisi_buku', 'genre', 'penulis']);?>
+                <?php $Buku = in_array($page, ['buku', 'kondisi_buku', 'genre', 'penulis']); ?>
                 <li class="nav-item">
                     <a class="nav-link text-white d-flex justify-content-between align-items-center
         <?= $Buku ? 'active bg-gradient-primary' : '' ?>" data-bs-toggle="collapse" href="#menuBuku" role="button"
@@ -108,6 +108,12 @@
                                 <a class="nav-link text-white <?= $page == 'anggota' ? 'active' : '' ?>"
                                     href="app?page=anggota">
                                     Data Anggota
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white <?= $page == 'anggota' ? 'active' : '' ?>"
+                                    href="app?page=pengaturan_denda">
+                                    Setting denda
                                 </a>
                             </li>
 

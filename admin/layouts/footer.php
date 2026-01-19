@@ -70,7 +70,7 @@
     const header = document.querySelector('.page-header');
     if (header && typeof debounce === "function") {
         window.addEventListener('scroll', debounce(() => {
-            header.style.transform = `translate3d(0, ${ window.scrollY / 3 }px, 0)`;
+            header.style.transform = `translate3d(0, ${window.scrollY / 3}px, 0)`;
         }, 6));
     }
 </script>
@@ -182,7 +182,7 @@
 
 
 </script>
-
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
 
 </body>
 

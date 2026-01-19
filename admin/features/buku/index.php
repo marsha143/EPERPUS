@@ -1,5 +1,18 @@
 <?php
-$querydata = "SELECT *, penulis.nama_penulis, genre.jenis_genre FROM buku LEFT JOIN penulis ON penulis.id = buku.id_penulis LEFT JOIN genre ON genre.id = buku.id_genre";
+$querydata = "
+SELECT 
+    buku.*,
+    penulis.nama_penulis,
+    genre.jenis_genre,
+    COUNT(stok_buku.id_stok) AS Qty
+FROM buku
+LEFT JOIN penulis ON penulis.id = buku.id_penulis
+LEFT JOIN genre ON genre.id = buku.id_genre
+LEFT JOIN stok_buku 
+    ON stok_buku.id_buku = buku.id_buku
+    AND stok_buku.id_kondisi = 2
+GROUP BY buku.id_buku
+";
 $data = mysqli_query($conn, $querydata);
 $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
@@ -36,22 +49,6 @@ if (isset($_GET['id_buku'])) {
     $data_qty = mysqli_fetch_assoc($hasil);
     if (!$data_qty) {
         header("Location: app");
-    }
-}
-if (isset($_POST['+'])) {
-    $id_buku = (int) $_POST['id_buku'];
-    $query_qty = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku = $id_buku");
-    $qty_query = mysqli_fetch_assoc($query_qty);
-    $qty_tambah = $qty_query['Qty'] + 1;
-
-    $query = "UPDATE buku SET `Qty`='$qty_tambah' ,`updated_at`=NOW() WHERE `id_buku`='$id_buku'";
-    if (mysqli_query($conn, $query)) {
-        echo "
-            <script> 
-                alert('data berhasil diubah.');
-                window.location.href = 'app?page=buku';
-            </script>
-            ";
     }
 }
 ?>
@@ -114,8 +111,10 @@ if (isset($_POST['+'])) {
                                         <form action="" method="POST" style="display:inline;">
                                             <td><?= $b['Qty'] ?> Pcs <input type="hidden" name="id_buku"
                                                     value="<?= $b['id_buku'] ?>">
-                                                <button type="submit" name="+"
-                                                    class="btn btn-link p-0 text-success fw-bold fs-5">+</button>
+                                                <a href="app?page=buku&view=view_stok&id_buku=<?= $b['id_buku'] ?>"
+                                                    class="btn btn-success btn-sm">
+                                                    Lihat Stok
+                                                </a>
                                             </td>
                                         </form>
                                         <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"

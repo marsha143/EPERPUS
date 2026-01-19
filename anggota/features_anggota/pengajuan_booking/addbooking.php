@@ -1,4 +1,5 @@
 <?php
+
 // ambil id anggota dari session login
 $id_anggota = $_SESSION['user']['id'] ?? 0;
 
@@ -16,12 +17,33 @@ if (isset($_POST['simpan'])) {
     $result = mysqli_query($conn, $query);
 
     if ($result) {
+        // ambil data anggota + buku
+        $data_email = mysqli_fetch_assoc(mysqli_query($conn, "
+        SELECT 
+            a.nama,
+            a.nim_nidn,
+            a.email,
+            b.judul_buku
+        FROM anggota a
+        JOIN buku b ON b.id_buku = '$id_buku'
+        WHERE a.id_anggota = '$id_anggota'
+    "));
+
+        $nama_anggota = $data_email['nama'];
+        $nim_nidn = $data_email['nim_nidn'];
+        $judul_buku = $data_email['judul_buku'];
+        $waktu_booking = date('Y-m-d H:i:s');
+
+        $admin_result = mysqli_query($conn, "SELECT email FROM admin");
+
+        include "send_email_admin.php";
+
         echo "
-        <script>
+    <script>
         alert('Booking berhasil dibuat (berlaku 24 jam)');
         window.location.href = 'app_anggota?page=pengajuan_booking'
-        </script>
-        ";
+    </script>
+    ";
     } else {
         echo "
         <script>
@@ -29,6 +51,7 @@ if (isset($_POST['simpan'])) {
         </script>
         ";
     }
+    
 }
 
 // ambil daftar buku
@@ -44,7 +67,6 @@ $buku = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM buku"), MYSQLI_ASSOC
         <div class="card-body">
             <form action="" method="POST">
 
-                <!-- HIDDEN ID ANGGOTA -->
                 <input type="hidden" name="id_anggota" value="<?= $id_anggota ?>">
 
                 <div class="mb-3">
@@ -68,11 +90,3 @@ $buku = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM buku"), MYSQLI_ASSOC
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.js-example-basic-single').select2();
-    });
-</script>
