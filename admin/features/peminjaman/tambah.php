@@ -5,103 +5,154 @@ if (isset($_POST['simpan'])) {
   $tanggal_pinjam = $_POST['tanggal_pinjam'];
   $tanggal_kembali = $_POST['tanggal_kembali'];
 
-  // 1. CEK QTY BUKU
-  $cekQty = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku = '$id_buku'");
-  $b = mysqli_fetch_assoc($cekQty);
 
-  if ($b['Qty'] <= 0) {
+  // [GANTI] CEK STOK DARI stok_buku
+
+  $cekStok = mysqli_query($conn, "
+    SELECT id_stok, no_buku_kampus 
+    FROM stok_buku
+    WHERE id_buku = '$id_buku'
+      AND id_kondisi = 2
+    LIMIT 1
+  ");
+
+  if (mysqli_num_rows($cekStok) == 0) {
     echo "
-        <script>
-        alert('Gagal meminjam! Stok buku habis (Qty 0).');
+      <script>
+        alert('Stok buku tidak tersedia!');
         window.location.href = 'app?page=peminjaman&view=tambah';
-        </script>";
+      </script>";
     exit;
   }
 
-  // 2. SIMPAN PEMINJAMAN
-  $query = "INSERT INTO peminjaman (id_buku, id_anggota, tanggal_pinjam, tanggal_kembali)
-              VALUES ('$id_buku','$id_anggota','$tanggal_pinjam','$tanggal_kembali')";
+  $stok = mysqli_fetch_assoc($cekStok);
+  $id_stok = $stok['id_stok'];
+  $no_buku_kampus = $stok['no_buku_kampus'];
+
+
+  // [GANTI] SIMPAN PEMINJAMAN
+
+  $query = "INSERT INTO peminjaman 
+    (id_buku, id_anggota, id_stok, no_buku_kampus, tanggal_pinjam, tanggal_kembali)
+    VALUES
+    ('$id_buku','$id_anggota','$id_stok','$no_buku_kampus','$tanggal_pinjam','$tanggal_kembali')
+  ";
+
   $result = mysqli_query($conn, $query);
 
   if ($result) {
 
-    // 3. KURANGI QTY BUKU
-    mysqli_query($conn, "UPDATE buku SET Qty = Qty - 1 WHERE id_buku = '$id_buku'");
+  
+    // [TAMBAH] UPDATE STATUS STOK
+   
+    $query = "INSERT INTO peminjaman 
+(id_buku, id_anggota, id_stok, no_buku_kampus, tanggal_pinjam, tanggal_kembali, status)
+VALUES
+('$id_buku','$id_anggota','$id_stok','$no_buku_kampus','$tanggal_pinjam','$tanggal_kembali','Dipinjam')
+";
+
+    // UPDATE KONDISI BUKU → DIPINJAM (id_kondisi = 3)
+    mysqli_query($conn, "
+  UPDATE stok_buku
+  SET id_kondisi = 3
+  WHERE id_stok = '$id_stok'
+");
 
     echo "
-        <script>
-        alert('Peminjaman berhasil! Stok buku dikurangi 1.');
+      <script>
+        alert('Peminjaman berhasil!');
         window.location.href = 'app?page=peminjaman';
-        </script>";
+      </script>";
     exit;
 
   } else {
     echo "
-        <script>
-        alert('Peminjaman gagal disimpan.');
-        </script>
-        ";
+      <script>
+        alert('Peminjaman gagal!');
+      </script>
+    ";
   }
 }
 
+// DATA DROPDOWN (TETAP)
 
-$data = mysqli_query($conn, "SELECT * FROM buku");
-$buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
-
-$data = mysqli_query($conn, "SELECT * FROM anggota");
-$anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
+$buku = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM buku"), MYSQLI_ASSOC);
+$anggota = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM anggota"), MYSQLI_ASSOC);
 ?>
 
 <div class="container mt-4">
   <div class="card">
     <div class="card-header">
-      <h5 class="mb-0">Form Peminjaman</h5>
+      <h5 class="mb-0">Form Peminjaman Buku</h5>
     </div>
+
     <div class="card-body">
       <form action="" method="POST">
+
+        <!-- ANGGOTA -->
         <div class="mb-3">
           <label class="form-label">Anggota</label>
           <select name="id_anggota" class="form-select js-example-basic-single" required>
             <option value="" hidden>-- Pilih Anggota --</option>
             <?php foreach ($anggota as $a): ?>
-              <option value="<?= $a['id_anggota'] ?>"><?= $a['nim_nidn'] ?> - <?= $a['nama'] ?>
+              <option value="<?= $a['id_anggota'] ?>">
+                <?= $a['nim_nidn'] ?> - <?= $a['nama'] ?>
               </option>
             <?php endforeach; ?>
           </select>
         </div>
+
+        <!-- BUKU -->
         <div class="mb-3">
           <label class="form-label">Buku</label>
           <select name="id_buku" class="form-select js-example-basic-single" required>
             <option value="" hidden>-- Pilih Buku --</option>
             <?php foreach ($buku as $b): ?>
-              <option value="<?= $b['id_buku'] ?>"><?= $b['kode_buku'] ?> - <?= $b['judul_buku'] ?>
+              <option value="<?= $b['id_buku'] ?>">
+                <?= $b['kode_buku'] ?> - <?= $b['judul_buku'] ?>
               </option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="row g-3">
+
+        <!-- TANGGAL -->
+        <div class="row g-3 mb-3">
           <div class="col-md-6">
             <label class="form-label">Tanggal Pinjam</label>
             <input type="date" name="tanggal_pinjam" class="form-control" value="<?= date('Y-m-d') ?>" required>
           </div>
+
           <div class="col-md-6">
             <label class="form-label">Tanggal Kembali (Jatuh Tempo)</label>
             <input type="date" name="tanggal_kembali" class="form-control"
               value="<?= date('Y-m-d', strtotime('+7 days')) ?>" required>
           </div>
         </div>
+
+        <!-- BUTTON -->
         <div class="d-flex gap-2">
-          <button class="btn btn-primary" type="submit" name="simpan">Simpan</button>
-          <a href="app?page=peminjaman" class="btn btn-outline-secondary">Batal</a>
+          <button type="submit" name="simpan" class="btn btn-primary">
+            Simpan
+          </button>
+          <a href="app?page=peminjaman" class="btn btn-outline-secondary">
+            Batal
+          </a>
         </div>
+
       </form>
     </div>
   </div>
 </div>
+
+<!-- SELECT2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
   $(document).ready(function () {
-    $('.js-example-basic-single').select2();
+    $('.js-example-basic-single').select2({
+      width: '100%'
+    });
   });
 </script>

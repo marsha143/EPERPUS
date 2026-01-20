@@ -20,17 +20,20 @@ if ($filter == 'dipinjam') {
     $where = "WHERE p.status='Dikembalikan'";
 }
 
-$sql = "SELECT p.*, 
+$sql = "SELECT 
+        p.*, 
         a.nama AS nama_anggota, 
-        a.nim_nidn AS nim_nidn, 
-        b.judul_buku AS judul_buku,
-        b.kode_buku AS kode_buku, 
-        a.email AS email
-        FROM peminjaman p
-        JOIN anggota a ON a.id_anggota = p.id_anggota
-        JOIN buku b ON b.id_buku = p.id_buku
-        $where
-        ORDER BY p.id DESC";
+        a.nim_nidn, 
+        b.judul_buku,
+        b.kode_buku, 
+        sb.no_buku_kampus,
+        a.email
+    FROM peminjaman p
+    JOIN anggota a ON a.id_anggota = p.id_anggota
+    JOIN stok_buku sb ON sb.id_stok = p.id_stok
+    JOIN buku b ON b.id_buku = sb.id_buku
+    $where
+    ORDER BY p.id DESC";
 $result = mysqli_query($conn, $sql);
 $peminjaman = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -39,21 +42,23 @@ if (isset($_POST['cari'])) {
     $keyword = $_POST['cari'];
     $data = mysqli_query($conn, "
     SELECT 
-    p.*,
-      a.nama AS nama_anggota,
-      a.nim_nidn AS nim_nidn,
-      b.judul_buku AS judul_buku,
-      b.kode_buku AS kode_buku,
-      a.email AS email
+        p.*,
+        a.nama AS nama_anggota,
+        a.nim_nidn,
+        b.judul_buku,
+        b.kode_buku,
+        sb.no_buku_kampus,
+        a.email
     FROM peminjaman p
     JOIN anggota a ON a.id_anggota = p.id_anggota
-    JOIN buku b ON b.id_buku = p.id_buku
+    JOIN stok_buku sb ON sb.id_stok = p.id_stok
+    JOIN buku b ON b.id_buku = sb.id_buku
     WHERE 
-      a.nama LIKE '%$keyword%'
-      OR a.nim_nidn LIKE '%$keyword%' 
-      OR b.judul_buku LIKE '%$keyword%'
-      OR b.kode_buku LIKE '%$keyword%' 
-  ");
+        a.nama LIKE '%$keyword%'
+        OR a.nim_nidn LIKE '%$keyword%' 
+        OR b.judul_buku LIKE '%$keyword%'
+        OR b.kode_buku LIKE '%$keyword%'
+");
     $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 }
@@ -64,34 +69,39 @@ if (isset($_POST['kembalikan'])) {
     $data = mysqli_query($conn, "SELECT * FROM peminjaman WHERE id='$id'");
     $p = mysqli_fetch_assoc($data);
 
-    $id_buku = $p['id_buku'];
+    if (!$p) {
+        die('Data peminjaman tidak ditemukan');
+    }
 
     // ========= HITUNG DENDA ==========
     $jatuh_tempo = $p['tanggal_kembali'];
     $hari_ini = date('Y-m-d');
+
     $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
-    if ($terlambat < 0)
-        $terlambat = 0;
+    if ($terlambat < 0) $terlambat = 0;
 
     $denda = $terlambat * $denda_harian;
 
-    // ========= UPDATE PEMINJAMAN ==========
+    $id_stok = $p['id_stok'];
+
+    // ========= UPDATE PEMINJAMAN (INI YANG HILANG) ==========
     mysqli_query($conn, "
-        UPDATE peminjaman SET 
-        status='Dikembalikan',
-        tanggal_dikembalikan='$hari_ini',
-        denda='$denda'
-        WHERE id='$id'
+        UPDATE peminjaman SET
+            status = 'Dikembalikan',
+            tanggal_dikembalikan = '$hari_ini',
+            denda = '$denda'
+        WHERE id = '$id'
     ");
 
-    // ========= TAMBAHKAN STOK ==========
-    mysqli_query($conn, "UPDATE buku SET Qty = Qty + 1 WHERE id_buku='$id_buku'");
+    // ========= UPDATE KONDISI BUKU ==========
+    mysqli_query($conn, "
+        UPDATE stok_buku
+        SET id_kondisi = 2
+        WHERE id_stok = '$id_stok'
+    ");
 
-    echo "<script>
-            alert('Buku berhasil dikembalikan!');
-            window.location.href='app?page=peminjaman';
-          </script>";
-    exit;
+    // OPTIONAL: refresh halaman
+    echo "<script>window.location.href='app?page=peminjaman';</script>";
 }
 ?>
 
@@ -134,6 +144,7 @@ if (isset($_POST['kembalikan'])) {
                             <th>NIM/NIDN</th>
                             <th>Judul Buku</th>
                             <th>Kode Buku</th>
+                            <th>no_buku_kampus</th>
                             <th>Denda</th>
                             <th>Tgl Pinjam</th>
                             <th>Jatuh Tempo</th>
@@ -151,6 +162,7 @@ if (isset($_POST['kembalikan'])) {
                                 <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
                                 <td><?= htmlspecialchars($p['judul_buku']) ?></td>
                                 <td><?= htmlspecialchars($p['kode_buku']) ?></td>
+                                <td><?= htmlspecialchars($p['no_buku_kampus']) ?></td>
                                 <td>Rp.
                                     <?php
                                     if ($p['status'] == 'Dipinjam') {

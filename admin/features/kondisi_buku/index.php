@@ -1,108 +1,115 @@
 <?php
-$data = mysqli_query($conn, "
-    SELECT 
-        bk.id_kerusakan,
-        b.judul_buku,
-        kb.jenis_kondisi,
-        bk.created_at
-    FROM buku_kondisi bk
-    JOIN buku b ON bk.id_buku = b.id_buku
-    JOIN kondisi_buku kb ON bk.id_kondisi = kb.id
-    ORDER BY bk.created_at DESC
+$q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku");
+$q_list = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
+$q_stok = mysqli_query($conn, "
+    SELECT
+        stok_buku.id_stok,
+        stok_buku.no_buku_kampus,
+        stok_buku.id_kondisi,
+        kondisi_buku.jenis_kondisi,
+        buku.id_buku,
+        buku.judul_buku
+    FROM stok_buku
+    JOIN buku ON buku.id_buku = stok_buku.id_buku
+    JOIN kondisi_buku ON kondisi_buku.id = stok_buku.id_kondisi
+    ORDER BY buku.judul_buku ASC
 ");
+$stok = mysqli_fetch_all($q_stok, MYSQLI_ASSOC);
 
-$kondisiBuku = mysqli_fetch_all($data, MYSQLI_ASSOC);
+if (isset($_POST['update_kondisi'])) {
+    $id_stok = (int) $_POST['id_stok'];
+    $id_kondisi = (int) $_POST['id_kondisi'];
 
-if (isset($_POST['delete'])) {
-    $id = $_POST['id_kerusakan'];
+    mysqli_query($conn, "
+        UPDATE stok_buku 
+        SET id_kondisi = $id_kondisi 
+        WHERE id_stok = $id_stok
+    ");
 
-    $query = "DELETE FROM buku_kondisi WHERE id_kerusakan = $id";
-    $result = mysqli_query($conn, $query);
+    echo "<script>
+        alert('Kondisi buku berhasil diperbarui');
+        window.location.href='app?page=kondisi_buku';
+    </script>";
+    exit;
+}
 
-    if ($result) {
-        echo "
-        <script>
-        alert('Data berhasil dihapus');
-        window.location.href = 'app?page=kondisi_buku';
-        </script>
-        ";
-    } else {
-        echo "<script>alert('Data gagal dihapus');</script>";
-    }
+if (isset($_POST['hapus'])) {
+    $id_stok = (int) $_POST['id_stok'];
+
+    mysqli_query($conn, "DELETE FROM stok_buku WHERE id_stok=$id_stok");
+
+    echo "<script>
+        alert('Stok berhasil dihapus');
+        window.location.href='app?page=kondisi_buku';
+    </script>";
+    exit;
 }
 ?>
 
+
 <div class="container mt-5">
     <div class="card">
-
-        <!-- HEADER -->
         <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h3>Data Kondisi Buku</h3>
-                </div>
-
-                <div class="col-md-6 text-end">
-                    <a href="app?page=kondisi_buku&view=addbukukondisi"
-                       class="btn btn-success btn-sm">
-                        <i class="fa-solid fa-book-medical"></i> Kondisikan Buku
-                    </a>
-
-                    <a href="app?page=kondisi_buku&view=addkondisi"
-                       class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-plus"></i> Tambah Kondisi
-                    </a>
-                </div>
-            </div>
+            <h5>Data Kondisi Buku (Seluruh Stok)</h5>
+            <a href="app?page=kondisi_buku&view=addkondisi" class="btn btn-success btn-sm">
+                + Tambah kondisi
+            </a>
+            <a href="app?page=kondisi_buku&view=add_jenis_kondisi" class="btn btn-success btn-sm">
+                + Tambah jenis kondisi
+            </a>
         </div>
 
-        <!-- BODY -->
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-light">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Judul Buku</th>
+                        <th>No Buku Kampus</th>
+                        <th>Kondisi</th>
+                        <th width="180">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($stok as $s): ?>
                         <tr>
-                            <th>Judul buku</th>
-                            <th>Kondisi</th>
-                            <th>Tanggal</th>
-                            <th width="140px">Aksi</th>
+                            <td>
+                                <a href="app?page=buku&view=view_stok&id_buku=<?= $s['id_buku'] ?>">
+                                    <?= $s['judul_buku'] ?>
+                                </a>
+                            </td>
+                            <td><?= $s['no_buku_kampus'] ?></td>
+                            <td>
+                                <!-- Ubah kondisi -->
+                                <form method="post">
+                                    <input type="hidden" name="id_stok" value="<?= $s['id_stok'] ?>">
+
+                                    <select name="id_kondisi" class="form-select form-select-sm"
+                                        onchange="this.form.submit()">
+
+                                        <?php foreach ($q_list as $k): ?>
+                                            <option value="<?= $k['id'] ?>" <?= $k['id'] == $s['id_kondisi'] ? 'selected' : '' ?>>
+                                                <?= $k['jenis_kondisi'] ?>
+                                            </option>
+                                        <?php endforeach ?>
+
+                                    </select>
+
+                                    <input type="hidden" name="update_kondisi">
+                                </form>
+                            </td>
+                            <td>
+                                <!-- Hapus -->
+                                <form method="post" style="display:inline;" onsubmit="return confirm('Hapus stok ini?')">
+                                    <input type="hidden" name="id_stok" value="<?= $s['id_stok'] ?>">
+                                    <button class="btn btn-danger btn-sm" name="hapus">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-
-                    <tbody>
-                        <?php if (count($kondisiBuku) == 0): ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">
-                                    Belum ada data kondisi buku
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-
-                        <?php foreach ($kondisiBuku as $k): ?>
-                            <tr>
-                                <td><?= $k['judul_buku'] ?></td>
-                                <td>
-                                    <span class="badge 
-                                        <?= strtolower($k['jenis_kondisi']) == 'rusak' ? 'bg-danger' : 'bg-success' ?>">
-                                        <?= ucfirst($k['jenis_kondisi']) ?>
-                                    </span>
-                                </td>
-                                <td><?= date('d-m-Y H:i', strtotime($k['created_at'])) ?></td>
-                                <td>
-                                    <form method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        <input type="hidden" name="id_kerusakan" value="<?= $k['id_kerusakan'] ?>">
-                                        <button name="delete" class="btn btn-danger btn-sm">
-                                            <i class="fa-solid fa-trash"></i> Hapus
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-
-                </table>
-            </div>
+                    <?php endforeach ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

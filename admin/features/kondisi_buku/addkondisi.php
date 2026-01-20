@@ -1,53 +1,69 @@
 <?php
+$q_buku = mysqli_query($conn, "SELECT id_buku, judul_buku FROM buku ORDER BY judul_buku");
+$buku = mysqli_fetch_all($q_buku, MYSQLI_ASSOC);
+
+$q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku");
+$kondisi = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
+
 if (isset($_POST['simpan'])) {
-    $jenis_kondisi = $_POST['jenis_kondisi'];
+    $id_buku = (int) $_POST['id_buku'];
+    $no_buku = $_POST['no_buku_kampus'];
+    $id_kondisi = (int) $_POST['id_kondisi'];
 
-    $query = "INSERT INTO kondisi_buku (jenis_kondisi) VALUES ('$jenis_kondisi')";
-    $result = mysqli_query($conn, $query);
+    mysqli_query($conn, "
+        INSERT INTO stok_buku (id_buku, no_buku_kampus, id_kondisi)
+        VALUES ($id_buku, '$no_buku', $id_kondisi)
+    ");
 
-    if ($result) {
-        echo "
-        <script>
-            alert('kondisi_buku berhasil disimpan');
-            window.location.href = 'app?page=kondisi_buku'
-        </script>
-        ";
-    } else {
-        echo "
-        <script>
-            alert('kondisi_buku gagal disimpan');
-        </script>
-        ";
-    }
+    echo "<script>
+        alert('Stok buku berhasil ditambahkan');
+        window.location.href='app?page=kondisi_buku';
+    </script>";
+    exit;
 }
 ?>
 
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">
-            <h3>Tambah kondisi buku</h3>
+            <h5>Tambah Kondisi Buku</h5>
         </div>
 
-        <form action="" method="POST">
-            <div class="card-body">
-
+        <div class="card-body">
+            <form method="post">
                 <div class="mb-3">
-                    <label class="form-label">Nama kondisi buku</label>
-                    <input type="text" name="jenis_kondisi" class="form-control" placeholder="Masukkan nama kondisi_buku"
-                        required>
+                    <label>Judul Buku</label>
+                    <select name="id_buku" class="form-select" required>
+                        <option value="">-- Pilih Buku --</option>
+                        <?php foreach ($buku as $b): ?>
+                            <option value="<?= $b['id_buku'] ?>">
+                                <?= $b['judul_buku'] ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
                 </div>
 
-            </div>
+                <div class="mb-3">
+                    <label>No Buku Kampus</label>
+                    <input type="text" name="no_buku_kampus" class="form-control" required>
+                </div>
 
-            <div class="card-footer text-end">
-                <button type="submit" name="simpan" class="btn btn-primary">
-                    <i class="fa-solid fa-download"></i> Simpan
-                </button>
+                <div class="mb-3">
+                    <label>Kondisi Buku</label>
+                    <select name="id_kondisi" class="form-select" required>
+                        <?php foreach ($kondisi as $k): ?>
+                            <option value="<?= $k['id'] ?>">
+                                <?= $k['jenis_kondisi'] ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
 
-                <a href="app?page=kondisi_buku" class="btn btn-secondary">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali
+                <button class="btn btn-primary" name="simpan">Simpan</button>
+                <a href="app?page=kondisi_buku" class="btn btn-outline-secondary">
+                    Batal
                 </a>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
