@@ -25,61 +25,136 @@ if (isset($_POST['acc_booking'])) {
     $id_booking = $_POST['id'];
     $id_anggota = $_POST['id_anggota'];
     $id_buku = $_POST['id_buku'];
-    $_GET['id_booking'] = $id_booking;
-    include "send_email_acc.php";
-    // CEK STOK
-    $cek = mysqli_query($conn, "SELECT Qty FROM buku WHERE id_buku='$id_buku'");
-    $stok = mysqli_fetch_assoc($cek)['Qty'];
 
-    if ($stok <= 0) {
+
+    // CARI STOK BUKU YANG LAYAK PAKAI
+
+    $cekStok = mysqli_query($conn, "
+        SELECT id_stok, no_buku_kampus
+        FROM stok_buku
+        WHERE id_buku = '$id_buku'
+          AND id_kondisi = 2
+        LIMIT 1
+    ");
+
+    if (mysqli_num_rows($cekStok) == 0) {
         echo "<script>
-                alert('Stok habis! Buku tidak bisa dipinjam.');
-                window.location.href='app?page=booking';
-              </script>";
+            alert('Stok buku tidak tersedia!');
+            window.location.href='app?page=booking';
+        </script>";
         exit;
     }
-    
 
-    // KURANGI STOK
-    mysqli_query($conn, "UPDATE buku SET Qty = Qty - 1 WHERE id_buku='$id_buku'");
+    $stok = mysqli_fetch_assoc($cekStok);
+    $id_stok = $stok['id_stok'];
+    $no_buku_kampus = $stok['no_buku_kampus'];
+
+    // ===== AMBIL DATA EMAIL SEBELUM BOOKING DIHAPUS =====
+    $qEmail = mysqli_query($conn, "
+    SELECT 
+        a.email,
+        a.nama,
+        bk.judul_buku
+    FROM booking b
+    JOIN anggota a ON a.id_anggota = b.id_anggota
+    JOIN buku bk ON bk.id_buku = b.id_buku
+    WHERE b.id = '$id_booking'
+");
+
+    $emailData = mysqli_fetch_assoc($qEmail);
 
     // MASUK PEMINJAMAN
+
     $today = date('Y-m-d');
     $jatuh_tempo = date('Y-m-d', strtotime('+7 days'));
 
     mysqli_query($conn, "
-        INSERT INTO peminjaman (id_buku, id_anggota, tanggal_pinjam, tanggal_kembali, status)
-        VALUES ('$id_buku', '$id_anggota', '$today', '$jatuh_tempo', 'Dipinjam')
+        INSERT INTO peminjaman (
+            id_buku,
+            id_anggota,
+            id_stok,
+            no_buku_kampus,
+            tanggal_pinjam,
+            tanggal_kembali,
+            status
+        ) VALUES (
+            '$id_buku',
+            '$id_anggota',
+            '$id_stok',
+            '$no_buku_kampus',
+            '$today',
+            '$jatuh_tempo',
+            'Dipinjam'
+        )
     ");
-    
+
+
+    // UPDATE KONDISI STOK → DIPINJAM
+
+    mysqli_query($conn, "
+        UPDATE stok_buku
+        SET id_kondisi = 3
+        WHERE id_stok = '$id_stok'
+    ");
+
 
     // HAPUS BOOKING
+
     mysqli_query($conn, "DELETE FROM booking WHERE id='$id_booking'");
+
+
+    // KIRIM EMAIL ACC
+    $email = $emailData['email'];
+    $nama = $emailData['nama'];
+    $judul = $emailData['judul_buku'];
+
+    include "send_email_acc.php";
+
     echo "<script>
-            alert('Booking di-ACC & stok dikurangi!');
-            window.location.href='app?page=booking';
-          </script>";
+        alert('Booking berhasil di-ACC dan masuk ke peminjaman');
+        window.location.href='app?page=booking';
+    </script>";
     exit;
-
 }
-
-
-
-// TOLAK BOOKING
 if (isset($_POST['kirim_tolak'])) {
     $id_booking = $_POST['id_booking'];
     $alasan = $_POST['alasan'];
 
-    // kirim email
-    $_POST['id_booking'] = $id_booking;
-    $_POST['alasan'] = $alasan;
+    // === AMBIL DATA EMAIL SEBELUM DIHAPUS ===
+    $qEmail = mysqli_query($conn, "
+        SELECT 
+            a.email,
+            a.nama,
+            bk.judul_buku
+        FROM booking b
+        JOIN anggota a ON a.id_anggota = b.id_anggota
+        JOIN buku bk ON bk.id_buku = b.id_buku
+        WHERE b.id = '$id_booking'
+    ");
+
+    $emailData = mysqli_fetch_assoc($qEmail);
+
+    if (!$emailData) {
+        echo "<script>
+            alert('Data booking tidak ditemukan!');
+            window.location.href='app?page=booking';
+        </script>";
+        exit;
+    }
+
+    // === SIAPKAN DATA EMAIL ===
+    $email = $emailData['email'];
+    $nama  = $emailData['nama'];
+    $judul = $emailData['judul_buku'];
+
+    // === KIRIM EMAIL TOLAK ===
     include "send_email_tolak.php";
 
-    // hapus booking
+    // === HAPUS BOOKING ===
     mysqli_query($conn, "DELETE FROM booking WHERE id='$id_booking'");
 
     echo "<script>
-        alert('Booking ditolak & email terkirim');
+        alert('Booking berhasil ditolak & email terkirim');
         window.location.href='app?page=booking';
     </script>";
     exit;
