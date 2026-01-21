@@ -29,7 +29,7 @@ if (isset($_POST['simpan'])) {
     if (mysqli_stmt_num_rows($cek) > 0) {
         echo "<script>
             alert('NIM / NIDN sudah terdaftar');
-            window.location.href='data_tamu';
+            window.history.back();
         </script>";
         exit;
     }

@@ -107,21 +107,38 @@ if (isset($_POST['kembalikan'])) {
 
 <div class="container mt-4">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Daftar Peminjaman</h5>
-            <div>
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h5 class="mb-0 fw-bold">Daftar Peminjaman</h5>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
                 <a href="app?page=peminjaman&send_email_late=1"
                     onclick="return confirm('Kirim notifikasi ke semua peminjaman terlambat?')"
-                    class="btn btn-danger btn-sm">
+                    class="btn btn-outline-danger btn-sm">
                     Kirim Notifikasi Terlambat
                 </a>
-                <a href="app?page=peminjaman&view=export_exel" class="btn btn-primary">Export Excel</a>
-                <a href="app?page=peminjaman&view=tambah" class="btn btn-primary btn-sm">+ Pinjam Buku</a>
-                <a href="app?page=peminjaman&filter=all" class="btn btn-secondary btn-sm">Semua</a>
-                <a href="app?page=peminjaman&filter=dipinjam" class="btn btn-warning btn-sm">Dipinjam</a>
-                <a href="app?page=peminjaman&filter=dikembalikan" class="btn btn-success btn-sm">Dikembalikan</a>
+
+                <a href="app?page=peminjaman&view=export_exel" class="btn btn-outline-secondary btn-sm">
+                    Export Excel
+                </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        Filter Status
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="app?page=peminjaman&filter=all">Semua</a></li>
+                        <li><a class="dropdown-item text-warning"
+                                href="app?page=peminjaman&filter=dipinjam">Dipinjam</a></li>
+                        <li><a class="dropdown-item text-success"
+                                href="app?page=peminjaman&filter=dikembalikan">Dikembalikan</a></li>
+                    </ul>
+                </div>
+                <a href="app?page=peminjaman&view=tambah" class="btn btn-primary btn-sm px-3">
+                    + Pinjam Buku
+                </a>
+
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-4 px-4">
                 <form class=" align-items-center" action="" role="search" method="POST">
@@ -177,40 +194,40 @@ if (isset($_POST['kembalikan'])) {
                                     }
                                     echo $denda_berjalan;
                                     ?>
-                                </td>
-                                <td><?= $p['tanggal_pinjam'] ?></td>
-                                <td><?= $p['tanggal_kembali'] ?></td>
-                                <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>
-                                <td>
-                                    <span
-                                        class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'bg-warning text-dark' : 'bg-success text-white' ?>"
-                                        disabled>
-                                        <?= $p['status'] ?>
-                                    </span>
-                                </td>
-                                <td>
+                            </td>
+                            <td><?= $p['tanggal_pinjam'] ?></td>
+                            <td><?= $p['tanggal_kembali'] ?></td>
+                            <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>
+                            <td>
+                                <span
+                                    class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'bg-warning text-dark' : 'bg-success text-white' ?>"
+                                    disabled>
+                                    <?= $p['status'] ?>
+                                </span>
+                            </td>
+                            <td>
 
-                                    <?php
+                                <?php
                                     $jatuh_tempo = $p['tanggal_kembali'];
                                     $hari_ini = date('Y-m-d');
                                     $terlambat = (strtotime($hari_ini) - strtotime($jatuh_tempo)) / 86400;
                                     $telat = $terlambat > 0;
                                     ?>
-                                    <?php if ($p['status'] == 'Dipinjam'): ?>
+                                <?php if ($p['status'] == 'Dipinjam'): ?>
 
-                                        <!-- Tombol Kembalikan -->
-                                        <form method="post" style="display:inline;"
-                                            onsubmit="return confirm('Kembalikan buku ini? Denda: Rp <?= number_format($denda_berjalan) ?>');">
-                                            <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                            <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
-                                        </form>
+                                <!-- Tombol Kembalikan -->
+                                <form method="post" style="display:inline;"
+                                    onsubmit="return confirm('Kembalikan buku ini? Denda: Rp <?= number_format($denda_berjalan) ?>');">
+                                    <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                                    <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
+                                </form>
 
-                                    <?php else: ?>
-                                        <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
-                                    <?php endif; ?>
+                                <?php else: ?>
+                                <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
+                                <?php endif; ?>
 
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
