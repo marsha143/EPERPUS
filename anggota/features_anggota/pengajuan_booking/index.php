@@ -5,7 +5,6 @@ $sql = "
 SELECT 
     bk.id,
     b.cover,
-    b.kode_buku,
     b.judul_buku,
     bk.waktu_booking 
 FROM booking bk
@@ -33,7 +32,6 @@ $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
                         <tr>
                             <th style="width:60px">No</th>
                             <th>Cover</th>
-                            <th>Kode Buku</th>
                             <th>Judul Buku</th>
                             <th style="min-width:150px">Tanggal Pengajuan</th>
                             <th style="min-width:140px">Status</th>
@@ -50,7 +48,6 @@ $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><img src="<?= $row['cover'] ?>" alt="cover" style="height:48px"></td>
-                                    <td><?= htmlspecialchars($row['kode_buku']) ?></td>
                                     <td><?= htmlspecialchars($row['judul_buku']) ?></td>
                                     <td><?= htmlspecialchars($row['waktu_booking']) ?></td>
                                     <td>

@@ -25,7 +25,7 @@ $sql = "SELECT
         a.nama AS nama_anggota, 
         a.nim_nidn, 
         b.judul_buku,
-        b.kode_buku, 
+         
         sb.no_buku_kampus,
         a.email
     FROM peminjaman p
@@ -46,7 +46,7 @@ if (isset($_POST['cari'])) {
         a.nama AS nama_anggota,
         a.nim_nidn,
         b.judul_buku,
-        b.kode_buku,
+        
         sb.no_buku_kampus,
         a.email
     FROM peminjaman p
@@ -57,7 +57,7 @@ if (isset($_POST['cari'])) {
         a.nama LIKE '%$keyword%'
         OR a.nim_nidn LIKE '%$keyword%' 
         OR b.judul_buku LIKE '%$keyword%'
-        OR b.kode_buku LIKE '%$keyword%'
+        OR LIKE '%$keyword%'
 ");
     $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
@@ -143,7 +143,6 @@ if (isset($_POST['kembalikan'])) {
                             <th>Anggota</th>
                             <th>NIM/NIDN</th>
                             <th>Judul Buku</th>
-                            <th>Kode Buku</th>
                             <th>no_buku_kampus</th>
                             <th>Denda</th>
                             <th>Tgl Pinjam</th>
@@ -161,7 +160,6 @@ if (isset($_POST['kembalikan'])) {
                                 <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
                                 <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
                                 <td><?= htmlspecialchars($p['judul_buku']) ?></td>
-                                <td><?= htmlspecialchars($p['kode_buku']) ?></td>
                                 <td><?= htmlspecialchars($p['no_buku_kampus']) ?></td>
                                 <td>Rp.
                                     <?php

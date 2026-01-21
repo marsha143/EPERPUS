@@ -5,7 +5,6 @@ $sql = "
   SELECT 
     p.id,
     b.cover,
-    b.kode_buku,
     b.judul_buku,
     p.tanggal_pinjam,
     p.tanggal_kembali,
@@ -31,7 +30,6 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
                         <tr>
                             <th style="width:60px">No</th>
                             <th>cover</th>
-                            <th style="min-width:110px">Kode Buku</th>
                             <th style="min-width:200px">Judul Buku</th>
                             <th style="min-width:120px">Tgl Pinjam</th>
                             <th style="min-width:120px">Jatuh Tempo</th>
@@ -49,7 +47,6 @@ $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><img src="<?= $row['cover']?>" alt="cover" style="height:48px"></td>
-                            <td><?= htmlspecialchars($row['kode_buku']) ?></td>
                             <td><?= htmlspecialchars($row['judul_buku']) ?></td>
                             <td><?= htmlspecialchars($row['tanggal_pinjam']) ?></td>
                             <td><?= htmlspecialchars($row['tanggal_kembali']) ?></td>
