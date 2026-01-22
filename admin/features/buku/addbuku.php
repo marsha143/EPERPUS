@@ -23,8 +23,7 @@ if (isset($_POST['simpan'])) {
 $cekISBN = mysqli_query(
     $conn,
     "SELECT id_buku FROM buku 
-     WHERE isbn = '$isbn' 
-     AND id_buku != '$id_buku'"
+     WHERE isbn = '$isbn'"
 );
 
 if (mysqli_num_rows($cekISBN) > 0) {
@@ -86,7 +85,7 @@ if (mysqli_num_rows($cekISBN) > 0) {
                                         </div>
                                         <div class="col-md-6">
                                             <label for="isbn" class="form-label">isbn</label>
-                                            <input type="int" class="form-control" id="isbn" name="isbn"
+                                            <input type="number" class="form-control" id="isbn" name="isbn"
                                                 placeholder="masukkan isbn" required>
                                         </div>
 
