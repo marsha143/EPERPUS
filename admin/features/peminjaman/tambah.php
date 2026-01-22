@@ -9,7 +9,7 @@ if (isset($_POST['simpan'])) {
   // [GANTI] CEK STOK DARI stok_buku
 
   $cekStok = mysqli_query($conn, "
-    SELECT id_stok, no_buku_kampus 
+    SELECT id_stok, kode_buku_takumi 
     FROM stok_buku
     WHERE id_buku = '$id_buku'
       AND id_kondisi = 2
@@ -27,15 +27,15 @@ if (isset($_POST['simpan'])) {
 
   $stok = mysqli_fetch_assoc($cekStok);
   $id_stok = $stok['id_stok'];
-  $no_buku_kampus = $stok['no_buku_kampus'];
+  $kode_buku_takumi = $stok['kode_buku_takumi'];
 
 
   // [GANTI] SIMPAN PEMINJAMAN
 
   $query = "INSERT INTO peminjaman 
-    (id_buku, id_anggota, id_stok, no_buku_kampus, tanggal_pinjam, tanggal_kembali)
+    (id_buku, id_anggota, id_stok, kode_buku_takumi, tanggal_pinjam, tanggal_kembali)
     VALUES
-    ('$id_buku','$id_anggota','$id_stok','$no_buku_kampus','$tanggal_pinjam','$tanggal_kembali')
+    ('$id_buku','$id_anggota','$id_stok','$kode_buku_takumi','$tanggal_pinjam','$tanggal_kembali')
   ";
 
   $result = mysqli_query($conn, $query);
@@ -46,9 +46,9 @@ if (isset($_POST['simpan'])) {
     // [TAMBAH] UPDATE STATUS STOK
    
     $query = "INSERT INTO peminjaman 
-(id_buku, id_anggota, id_stok, no_buku_kampus, tanggal_pinjam, tanggal_kembali, status)
+(id_buku, id_anggota, id_stok, kode_buku_takumi, tanggal_pinjam, tanggal_kembali, status)
 VALUES
-('$id_buku','$id_anggota','$id_stok','$no_buku_kampus','$tanggal_pinjam','$tanggal_kembali','Dipinjam')
+('$id_buku','$id_anggota','$id_stok','$kode_buku_takumi','$tanggal_pinjam','$tanggal_kembali','Dipinjam')
 ";
 
     // UPDATE KONDISI BUKU → DIPINJAM (id_kondisi = 3)

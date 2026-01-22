@@ -7,11 +7,11 @@ $kondisi = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 
 if (isset($_POST['simpan'])) {
     $id_buku = (int) $_POST['id_buku'];
-    $no_buku = $_POST['no_buku_kampus'];
+    $no_buku = $_POST['kode_buku_takumi'];
     $id_kondisi = (int) $_POST['id_kondisi'];
 
     mysqli_query($conn, "
-        INSERT INTO stok_buku (id_buku, no_buku_kampus, id_kondisi)
+        INSERT INTO stok_buku (id_buku, kode_buku_takumi, id_kondisi)
         VALUES ($id_buku, '$no_buku', $id_kondisi)
     ");
 
@@ -45,7 +45,7 @@ if (isset($_POST['simpan'])) {
 
                 <div class="mb-3">
                     <label>No Buku Kampus</label>
-                    <input type="text" name="no_buku_kampus" class="form-control" required>
+                    <input type="text" name="kode_buku_takumi" class="form-control" required>
                 </div>
 
                 <div class="mb-3">

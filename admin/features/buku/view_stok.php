@@ -7,7 +7,7 @@ $buku = mysqli_fetch_assoc($q_buku);
 $q_stok = mysqli_query($conn, "
     SELECT 
         stok_buku.id_stok,
-        stok_buku.no_buku_kampus,
+        stok_buku.kode_buku_takumi,
         stok_buku.id_kondisi,
         kondisi_buku.jenis_kondisi
     FROM stok_buku
@@ -69,7 +69,7 @@ if (isset($_POST['ubah_kondisi'])) {
                 <tbody>
                     <?php foreach ($stok as $s): ?>
                         <tr>
-                            <td><?= $s['no_buku_kampus'] ?></td>
+                            <td><?= $s['kode_buku_takumi'] ?></td>
                             <td>
                                 <span class="badge <?= $s['id_kondisi'] == 2 ? 'bg-success' : 'bg-danger' ?>">
                                     <?= $s['jenis_kondisi'] ?>

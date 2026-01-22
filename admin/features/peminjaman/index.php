@@ -26,7 +26,7 @@ $sql = "SELECT
         a.nim_nidn, 
         b.judul_buku,
          
-        sb.no_buku_kampus,
+        sb.kode_buku_takumi,
         a.email
     FROM peminjaman p
     JOIN anggota a ON a.id_anggota = p.id_anggota
@@ -47,7 +47,7 @@ if (isset($_POST['cari'])) {
         a.nim_nidn,
         b.judul_buku,
         
-        sb.no_buku_kampus,
+        sb.kode_buku_takumi,
         a.email
     FROM peminjaman p
     JOIN anggota a ON a.id_anggota = p.id_anggota
@@ -160,7 +160,7 @@ if (isset($_POST['kembalikan'])) {
                             <th>Anggota</th>
                             <th>NIM/NIDN</th>
                             <th>Judul Buku</th>
-                            <th>no_buku_kampus</th>
+                            <th>kode_buku_takumi</th>
                             <th>Denda</th>
                             <th>Tgl Pinjam</th>
                             <th>Jatuh Tempo</th>
@@ -177,7 +177,7 @@ if (isset($_POST['kembalikan'])) {
                                 <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
                                 <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
                                 <td><?= htmlspecialchars($p['judul_buku']) ?></td>
-                                <td><?= htmlspecialchars($p['no_buku_kampus']) ?></td>
+                                <td><?= htmlspecialchars($p['kode_buku_takumi']) ?></td>
                                 <td>Rp.
                                     <?php
                                     if ($p['status'] == 'Dipinjam') {

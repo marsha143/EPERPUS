@@ -25,14 +25,14 @@ if (isset($_POST['simpan'])) {
     $id_kondisi = (int) $_POST['id_kondisi'];
 
     // Cek nomor buku kampus unik
-    $cek = mysqli_query($conn, "SELECT id_stok FROM stok_buku WHERE no_buku_kampus='$no_buku'");
+    $cek = mysqli_query($conn, "SELECT id_stok FROM stok_buku WHERE kode_buku_takumi='$no_buku'");
     if (mysqli_num_rows($cek) > 0) {
         echo "<script>alert('Nomor buku kampus sudah digunakan');</script>";
     } else {
 
         // Insert stok
         mysqli_query($conn, "
-            INSERT INTO stok_buku (id_buku, no_buku_kampus, id_kondisi, created_at)
+            INSERT INTO stok_buku (id_buku, kode_buku_takumi, id_kondisi, created_at)
             VALUES ('$id_buku', '$no_buku', '$id_kondisi', NOW())
         ");
 

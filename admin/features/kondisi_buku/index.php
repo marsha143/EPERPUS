@@ -4,7 +4,7 @@ $q_list = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 $q_stok = mysqli_query($conn, "
     SELECT
         stok_buku.id_stok,
-        stok_buku.no_buku_kampus,
+        stok_buku.kode_buku_takumi,
         stok_buku.id_kondisi,
         kondisi_buku.jenis_kondisi,
         buku.id_buku,
@@ -77,7 +77,7 @@ if (isset($_POST['hapus'])) {
                                     <?= $s['judul_buku'] ?>
                                 </a>
                             </td>
-                            <td><?= $s['no_buku_kampus'] ?></td>
+                            <td><?= $s['kode_buku_takumi'] ?></td>
                             <td>
                                 <!-- Ubah kondisi -->
                                 <form method="post">

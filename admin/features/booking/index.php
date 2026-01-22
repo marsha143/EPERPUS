@@ -29,7 +29,7 @@ if (isset($_POST['acc_booking'])) {
     // CARI STOK BUKU YANG LAYAK PAKAI
 
     $cekStok = mysqli_query($conn, "
-        SELECT id_stok, no_buku_kampus
+        SELECT id_stok, kode_buku_takumi
         FROM stok_buku
         WHERE id_buku = '$id_buku'
           AND id_kondisi = 2
@@ -46,7 +46,7 @@ if (isset($_POST['acc_booking'])) {
 
     $stok = mysqli_fetch_assoc($cekStok);
     $id_stok = $stok['id_stok'];
-    $no_buku_kampus = $stok['no_buku_kampus'];
+    $kode_buku_takumi = $stok['kode_buku_takumi'];
 
     // ===== AMBIL DATA EMAIL SEBELUM BOOKING DIHAPUS =====
     $qEmail = mysqli_query($conn, "
@@ -72,7 +72,7 @@ if (isset($_POST['acc_booking'])) {
             id_buku,
             id_anggota,
             id_stok,
-            no_buku_kampus,
+            kode_buku_takumi,
             tanggal_pinjam,
             tanggal_kembali,
             status
@@ -80,7 +80,7 @@ if (isset($_POST['acc_booking'])) {
             '$id_buku',
             '$id_anggota',
             '$id_stok',
-            '$no_buku_kampus',
+            '$kode_buku_takumi',
             '$today',
             '$jatuh_tempo',
             'Dipinjam'
