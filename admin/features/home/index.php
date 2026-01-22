@@ -72,7 +72,6 @@ $sqlTelat = "
     a.nama        AS nama_anggota,
     a.nim_nidn    AS nim_nidn,
     b.judul_buku  AS judul_buku,
-    b.kode_buku   AS kode_buku,
     p.tanggal_kembali AS jatuh_tempo,
     GREATEST(DATEDIFF(CURDATE(), p.tanggal_kembali), 0) * 500 AS denda_berjalan
   FROM peminjaman p
@@ -197,7 +196,6 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                                         <th>Nama</th>
                                         <th>NIM/NIDN</th>
                                         <th>Judul Buku</th>
-                                        <th>Kode Buku</th>
                                         <th>Denda</th>
                                         <th>Jatuh Tempo</th>
                                     </tr>
@@ -215,7 +213,6 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                                                 <td><?= htmlspecialchars($p['nama_anggota']) ?></td>
                                                 <td><?= htmlspecialchars($p['nim_nidn']) ?></td>
                                                 <td><?= htmlspecialchars($p['judul_buku']) ?></td>
-                                                <td><?= htmlspecialchars($p['kode_buku']) ?></td>
                                                 <td><strong class="text-danger"><?= rupiah($p['denda_berjalan']) ?></strong>
                                                 </td>
                                                 <td><?= htmlspecialchars($p['jatuh_tempo']) ?></td>

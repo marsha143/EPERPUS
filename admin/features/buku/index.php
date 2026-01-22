@@ -88,7 +88,6 @@ if (isset($_GET['id_buku'])) {
                                     <th>cover</th>
                                     <th>judul buku</th>
                                     <th>genre buku</th>
-                                    <th>kode buku</th>
                                     <th>isbn</th>
                                     <th>nama penulis</th>
                                     <th>tahun terbit</th>
@@ -103,7 +102,6 @@ if (isset($_GET['id_buku'])) {
                                         <td><img src="<?= $b['cover'] ?>" alt="cover" style="height:48px"></td>
                                         <td><?= $b['judul_buku'] ?></td>
                                         <td><?= $b['jenis_genre'] ?></td>
-                                        <td><?= $b['kode_buku'] ?></td>
                                         <td><?= $b['isbn'] ?></td>
                                         <td><?= $b['nama_penulis'] ?></td>
                                         <td><?= $b['tahun_terbit'] ?></td>

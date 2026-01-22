@@ -18,14 +18,12 @@ if (isset($_POST['update'])) {
     $cover = $_POST['cover'];
     $judul_buku = $_POST['judul_buku'];
     $id_genre = isset($_POST['id_genre']) ? (int) $_POST['id_genre'] : 0;
-    $kode_buku = $_POST['kode_buku'];
     $isbn = $_POST['isbn'];
     $id_penulis = $_POST['id_penulis'];
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
-    $Qty = isset($_POST['Qty']) ? (int) $_POST['Qty'] : 0;
     $deskripsi = $_POST['deskripsi'];
-    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku',`id_genre`='$id_genre', `kode_buku`='$kode_buku',`isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit', `penerbit`='$penerbit', `Qty`='$Qty' ,`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
+    $query = "UPDATE buku SET `cover`='$cover',`judul_buku`='$judul_buku',`id_genre`='$id_genre', `isbn`='$isbn',`id_penulis`='$id_penulis',`tahun_terbit`='$tahun_terbit', `penerbit`='$penerbit',`deskripsi`='$deskripsi', `updated_at`=NOW() WHERE `id_buku`='$id_buku'";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -79,12 +77,6 @@ if (isset($_POST['update'])) {
                             <div class="mb-3">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="kode_buku" class="form-label">kode buku</label>
-                                        <input type="text" class="form-control" id="kode_buku" name="kode_buku"
-                                            placeholder="masukkan kode_buku" value="<?= $data['kode_buku'] ?>" required>
-                                    </div>
-
-                                    <div class="col-md-6">
                                         <label for="isbn" class="form-label">isbn</label>
                                         <input type="int" class="form-control" id="isbn" name="isbn"
                                             placeholder="masukkan keterangan" value="<?= $data['isbn'] ?>" required>
@@ -135,11 +127,6 @@ if (isset($_POST['update'])) {
                                         <input type="text" class="form-control" id="penerbit" name="penerbit"
                                             placeholder="masukkan penerbit" value="<?= $data['penerbit'] ?>" required>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Qty" class="form-label">Qty</label>
-                                    <input type="number" class="form-control" id="Qty" name="Qty"
-                                        placeholder="masukkan jumlah buku" value="<?= $data['Qty'] ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3">

@@ -19,9 +19,6 @@ if (!empty($_GET['penerbit'])) {
 if (!empty($_GET['tahun'])) {
     $where[] = "b.tahun_terbit = '" . $_GET['tahun'] . "'";
 }
-if (!empty($_GET['kode_buku'])) {
-    $where[] = "b.kode_buku LIKE '%" . $_GET['kode_buku'] . "%'";
-}
 if (!empty($_GET['genre'])) {
     $where[] = "b.id_genre = '" . $_GET['genre'] . "'";
 }
@@ -138,7 +135,6 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
                                 <div class="card book-card mb-3 rekom-slider-card" onclick="openDetailBuku(this)"
                                     data-cover="<?= $r['cover'] ?>"
                                     data-judul="<?= htmlspecialchars($r['judul_buku']) ?>"
-                                    data-kode="<?= htmlspecialchars($r['kode_buku']) ?>"
                                     data-isbn="<?= htmlspecialchars($r['isbn']) ?>"
                                     data-penulis="<?= htmlspecialchars($r['nama_penulis']) ?>"
                                     data-tahun="<?= htmlspecialchars($r['tahun_terbit']) ?>"
@@ -208,7 +204,6 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card book-card" onclick="openDetailBuku(this)" data-cover="<?= $b['cover'] ?>"
                 data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
-                data-kode="<?= htmlspecialchars($b['kode_buku']) ?>" data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
                 data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
                 data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
                 data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
@@ -286,8 +281,6 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
                     <div class="col-md-8">
                         <h5 id="modalJudul" class="mb-1"></h5>
                         <p class="text-muted mb-2" id="modalPenulis"></p>
-
-                        <p class="mb-1"><strong>Kode Buku:</strong> <span id="modalKode"></span></p>
                         <p class="mb-1"><strong>ISBN:</strong> <span id="modalIsbn"></span></p>
                         <p class="mb-1"><strong>Tahun Terbit:</strong> <span id="modalTahun"></span></p>
                         <p class="mb-1"><strong>Penerbit:</strong> <span id="modalPenerbit"></span></p>
@@ -365,11 +358,6 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
                     <div class="mb-3">
                         <label class="form-label">Penerbit</label>
                         <input type="text" name="penerbit" class="form-control" placeholder="Masukkan penerbit">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Kode Buku</label>
-                        <input type="text" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
                     </div>
                 </div>
 

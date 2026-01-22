@@ -9,8 +9,7 @@ $sql = "
     SELECT b.*, 
            a.nama AS nama_anggota, 
            a.nim_nidn AS nim_nidn,
-           bk.judul_buku AS judul_buku,
-           bk.kode_buku AS kode_buku
+           bk.judul_buku AS judul_buku
     FROM booking b
     JOIN anggota a ON a.id_anggota = b.id_anggota
     JOIN buku bk ON bk.id_buku = b.id_buku
@@ -178,7 +177,6 @@ if (isset($_POST['kirim_tolak'])) {
                             <th>Anggota</th>
                             <th>NIM/NIDN</th>
                             <th>Judul Buku</th>
-                            <th>Kode Buku</th>
                             <th>Tanggal Permintaan</th>
                             <th>Aksi</th>
                         </tr>
@@ -191,7 +189,6 @@ if (isset($_POST['kirim_tolak'])) {
                                 <td><?= htmlspecialchars($b['nama_anggota']) ?></td>
                                 <td><?= htmlspecialchars($b['nim_nidn']) ?></td>
                                 <td><?= htmlspecialchars($b['judul_buku']) ?></td>
-                                <td><?= htmlspecialchars($b['kode_buku']) ?></td>
                                 <td><?= $b['waktu_booking'] ?></td>
 
                                 <td class="d-flex gap-1">

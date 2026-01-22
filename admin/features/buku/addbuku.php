@@ -8,37 +8,18 @@ $genre = mysqli_fetch_all($data2, MYSQLI_ASSOC);
 if (isset($_POST['simpan'])) {
     $cover = $_POST['cover'];
     $judul_buku = $_POST['judul_buku'];
-    $kode_buku = $_POST['kode_buku'];
     $isbn = $_POST['isbn'];
     $id_penulis = isset($_POST['id_penulis']) ? (int) $_POST['id_penulis'] : 0;
     $id_genre = isset($_POST['id_genre']) ? (int) $_POST['id_genre'] : 0;
     $tahun_terbit = $_POST['tahun_terbit'];
     $penerbit = $_POST['penerbit'];
-    $Qty = isset($_POST['Qty']) ? (int) $_POST['id_genre'] : 0;
     $deskripsi = $_POST['deskripsi'];
-
     $query = "
         INSERT INTO buku
-            (`cover`,`judul_buku`, `kode_buku`, `isbn`, `id_penulis`, `id_genre`,`tahun_terbit`, `penerbit`, `deskripsi`)
+            (`cover`,`judul_buku`, `isbn`, `id_penulis`, `id_genre`,`tahun_terbit`, `penerbit`, `deskripsi`)
         VALUES
-            ('$cover','$judul_buku','$kode_buku','$isbn',$id_penulis, '$id_genre','$tahun_terbit','$penerbit','$deskripsi')
+            ('$cover','$judul_buku','$isbn',$id_penulis, '$id_genre','$tahun_terbit','$penerbit','$deskripsi')
     ";
-$cekKode = mysqli_query(
-    $conn,
-    "SELECT id_buku FROM buku 
-     WHERE kode_buku = '$kode_buku' 
-     AND id_buku != '$id_buku'"
-);
-
-if (mysqli_num_rows($cekKode) > 0) {
-    echo "
-        <script>
-            alert('Kode buku sudah digunakan, silakan gunakan kode lain.');
-            history.back();
-        </script>
-    ";
-    exit;
-}
 $cekISBN = mysqli_query(
     $conn,
     "SELECT id_buku FROM buku 
@@ -104,11 +85,6 @@ if (mysqli_num_rows($cekISBN) > 0) {
                                                 placeholder="masukkan judul buku" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="kode_buku" class="form-label">kode buku</label>
-                                            <input type="int" class="form-control" id="kode_buku" name="kode_buku"
-                                                placeholder="masukkan kode buku" required>
-                                        </div>
-                                        <div class="col-md-6">
                                             <label for="isbn" class="form-label">isbn</label>
                                             <input type="int" class="form-control" id="isbn" name="isbn"
                                                 placeholder="masukkan isbn" required>
@@ -149,11 +125,6 @@ if (mysqli_num_rows($cekISBN) > 0) {
                                             <label for="penerbit" class="form-label">penerbit</label>
                                             <input type="int" class="form-control" id="penerbit" name="penerbit"
                                                 placeholder="masukkan penerbit" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="Qty" class="form-label">Qty</label>
-                                            <input type="int" class="form-control" id="Qty" name="Qty"
-                                                placeholder="masukkan jumlah buku" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="deskripsi" class="form-label">deskripsi</label>
