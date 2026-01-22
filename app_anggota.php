@@ -1,26 +1,23 @@
-<?php include("./config/db.php"); ?>
-
-<?php include('./anggota/layouts_anggota/header.php'); ?>
-
-<?php include('./anggota/layouts_anggota/navbar.php'); ?>
 <?php
-if (isset($_GET['page'])) {
-    $page = $_GET['page'];
-} else {
-    $page = 'home_anggota';
+require './config/db.php';
+
+if (!isset($_SESSION['login']) || $_SESSION['user']['role'] !== 'anggota') {
+    header('Location: login');
+    exit;
 }
-if (isset($_GET['view'])) {
-    $view = $_GET['view'];
-} else {
-    $view = 'index';
+
+$pages = [
+    'home'   => './anggota/features_anggota/home_anggota/index.php',
+    'profil' => './anggota/features_anggota/profil/index.php',
+];
+
+$page = $_GET['page'] ?? 'home';
+
+if (!isset($pages[$page])) {
+    include './config/404.php';
+    exit;
 }
-    $features_anggota = "./anggota/features_anggota/$page/$view.php";
 
-
-
-
-if (file_exists($features_anggota)) {
-    include($features_anggota);
-} else {
-    include ("./config/404.php");
-}
+include './anggota/layouts_anggota/header.php';
+include './anggota/layouts_anggota/navbar.php';
+include $pages[$page];

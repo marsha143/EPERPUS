@@ -9,33 +9,26 @@ if ($page === 'peminjaman' && $view === 'export_exel') {
     exit; 
 }
 ?>
-<?php include("./config/db.php"); ?>
-
-<?php include('./admin/layouts/header.php'); ?>
-
-
-<?php include('./admin/layouts/navbar.php'); ?>
-
-
 <?php
-if (isset($_GET['page'])) {
-    $page = $_GET['page'];
-} else {
-    $page = 'home';
-}
-if (isset($_GET['view'])) {
-    $view = $_GET['view'];
-} else {
-    $view = 'index';
-}
-    $features = "./admin/features/$page/$view.php";
+require './config/db.php';
 
-
-
-
-if (file_exists($features)) {
-    include($features);
-} else {
-    include ("./config/404.php");
+if (!isset($_SESSION['login']) || $_SESSION['user']['role'] !== 'admin') {
+    header('Location: login');
+    exit;
 }
 
+$pages = [
+    'dashboard' => './admin/features/dashboard/index.php',
+    'anggota'   => './admin/features/anggota/index.php',
+];
+
+$page = $_GET['page'] ?? 'dashboard';
+
+if (!isset($pages[$page])) {
+    include './config/404.php';
+    exit;
+}
+
+include './admin/layouts/header.php';
+include './admin/layouts/navbar.php';
+include $pages[$page];

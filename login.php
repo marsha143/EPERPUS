@@ -1,52 +1,63 @@
 <?php include("./config/db.php"); ?>
 <?php
-
-if (isset($_SESSION['login'])){
-  header('Location: app');  
-  exit;
+if (isset($_SESSION['login'])) {
+    if ($_SESSION['user']['role'] === 'admin') {
+        header('Location: app');
+    } else {
+        header('Location: app_anggota');
+    }
+    exit;
 }
 
 if (isset($_POST['login'])) {
-  $username = trim($_POST['username'] ?? '');
-  $password = $_POST['password'] ?? '';
-  $role     = $_POST['role'] ?? ''; 
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
+    $role     = $_POST['role']; // hanya validasi UI
 
-  $query = "
-    SELECT id, username, password, role FROM (
-      SELECT id_admin   AS id, username, password, 'admin'   AS role FROM admin
-      UNION ALL
-      SELECT id_anggota AS id, username, password, 'anggota' AS role FROM anggota
-    ) AS users
-    WHERE username = '$username' AND role = '$role'
-    LIMIT 1
-  ";
+    $query = "
+        SELECT id, username, password, role FROM (
+            SELECT id_admin AS id, username, password, role FROM admin
+            UNION ALL
+            SELECT id_anggota AS id, username, password, role FROM anggota
+        ) AS users
+        WHERE username = ?
+        LIMIT 1
+    ";
 
-  $checkUser = mysqli_query($conn, $query);
-  $dataUser  = mysqli_fetch_assoc($checkUser);
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
 
-  if (!$dataUser) {
-    echo "<script>alert('Username tidak ditemukan untuk role $role.'); window.location='login';</script>";
+    if (!$user) {
+        echo "<script>alert('Username tidak ditemukan'); window.location='login';</script>";
+        exit;
+    }
+
+    if (!password_verify($password, $user['password'])) {
+        echo "<script>alert('Password salah'); window.location='login';</script>";
+        exit;
+    }
+
+    if ($user['role'] !== $role) {
+        echo "<script>alert('Role tidak sesuai'); window.location='login';</script>";
+        exit;
+    }
+
+    $_SESSION['login'] = true;
+    $_SESSION['user'] = [
+        'id'       => $user['id'],
+        'username' => $user['username'],
+        'role'     => $user['role']
+    ];
+
+    if ($user['role'] === 'admin') {
+        header('Location: app');
+    } else {
+        header('Location: app_anggota');
+    }
     exit;
-  }
-
-  if (!password_verify($password, $dataUser['password'])) {
-    echo "<script>alert('Password salah.'); window.location='login';</script>";
-    exit;
-  }
-
-  $_SESSION['login'] = true;
-  $_SESSION['user'] = [
-    'id'       => $dataUser['id'],
-    'username' => $dataUser['username'],
-    'role'     => $dataUser['role']
-  ];
-
-  if ($dataUser['role'] === 'admin') {
-    header('Location: app');
-  } else {
-header('Location: app_anggota?page=home_anggota&view=index&id_anggota=' . $dataUser['id']);
-exit;       
-}
 }
 ?>
 <?php include('./anggota/layouts_anggota/header.php'); ?>
