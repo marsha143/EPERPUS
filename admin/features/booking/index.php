@@ -1,9 +1,36 @@
 <?php
 // Hapus booking yang lebih dari 24 jam
-mysqli_query($conn, "
-    DELETE FROM booking 
-    WHERE waktu_booking < NOW() - INTERVAL 24 HOUR
+
+// ambil email admin
+$qAdmin = mysqli_query($conn, "SELECT email FROM admin LIMIT 1");
+$admin = mysqli_fetch_assoc($qAdmin);
+$email_admin = $admin['email'];
+
+// ambil booking expired
+$qExpired = mysqli_query($conn, "
+    SELECT 
+        b.id,
+        a.nama AS nama_anggota,
+        bk.judul_buku,
+        b.waktu_booking
+    FROM booking b
+    JOIN anggota a ON a.id_anggota = b.id_anggota
+    JOIN buku bk ON bk.id_buku = b.id_buku
+    WHERE b.status = 'Dibooking'
+    AND b.waktu_booking < NOW() - INTERVAL 24 HOUR
 ");
+
+if (mysqli_num_rows($qExpired) > 0) {
+
+    include "send_email_expired_admin.php";
+
+    mysqli_query($conn, "
+        UPDATE booking
+        SET status = 'Expired'
+        WHERE status = 'Dibooking'
+        AND waktu_booking < NOW() - INTERVAL 24 HOUR
+    ");
+}
 // Ambil semua request booking
 $sql = "
     SELECT b.*, 
@@ -13,6 +40,7 @@ $sql = "
     FROM booking b
     JOIN anggota a ON a.id_anggota = b.id_anggota
     JOIN buku bk ON bk.id_buku = b.id_buku
+    WHERE b.status = 'Dibooking'
     ORDER BY b.id DESC
 ";
 $data = mysqli_query($conn, $sql);
