@@ -66,7 +66,6 @@ if (isset($_POST['cari'])) {
                                     <th>nama</th>
                                     <th>nim/nidn</th>
                                     <th>program studi</th>
-                                    <th>tahun bergabung</th>
                                     <th>alamat</th>
                                     <th>no hp</th>
                                     <th>jenis kelamin</th>
@@ -80,7 +79,6 @@ if (isset($_POST['cari'])) {
                                     <td><?= $a['nama']?>
                                     <td><?= $a['nim_nidn'] ?></td>
                                     <td><?= $a['program_studi'] ?></td>
-                                    <td><?= $a['waktu_bergabung'] ?></td>
                                     <td><?= $a['alamat'] ?></td>
                                     <td><?= $a['noHP'] ?></td>
                                     <td><?= $a['jenis_kelamin'] ?></td>

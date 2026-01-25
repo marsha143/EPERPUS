@@ -2,41 +2,94 @@
 
 if (isset($_GET['id_anggota'])) {
     $id_anggota = $_GET['id_anggota'];
-    $query = " SELECT * FROM anggota WHERE id_anggota = $id_anggota ";
+    $query  = "SELECT * FROM anggota WHERE id_anggota='$id_anggota'";
     $result = mysqli_query($conn, $query);
-    $data = mysqli_fetch_assoc($result);
+    $data   = mysqli_fetch_assoc($result);
+
     if (!$data) {
         header("Location: app");
-    }
-}
-if (isset($_POST['update'])) {
-    $nama = $_POST['nama'];
-    $nim_nidn = $_POST['nim_nidn'];
-    $program_studi = $_POST['program_studi'];
-    $waktu_bergabung = $_POST['waktu_bergabung'];
-    $alamat = $_POST['alamat'];
-    $noHP = $_POST['noHP'];
-    $jenis_kelamin = $_POST['jenis_kelamin'];
-    $email_anggota = $_POST['email'];
-    $query = "UPDATE anggota SET `nama`='$nama', `nim_nidn`='$nim_nidn', `program_studi`='$program_studi',`waktu_bergabung`='$waktu_bergabung',`alamat`='$alamat',`noHP`='$noHP',`jenis_kelamin`='$jenis_kelamin',`email`='$email_anggota',`updated_at`=NOW() WHERE `id_anggota`='$id_anggota'";
-    $result = mysqli_query($conn, $query);
-    if ($result) {
-        echo "
-            <script> 
-                alert('data berhasil diubah.');
-                window.location.href = 'app?page=anggota';
-            </script>
-            ";
-    } else {
-        echo "
-            <script>
-                alert('data gagal diubah.');
-            </script>
-            ";
+        exit;
     }
 }
 
+if (isset($_POST['update'])) {
+
+    $nama            = $_POST['nama'];
+    $nim_nidn        = $_POST['nim_nidn'];
+    $program_studi   = $_POST['program_studi'];
+    $waktu_bergabung = $_POST['waktu_bergabung'];
+    $alamat          = $_POST['alamat'];
+    $noHP            = $_POST['noHP'];
+    $jenis_kelamin   = $_POST['jenis_kelamin'];
+    $email_anggota   = $_POST['email'];
+
+    $cek = mysqli_query($conn, "
+        SELECT id_anggota FROM anggota 
+        WHERE nim_nidn='$nim_nidn' AND id_anggota!='$id_anggota'
+    ");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('NIM/NIDN sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "
+        SELECT id_anggota FROM anggota 
+        WHERE email='$email_anggota' AND id_anggota!='$id_anggota'
+    ");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Email sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "
+        SELECT id_anggota FROM anggota 
+        WHERE noHP='$noHP' AND id_anggota!='$id_anggota'
+    ");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('No HP sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "
+        SELECT id_anggota FROM anggota 
+        WHERE nama='$nama' AND id_anggota!='$id_anggota'
+    ");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Nama sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $query = "
+        UPDATE anggota SET
+            nama='$nama',
+            nim_nidn='$nim_nidn',
+            program_studi='$program_studi',
+            waktu_bergabung='$waktu_bergabung',
+            alamat='$alamat',
+            noHP='$noHP',
+            jenis_kelamin='$jenis_kelamin',
+            email='$email_anggota',
+            updated_at=NOW()
+        WHERE id_anggota='$id_anggota'
+    ";
+
+    if (mysqli_query($conn, $query)) {
+        echo "
+        <script>
+            alert('Data berhasil diubah');
+            window.location.href = 'app?page=anggota';
+        </script>
+        ";
+    } else {
+        echo "
+        <script>
+            alert('Data gagal diubah');
+        </script>
+        ";
+    }
+}
 ?>
+
 
 <div class="d-flex justify-content-center mt-5">
 
