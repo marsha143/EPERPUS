@@ -75,7 +75,7 @@ $buku = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM buku"), MYSQLI_ASSOC
                         <option value="" hidden>-- Pilih Buku --</option>
                         <?php foreach ($buku as $b): ?>
                             <option value="<?= $b['id_buku'] ?>">
-                                <?= $b['kode_buku'] ?> - <?= $b['judul_buku'] ?>
+                                <?= $b['id_buku'] ?> - <?= $b['judul_buku'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

@@ -100,7 +100,7 @@ if (isset($_POST['kembalikan'])) {
         WHERE id_stok = '$id_stok'
     ");
 
-    // OPTIONAL: refresh halaman
+    //refresh halaman
     echo "<script>window.location.href='app?page=peminjaman';</script>";
 }
 ?>
