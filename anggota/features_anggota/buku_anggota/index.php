@@ -19,6 +19,7 @@ if (!empty($_GET['penerbit'])) {
 if (!empty($_GET['tahun'])) {
     $where[] = "b.tahun_terbit = '" . $_GET['tahun'] . "'";
 }
+
 if (!empty($_GET['genre'])) {
     $where[] = "b.id_genre = '" . $_GET['genre'] . "'";
 }
@@ -192,6 +193,7 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
 
         </div>
     </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Daftar Buku</h5>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
@@ -204,7 +206,7 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card book-card" onclick="openDetailBuku(this)" data-cover="<?= $b['cover'] ?>"
                 data-judul="<?= htmlspecialchars($b['judul_buku']) ?>"
-                data-penulis="<?= htmlspecialchars($b['nama_penulis']) ?>"
+                data-isbn="<?= htmlspecialchars($b['isbn']) ?>"
                 data-tahun="<?= htmlspecialchars($b['tahun_terbit']) ?>"
                 data-penerbit="<?= htmlspecialchars($b['penerbit']) ?>"
                 data-status="<?= htmlspecialchars($b['status_buku']) ?>"
@@ -281,6 +283,7 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
                     <div class="col-md-8">
                         <h5 id="modalJudul" class="mb-1"></h5>
                         <p class="text-muted mb-2" id="modalPenulis"></p>
+
                         <p class="mb-1"><strong>ISBN:</strong> <span id="modalIsbn"></span></p>
                         <p class="mb-1"><strong>Tahun Terbit:</strong> <span id="modalTahun"></span></p>
                         <p class="mb-1"><strong>Penerbit:</strong> <span id="modalPenerbit"></span></p>
@@ -358,6 +361,11 @@ $genreList = mysqli_fetch_all($qGenre, MYSQLI_ASSOC);
                     <div class="mb-3">
                         <label class="form-label">Penerbit</label>
                         <input type="text" name="penerbit" class="form-control" placeholder="Masukkan penerbit">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Kode Buku</label>
+                        <input type="text" name="kode_buku" class="form-control" placeholder="Masukkan kode buku">
                     </div>
                 </div>
 

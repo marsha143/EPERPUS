@@ -1,37 +1,63 @@
 <?php
-
 if (isset($_POST['simpan'])) {
-    $nama = $_POST['nama'];
-    $nim_nidn = $_POST['nim_nidn'];
-    $program_studi = $_POST['program_studi'];
+
+    $nama            = $_POST['nama'];
+    $nim_nidn        = $_POST['nim_nidn'];
+    $program_studi   = $_POST['program_studi'];
     $waktu_bergabung = $_POST['waktu_bergabung'];
-    $alamat = $_POST['alamat'];
-    $noHP = $_POST['noHP'];
-    $jenis_kelamin = $_POST['jenis_kelamin'];
-    $email_anggota = $_POST['email'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $role = $_POST['role'];
+    $alamat          = $_POST['alamat'];
+    $noHP            = $_POST['noHP'];
+    $jenis_kelamin   = $_POST['jenis_kelamin'];
+    $email_anggota   = $_POST['email'];
+    $username        = $_POST['username'];
+    $password        = $_POST['password'];
+    $role            = $_POST['role'];
 
-    $query = "INSERT INTO `anggota`(`nama`,`nim_nidn`, `program_studi`, `waktu_bergabung`, `alamat`, `noHP`, `jenis_kelamin`, `username`,`email`, `password`, `role`) VALUES ('$nama','$nim_nidn','$program_studi', '$waktu_bergabung ','$alamat','$noHP','$jenis_kelamin','$username','$$email_anggota','$password','$role')";
-    $result = mysqli_query($conn, $query);
-    if ($result) {
+    $cek = mysqli_query($conn, "SELECT id_anggota FROM anggota WHERE username='$username'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Username sudah digunakan'); window.history.back();</script>";
+        exit;
+    }
 
-        echo "
-        <script>
-        alert('data  berhasil disimpan');
-        window.location.href = 'app?page=anggota'
-        </script>
-        ";
+    $cek = mysqli_query($conn, "SELECT id_anggota FROM anggota WHERE nim_nidn='$nim_nidn'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('NIM/NIDN sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "SELECT id_anggota FROM anggota WHERE email='$email_anggota'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Email sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "SELECT id_anggota FROM anggota WHERE noHP='$noHP'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('No HP sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $cek = mysqli_query($conn, "SELECT id_anggota FROM anggota WHERE nama='$nama'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Nama sudah terdaftar'); window.history.back();</script>";
+        exit;
+    }
+
+    $query = "
+        INSERT INTO anggota 
+        (nama, nim_nidn, program_studi, waktu_bergabung, alamat, noHP, jenis_kelamin, username, email, password, role)
+        VALUES
+        ('$nama','$nim_nidn','$program_studi','$waktu_bergabung','$alamat','$noHP','$jenis_kelamin','$username','$email_anggota','$password','$role')
+    ";
+
+    if (mysqli_query($conn, $query)) {
+        echo "<script>alert('Data berhasil disimpan'); window.location.href='app?page=anggota';</script>";
     } else {
-        echo "
-         <script>
-        alert('data tidak berhasil disimpan');
-        </script>
-        ";
+        echo "<script>alert('Data gagal disimpan');</script>";
     }
 }
 ?>
+
 
 <form action="" method="POST">
     <div class="d-flex justify-content-center mt-5">
