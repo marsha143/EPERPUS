@@ -22,24 +22,32 @@ if (isset($_POST['cari'])) {
     $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 } else {
     if (isset($_POST['delete'])) {
-        $id = $_POST['id_buku'];
+  $id = $_POST['id_buku']; // atau dari POST
 
-        $query = "DELETE FROM `buku` WHERE id_buku = $id ";
-        $result = mysqli_query($conn, $query);
-        if ($result) {
-            echo "
-        <script>
-        alert('data  berhasil dihapus');
-        window.location.href = 'app?page=buku'
-        </script>
-        ";
-        } else {
-            echo "
-         <script>
-        alert('data tidak berhasil dihapus');
-        </script>
-        ";
-        }
+$cek = mysqli_query($conn, "
+    SELECT COUNT(*) AS total
+    FROM peminjaman
+    WHERE id_buku = '$id'
+");
+
+$data = mysqli_fetch_assoc($cek);
+
+if ($data['total'] > 0) {
+    echo "<script>
+        alert('Buku tidak bisa dihapus karena sudah pernah dipinjam');
+        window.location.href='app?page=buku';
+    </script>";
+    exit;
+}
+
+// HAPUS
+mysqli_query($conn, "DELETE FROM buku WHERE id_buku='$id'");
+
+echo "<script>
+    alert('Buku berhasil dihapus');
+    window.location.href='app?page=buku';
+</script>";
+exit;
     }
 }
 if (isset($_GET['id_buku'])) {
