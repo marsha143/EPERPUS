@@ -18,6 +18,20 @@ $stok = mysqli_fetch_all($q_stok, MYSQLI_ASSOC);
 // hapus stok
 if (isset($_POST['hapus'])) {
     $id_stok = (int) $_POST['id_stok'];
+    $cek = mysqli_query($conn, "
+    SELECT COUNT(*) AS total
+    FROM peminjaman
+    WHERE id_stok = '$id_stok'
+");
+$data = mysqli_fetch_assoc($cek);
+
+if ($data['total'] > 0) {
+    echo "<script>
+        alert('Stok tidak bisa dihapus karena pernah dipinjam');
+        window.location.href='app?page=buku&view=view_stok&id_buku=$id_buku';
+    </script>";
+    exit;
+}
 
     mysqli_query($conn, "DELETE FROM stok_buku WHERE id_stok=$id_stok");
 
