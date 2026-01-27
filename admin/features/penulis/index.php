@@ -4,7 +4,7 @@ $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 if (isset($_POST['cari'])) {
     $keyword = $_POST['cari'];
-    $data = mysqli_query($conn, "SELECT * FROM penulis WHERE nama_penulis LIKE '%$keyword%'");
+    $data = mysqli_query($conn, "SELECT * FROM penulis WHERE nama_penulis LIKE '%$keyword%' AND deleted_at IS NULL");
     $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 } else {
     if (isset($_POST['delete'])) {
@@ -64,13 +64,13 @@ if (isset($_POST['cari'])) {
                     <tr>
                         <td><?= $p['nama_penulis'] ?></td>
                         <td>
-                            <a href="app?page=penulis&view=editpenulis&id_penulis=<?= $p ?>"
+                            <a href="app?page=penulis&view=editpenulis&id_penulis=<?= $p['id'] ?>"
                                 class="btn btn-outline-warning btn-sm ms-3">
                                 <i class="fa-solid fa-pen-to-square"></i>edit
                             </a>
                             <form action="" method="POST" style="display: inline"
                                 onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                <input type="hidden" name="id_penulis" value="<?= $p ?>">
+                                <input type="hidden" name="id_penulis" value="<?= $p['id'] ?>">
                                 <button class="btn btn-outline-danger btn-sm" name="delete">
                                     <i class="fa-solid fa-trash"></i>hapus
                                 </button>

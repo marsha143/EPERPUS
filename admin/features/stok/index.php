@@ -56,7 +56,7 @@ if (isset($_POST['hapus'])) {
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <h3>Data Kondisi Buku (Seluruh Stok)</h3>
             </div>
             <div class="text-end">

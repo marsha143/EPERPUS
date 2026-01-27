@@ -63,13 +63,13 @@ if (isset($_POST['update_kondisi'])) {
 <div class="container mt-5">
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <h5>Stok Buku: <?= $buku['judul_buku'] ?></h5>
+            <h3>Stok Buku: <?= $buku['judul_buku'] ?></h3>
             <div class="text-end">
-                <a href="app?page=buku&view=addstok&id_buku=<?= $id_buku ?>" class="btn btn-success btn-sm">
+                <a href="app?page=buku&view=addstok&id_buku=<?= $id_buku ?>" class="btn btn-outline-success btn-sm">
                     + Tambah Stok
                 </a>
 
-                <a href="app?page=buku&view=index" class="btn btn-danger btn-sm">
+                <a href="app?page=buku&view=index" class="btn btn-outline-danger btn-sm">
                     <- Kembali Ke Daftar Buku </a>
             </div>
         </div>

@@ -29,18 +29,20 @@ if (isset($_POST['simpan'])) {
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Tambah Jenis Kondisi Buku</h5>
+            <h3 class="mb-0">Tambah Jenis Kondisi Buku</h3>
         </div>
 
         <div class="card-body">
             <form method="post">
                 <div class="mb-3">
                     <label class="form-label">Nama Jenis Kondisi</label>
+                    <div class="input-group input-group-outline">
                     <input type="text"
                            name="jenis_kondisi"
                            class="form-control"
                            placeholder="Contoh: Baik, Rusak Ringan, Rusak Berat"
                            required>
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2">

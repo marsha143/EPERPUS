@@ -33,18 +33,20 @@ if (isset($_POST['simpan'])) {
 
                 <div class="mb-3">
                     <label class="form-label">Nama Genre</label>
-                    <input type="text" name="jenis_genre" class="form-control" placeholder="Masukkan nama genre"
-                        required>
+                    <div class="input-group input-group-outline">
+                        <input type="text" name="jenis_genre" class="form-control" placeholder="Masukkan nama genre"
+                            required>
+                    </div>
                 </div>
 
             </div>
 
             <div class="card-footer text-end">
-                <button type="submit" name="simpan" class="btn btn-primary">
+                <button type="submit" name="simpan" class="btn btn-outline-success">
                     <i class="fa-solid fa-download"></i> Simpan
                 </button>
 
-                <a href="app?page=genre" class="btn btn-secondary">
+                <a href="app?page=genre" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-arrow-left"></i> Kembali
                 </a>
             </div>

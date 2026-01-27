@@ -65,8 +65,10 @@ if (isset($_POST['simpan'])) {
 
                 <div class="mb-3">
                     <label class="form-label">Nomor Buku Kampus</label>
-                    <input type="text" name="no_buku" class="form-control" maxlength="8" pattern="\d{1,8}" placeholder="Maksimal 8 digit angka" required
-                        placeholder="Contoh: 00123">
+                    <div class="input-group input-group-outline">
+                        <input type="text" name="no_buku" class="form-control" maxlength="8" pattern="\d{1,8}"
+                            placeholder="Maksimal 8 digit angka" required placeholder="Contoh: 00123">
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -82,7 +84,7 @@ if (isset($_POST['simpan'])) {
                 </div>
 
                 <div class="text-end">
-                    <a href="app?page=buku&view=view_stok&id_buku=<?= $buku['id_buku']?>" class="btn btn-secondary">
+                    <a href="app?page=buku&view=view_stok&id_buku=<?= $buku['id_buku'] ?>" class="btn btn-secondary">
                         Kembali
                     </a>
                     <button type="submit" name="simpan" class="btn btn-primary">

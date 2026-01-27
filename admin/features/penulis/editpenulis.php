@@ -49,22 +49,24 @@ if (isset($_POST['update'])) {
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="nama_penulis" class="form-label">Nama Penulis</label>
-                                        <input type="int" class="form-control" id="nama_penulis" name="nama_penulis"
-                                            placeholder="masukkan keterangan" value="<?= $data['nama_penulis'] ?>"
-                                            required>
+                                        <div class="input-group input-group-outline">
+                                            <input type="int" class="form-control" id="nama_penulis" name="nama_penulis"
+                                                placeholder="masukkan keterangan" value="<?= $data['nama_penulis'] ?>"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <input type="hidden" name="id_penulis" value="<?= $data['id'] ?>">
-                        <button type="submit" name="update" class="btn btn-primary"><i
-                                class="fa-solid fa-download"></i>Simpan</button>
-                        <a href="app?page=penulis" class="btn btn-secondary"><i
-                                class="fa-solid fa-arrow-left"></i>kembali</a>
-                    </div>
+                        <div class="card-footer text-end">
+                            <input type="hidden" name="id_penulis" value="<?= $data['id'] ?>">
+                            <button type="submit" name="update" class="btn btn-primary"><i
+                                    class="fa-solid fa-download"></i>Simpan</button>
+                            <a href="app?page=penulis" class="btn btn-secondary"><i
+                                    class="fa-solid fa-arrow-left"></i>kembali</a>
+                        </div>
                 </form>
             </div>
         </div>
@@ -72,7 +74,7 @@ if (isset($_POST['update'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 </body>
 
 </html>

@@ -43,8 +43,10 @@ if (isset($_POST['simpan'])) {
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="nama_penulis" class="form-label">nama penulis</label>
-                                            <input type="int" class="form-control" id="nama_penulis" name="nama_penulis"
-                                                placeholder="masukkan nama_penulis" required>
+                                            <div class="input-group input-group-outline">
+                                                <input type="int" class="form-control" id="nama_penulis"
+                                                    name="nama_penulis" placeholder="masukkan nama_penulis" required>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -64,5 +66,5 @@ if (isset($_POST['simpan'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
+    </script>
 </body>

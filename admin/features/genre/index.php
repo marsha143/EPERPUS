@@ -1,34 +1,33 @@
 <?php
 // Ambil semua genre
-$data = mysqli_query($conn, "SELECT * FROM genre");
+$data = mysqli_query($conn, "SELECT * FROM genre WHERE deleted_at IS NULL");
 $genre = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 // Fungsi Search
 if (isset($_POST['cari'])) {
     $keyword = $_POST['cari'];
 
-    $data = mysqli_query($conn, "SELECT * FROM genre WHERE jenis_genre LIKE '%$keyword%'");
+    $data = mysqli_query($conn, "SELECT * FROM genre WHERE jenis_genre LIKE '%$keyword%' AND deleted_at IS NULL");
     $genre = mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
 
 // Fungsi Delete
-if (isset($_POST['delete'])) {
-    $id = $_POST['id'];
+ if (isset($_POST['delete'])) {
+        $id = (int) $_POST['id'];
 
-    $query = "DELETE FROM genre WHERE id = $id";
-    $result = mysqli_query($conn, $query);
+        mysqli_query($conn, "
+        UPDATE genre 
+        SET deleted_at = CURRENT_TIMESTAMP 
+        WHERE id = $id
+    ");
 
-    if ($result) {
-        echo "
-        <script>
-        alert('Data berhasil dihapus');
-        window.location.href = 'app?page=genre';
-        </script>
-        ";
-    } else {
-        echo "<script>alert('Data gagal dihapus');</script>";
-    }
-}
+
+        echo "<script>
+        alert('Stok berhasil dihapus');
+        window.location.href='app?page=genre';
+    </script>";
+        exit;
+ }
 ?>
 
 <div class="container mt-5">
