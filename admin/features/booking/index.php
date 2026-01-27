@@ -6,6 +6,28 @@ $qAdmin = mysqli_query($conn, "SELECT email FROM admin LIMIT 1");
 $admin = mysqli_fetch_assoc($qAdmin);
 $email_admin = $admin['email'];
 
+if (isset($_POST['cari']) && $_POST['cari'] !== '') {
+
+    $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
+
+    $query = "
+        SELECT b.*, 
+               a.nama AS nama_anggota, 
+               a.nim_nidn,
+               bk.judul_buku
+        FROM booking b
+        JOIN anggota a ON a.id_anggota = b.id_anggota
+        JOIN buku bk ON b.id_buku = bk.id_buku
+        WHERE b.status = 'Dibooking'
+          AND bk.judul_buku LIKE '%$keyword%'
+        ORDER BY b.id DESC
+    ";
+
+    $data = mysqli_query($conn, $query);
+    $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
+
+
 // ambil booking expired
 $qExpired = mysqli_query($conn, "
     SELECT 
@@ -32,19 +54,23 @@ if (mysqli_num_rows($qExpired) > 0) {
     ");
 }
 // Ambil semua request booking
-$sql = "
-    SELECT b.*, 
-           a.nama AS nama_anggota, 
-           a.nim_nidn AS nim_nidn,
-           bk.judul_buku AS judul_buku
-    FROM booking b
-    JOIN anggota a ON a.id_anggota = b.id_anggota
-    JOIN buku bk ON bk.id_buku = b.id_buku
-    WHERE b.status = 'Dibooking'
-    ORDER BY b.id DESC
-";
-$data = mysqli_query($conn, $sql);
-$booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
+if (!isset($_POST['cari']) || $_POST['cari'] === '') {
+
+    $sql = "
+        SELECT b.*, 
+               a.nama AS nama_anggota, 
+               a.nim_nidn,
+               bk.judul_buku
+        FROM booking b
+        JOIN anggota a ON a.id_anggota = b.id_anggota
+        JOIN buku bk ON bk.id_buku = b.id_buku
+        WHERE b.status = 'Dibooking'
+        ORDER BY b.id DESC
+    ";
+
+    $data = mysqli_query($conn, $sql);
+    $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
 
 
 // ACC BOOKING → MASUK PEMINJAMAN
@@ -191,27 +217,46 @@ if (isset($_POST['kirim_tolak'])) {
 <div class="container mt-4">
     <div class="card">
 
-        <!-- HEADER -->
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Pemesanan Buku</h5>
-        </div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Pemesanan Buku</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form class=" align-items-center" role="search" method="POST">
+                            <div class="ms-md-auto pe-md-3 align-items-center">
+                                <div class="input-group input-group-outline">
+                                    <input type="text" class="form-control" type="search" name="cari"
+                                        placeholder="Search" aria-label="Search">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="text-end">
+                            <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
+                                    class="fa-solid fa-plus"></i>Tambah</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No</th>
+                                <th>Anggota</th>
+                                <th>NIM/NIDN</th>
+                                <th>Judul Buku</th>
+                                <th>Tanggal Permintaan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>No</th>
-                            <th>Anggota</th>
-                            <th>NIM/NIDN</th>
-                            <th>Judul Buku</th>
-                            <th>Tanggal Permintaan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <?php foreach ($booking as $no => $b): ?>
+                        <tbody>
+                            <?php foreach ($booking as $no => $b): ?>
                             <tr>
                                 <td><?= $no + 1 ?></td>
                                 <td><?= htmlspecialchars($b['nama_anggota']) ?></td>
@@ -241,54 +286,54 @@ if (isset($_POST['kirim_tolak'])) {
                                 </td>
 
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+                            <?php endforeach; ?>
+                        </tbody>
 
-                </table>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="modal fade" id="modalTolak" tabindex="-1">
-            <div class="modal-dialog">
-                <form method="post" action="app?page=booking">
-                    <div class="modal-content">
+            <div class="modal fade" id="modalTolak" tabindex="-1">
+                <div class="modal-dialog">
+                    <form method="post" action="app?page=booking">
+                        <div class="modal-content">
 
-                        <div class="modal-header">
-                            <h5 class="modal-title">Tolak Booking</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Tolak Booking</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
 
-                        <div class="modal-body">
-                            <input type="hidden" name="id_booking" id="tolak_id">
+                            <div class="modal-body">
+                                <input type="hidden" name="id_booking" id="tolak_id">
 
-                            <div class="mb-2">
-                                <label>Alasan Penolakan</label>
-                                <textarea name="alasan" class="form-control" required></textarea>
+                                <div class="mb-2">
+                                    <label>Alasan Penolakan</label>
+                                    <textarea name="alasan" class="form-control" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger" name="kirim_tolak">
+                                    Kirim Penolakan
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
                             </div>
                         </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger" name="kirim_tolak">
-                                Kirim Penolakan
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Batal
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
     const modalTolak = document.getElementById('modalTolak');
 
-    modalTolak.addEventListener('show.bs.modal', function (event) {
+    modalTolak.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
 
         const id = button.getAttribute('data-id');
 
         modalTolak.querySelector('#tolak_id').value = id;
     });
-</script>
+    </script>

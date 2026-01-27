@@ -51,11 +51,19 @@
     transform: translateY(-6px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
 }
+.book-card {
+    position: relative;
+}
 
 .book-card img {
-    height: 250px;
-    object-fit: cover;
+    width: 100%;
+    height: 200px;
+    object-fit: contain;  
+    display: block;
+    background: #ffffff;
+        margin-top: 2rem;
 }
+
 
 .book-title {
     font-size: 16px;
@@ -91,8 +99,11 @@
 
 .rekom-slider-card img {
     width: 100%;
-    height: 260px;
-    object-fit: cover;
+    height: 300px;
+    object-fit: contain;  
+    display: block;
+    background: #ffffff;
+        margin-top: 1rem;
 }
 
 .rekom-slider-card:hover {

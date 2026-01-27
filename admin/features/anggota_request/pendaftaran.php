@@ -1,4 +1,24 @@
 <?php
+if (isset($_POST['cari']) && $_POST['cari'] !== '') {
+
+    $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
+
+    $query = "
+        SELECT *
+        FROM anggota_request
+        WHERE status = 'Pending'
+          AND (
+                nama LIKE '%$keyword%' OR
+                nim_nidn LIKE '%$keyword%' OR
+                email LIKE '%$keyword%' OR
+                username LIKE '%$keyword%'
+              )
+        ORDER BY id_request DESC
+    ";
+
+    $data = mysqli_query($conn, $query);
+    $anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
 if (isset($_POST['acc_request'])) {
 
     $idRequest = (int)$_POST['id_request'];
@@ -87,11 +107,31 @@ $qReq = mysqli_query($conn, "
 $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
 ?>
 <div class="container mt-5">
-    <div class="card shadow">
+    <div class="card">
         <div class="card-header">
-            <h4>Permohonan Pendaftaran Anggota</h4>
-        </div>
-
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Data Anggota</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form class=" align-items-center" role="search" method="POST">
+                            <div class="ms-md-auto pe-md-3 align-items-center">
+                                <div class="input-group input-group-outline">
+                                    <input type="text" class="form-control" type="search" name="cari"
+                                        placeholder="Search" aria-label="Search">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="text-end">
+                            <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
+                                    class="fa-solid fa-plus"></i>Tambah</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered align-middle">
