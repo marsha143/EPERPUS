@@ -81,12 +81,8 @@ if (isset($_GET['id_buku'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
-                            <a href="app?page=stok" class="btn btn-outline-success btn-sm">
-                                Lihat Semua Stok Buku
-                            </a>
                             <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah Informasi Buku</a>
-
+                                    class="fa-solid fa-plus"></i>Tambah</a>
                         </div>
                     </div>
                 </div>
@@ -122,19 +118,19 @@ if (isset($_GET['id_buku'])) {
                                             <td><?= $b['Qty'] ?> Pcs <input type="hidden" name="id_buku"
                                                     value="<?= $b['id_buku'] ?>">
                                                 <a href="app?page=buku&view=view_stok&id_buku=<?= $b['id_buku'] ?>"
-                                                    class="btn btn-success btn-sm">
+                                                    class="btn btn-outline-success btn-sm">
                                                     Lihat Stok
                                                 </a>
                                             </td>
                                         </form>
                                         <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"
-                                                class="btn btn-warning btn-sm ms-3"><i
-                                                    class="fa-solid fa-pen-to-square"></i>edit</a>
+                                                class="btn btn-outline-warning btn-sm ms-3"><i
+                                                    class="fa-solid fa-pen-to-square"></i> edit</a>
                                             <form action="" method="POST" style="display: inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                                 <input type="hidden" name="id_buku" value="<?= $b['id_buku'] ?>">
-                                                <button class="btn btn-danger btn-sm " name="delete"><i
-                                                        class="fa-solid fa-trash"></i>hapus</button>
+                                                <button class="btn btn-outline-danger btn-sm " name="delete"><i
+                                                        class="fa-solid fa-trash"></i> hapus</button>
                                             </form>
                                         </td>
                                     </tr>

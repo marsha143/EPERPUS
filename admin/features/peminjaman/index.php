@@ -132,7 +132,7 @@ if (isset($_POST['kembalikan'])) {
                                 href="app?page=peminjaman&filter=dikembalikan">Dikembalikan</a></li>
                     </ul>
                 </div>
-                <a href="app?page=peminjaman&view=tambah" class="btn btn-primary btn-sm px-3">
+                <a href="app?page=peminjaman&view=tambah" class="btn btn-outline-danger btn-sm">
                     + Pinjam Buku
                 </a>
 
@@ -200,7 +200,7 @@ if (isset($_POST['kembalikan'])) {
                             <td><?= $p['tanggal_dikembalikan'] ?: '-' ?></td>
                             <td>
                                 <span
-                                    class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'bg-warning text-dark' : 'bg-success text-white' ?>"
+                                    class="btn btn-sm <?= $p['status'] == 'Dipinjam' ? 'btn-outline-warning text-warning border-warning' : 'btn-outline-success text-success border-success' ?>"
                                     disabled>
                                     <?= $p['status'] ?>
                                 </span>
@@ -219,11 +219,11 @@ if (isset($_POST['kembalikan'])) {
                                 <form method="post" style="display:inline;"
                                     onsubmit="return confirm('Kembalikan buku ini? Denda: Rp <?= number_format($denda_berjalan) ?>');">
                                     <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                    <button class="btn btn-success btn-sm" name="kembalikan">Kembalikan</button>
+                                    <button class="btn btn-outline-success btn-sm text-success border-success" name="kembalikan">Kembalikan</button>
                                 </form>
 
                                 <?php else: ?>
-                                <button class="btn btn-secondary btn-sm" disabled>Sudah kembali</button>
+                                <button class="btn btn-outline-secondary btn-sm text-secondary border-secondary" disabled>Sudah kembali</button>
                                 <?php endif; ?>
 
                             </td>

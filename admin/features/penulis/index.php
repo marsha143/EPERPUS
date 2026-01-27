@@ -46,8 +46,8 @@ if (isset($_POST['cari'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
-                            <a href="./app?page=penulis&view=addpenulis" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
+                            <a href="./app?page=penulis&view=addpenulis" class="btn btn-outline-primary btn-sm">
+                                + Tambah</a>
                         </div>
                     </div>
                 </div>
@@ -88,3 +88,31 @@ if (isset($_POST['cari'])) {
             </div>
         </div>
     </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nama Penulis</th>
+                                <th width="180px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <?php foreach ($penulis as $no => $p): ?>
+                        <tr>
+                            <td><?= $p['nama_penulis'] ?></td>
+                            <td>
+                                <a href="app?page=penulis&view=editpenulis&id_penulis=<?= $p ?>"
+                                    class="btn btn-outline-warning btn-sm ms-3">
+                                    <i class="fa-solid fa-pen-to-square"></i>edit
+                                </a>
+                                <form action="" method="POST" style="display: inline"
+                                    onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <input type="hidden" name="id_penulis" value="<?= $p ?>">
+                                    <button class="btn btn-outline-danger btn-sm" name="delete">
+                                        <i class="fa-solid fa-trash"></i>hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
