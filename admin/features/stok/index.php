@@ -1,48 +1,22 @@
 <?php
-$id_buku = (int) $_GET['id_buku'];
-
-$q_buku = mysqli_query($conn, "SELECT * FROM buku WHERE id_buku=$id_buku");
-$buku = mysqli_fetch_assoc($q_buku);
 $q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku");
 $q_list = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 $q_stok = mysqli_query($conn, "
-    SELECT 
+    SELECT
         stok_buku.id_stok,
         stok_buku.kode_buku_takumi,
         stok_buku.id_kondisi,
-        kondisi_buku.jenis_kondisi
-    FROM stok_buku
+        kondisi_buku.jenis_kondisi,
+        buku.id_buku,
+        buku.judul_buku
+    FROM stok_buku   
+    JOIN buku ON buku.id_buku = stok_buku.id_buku
     JOIN kondisi_buku ON kondisi_buku.id = stok_buku.id_kondisi
-    WHERE stok_buku.id_buku = $id_buku
+    WHERE stok_buku.deleted_at IS NULL
+    ORDER BY buku.judul_buku ASC
 ");
 $stok = mysqli_fetch_all($q_stok, MYSQLI_ASSOC);
-// hapus stok
-if (isset($_POST['hapus'])) {
-    $id_stok = (int) $_POST['id_stok'];
-    $cek = mysqli_query($conn, "
-    SELECT COUNT(*) AS total
-    FROM peminjaman
-    WHERE id_stok = '$id_stok'
-");
-    $data = mysqli_fetch_assoc($cek);
 
-    if ($data['total'] > 0) {
-        echo "<script>
-        alert('Stok tidak bisa dihapus karena pernah dipinjam');
-        window.location.href='app?page=buku&view=view_stok&id_buku=$id_buku';
-    </script>";
-        exit;
-    }
-
-    mysqli_query($conn, "DELETE FROM stok_buku WHERE id_stok=$id_stok");
-
-    echo "<script>
-        alert('Stok berhasil dihapus');
-        window.location.href='app?page=buku&view=view_stok&id_buku=$id_buku';
-    </script>";
-    exit;
-}
-// Ubah kondisi stok
 if (isset($_POST['update_kondisi'])) {
     $id_stok = (int) $_POST['id_stok'];
     $id_kondisi = (int) $_POST['id_kondisi'];
@@ -55,37 +29,65 @@ if (isset($_POST['update_kondisi'])) {
 
     echo "<script>
         alert('Kondisi buku berhasil diperbarui');
-        window.location.href='app?page=buku&view=view_stok&id_buku=$id_buku';
+        window.location.href='app?page=stok';
+    </script>";
+    exit;
+}
+
+if (isset($_POST['hapus'])) {
+    $id_stok = (int) $_POST['id_stok'];
+
+    mysqli_query($conn, "
+        UPDATE stok_buku 
+        SET deleted_at = CURRENT_TIMESTAMP 
+        WHERE id_stok = $id_stok
+    ");
+
+
+    echo "<script>
+        alert('Stok berhasil dihapus');
+        window.location.href='app?page=stok';
     </script>";
     exit;
 }
 ?>
+
+
 <div class="container mt-5">
     <div class="card">
-        <div class="card-header d-flex justify-content-between">
-            <h5>Stok Buku: <?= $buku['judul_buku'] ?></h5>
+        <div class="card-header">
+            <div class="col-md-4">
+                <h5>Data Kondisi Buku (Seluruh Stok)</h5>
+            </div>
             <div class="text-end">
-                <a href="app?page=buku&view=addstok&id_buku=<?= $id_buku ?>" class="btn btn-success btn-sm">
-                    + Tambah Stok
-                </a>
-
-                <a href="app?page=buku&view=index" class="btn btn-danger btn-sm">
-                    <- Kembali Ke Daftar Buku </a>
+                <div class="col-md">
+                    <a href="app?page=stok&view=add_stok_universal" class="btn btn-success btn-sm">
+                        + Tambah stok buku
+                    </a>
+                    <a href="app?page=buku&view=index" class="btn btn-danger btn-sm">
+                        <- Kembali Ke Daftar Buku </a>
+                </div>
             </div>
         </div>
 
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>Judul Buku</th>
                         <th>No Buku Kampus</th>
                         <th>Kondisi</th>
-                        <th width="120">Aksi</th>
+                        <th width="180">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($stok as $s): ?>
                         <tr>
+                            <td>
+                                <a href="app?page=buku&view=view_stok&id_buku=<?= $s['id_buku'] ?>">
+                                    <?= $s['judul_buku'] ?>
+                                </a>
+                            </td>
                             <td><?= $s['kode_buku_takumi'] ?></td>
                             <td>
                                 <!-- Ubah kondisi -->
@@ -107,8 +109,7 @@ if (isset($_POST['update_kondisi'])) {
                                 </form>
                             </td>
                             <td>
-
-                                <!-- Hapus stok -->
+                                <!-- Hapus -->
                                 <form method="post" style="display:inline;" onsubmit="return confirm('Hapus stok ini?')">
                                     <input type="hidden" name="id_stok" value="<?= $s['id_stok'] ?>">
                                     <button class="btn btn-danger btn-sm" name="hapus">
@@ -117,7 +118,7 @@ if (isset($_POST['update_kondisi'])) {
                                 </form>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach ?>
                 </tbody>
             </table>
         </div>

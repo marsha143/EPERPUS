@@ -66,6 +66,7 @@ if (mysqli_num_rows($cekISBN) > 0) {
                             <div class="col-md-6">
                                 <h2>TAMBAH BUKU</h2>
                             </div>
+                                <strong>penambahan ini hanya berupa detail buku dan belum termasuk stok ⚠️</strong>
                         </div>
                     </div>
                     <div class="card-body">
