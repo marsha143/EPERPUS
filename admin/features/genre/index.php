@@ -54,8 +54,8 @@ if (isset($_POST['delete'])) {
                     <!-- Tambah -->
                     <div class="col-md-8">
                         <div class="text-end">
-                            <a href="./app?page=genre&view=addgenre" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-plus"></i> Tambah
+                            <a href="./app?page=genre&view=addgenre" class="btn btn-outline-primary btn-sm">
+                               + Tambah
                             </a>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ if (isset($_POST['delete'])) {
                                 <td>
                                     <!-- EDIT -->
                                     <a href="app?page=genre&view=editgenre&id=<?= $g['id'] ?>"
-                                        class="btn btn-warning btn-sm ms-2">
+                                        class="btn btn-outline-warning btn-sm ms-2">
                                         <i class="fa-solid fa-pen-to-square"></i> Edit
                                     </a>
 
@@ -90,7 +90,7 @@ if (isset($_POST['delete'])) {
                                     <form action="" method="POST" style="display:inline;"
                                         onsubmit="return confirm('Yakin ingin menghapus genre ini?')">
                                         <input type="hidden" name="id" value="<?= $g['id'] ?>">
-                                        <button class="btn btn-danger btn-sm" name="delete">
+                                        <button class="btn btn-outline-danger btn-sm" name="delete">
                                             <i class="fa-solid fa-trash"></i> Hapus
                                         </button>
                                     </form>

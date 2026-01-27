@@ -235,8 +235,7 @@ if (isset($_POST['kirim_tolak'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
-                            <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
+                            <a href="./app?page=buku&view=addbuku" class="btn btn-outline-danger btn-sm ">+ Tambah</a>
                         </div>
                     </div>
                 </div>
@@ -272,12 +271,12 @@ if (isset($_POST['kirim_tolak'])) {
                                         <input type="hidden" name="id_buku" value="<?= $b['id_buku'] ?>">
                                         <input type="hidden" name="id_anggota" value="<?= $b['id_anggota'] ?>">
 
-                                        <button class="btn btn-success btn-sm" name="acc_booking">
+                                        <button class="btn btn-outline-success btn-sm" name="acc_booking">
                                             Terima
                                         </button>
                                     </form>
                                     <!-- TOLAK -->
-                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#modalTolak" data-id="<?= $b['id'] ?>"
                                         data-nama="<?= htmlspecialchars($b['nama_anggota']) ?>">
                                         Tolak

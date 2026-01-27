@@ -51,8 +51,7 @@ if (isset($_POST['cari'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
-                            <a href="./app?page=anggota&view=addanggota" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
+                            <a href="./app?page=anggota&view=addanggota" class="btn btn-outline-primary btn-sm"> +Tambah</a>
                         </div>
                     </div>
                 </div>
@@ -84,14 +83,14 @@ if (isset($_POST['cari'])) {
                                     <td><?= $a['jenis_kelamin'] ?></td>
                                     <td><?= $a['email'] ?></td>
                                     <td><a href="app?page=anggota&view=editanggota&id_anggota=<?= $a['id_anggota']?>"
-                                            class="btn btn-warning btn-sm ms-3"><i
-                                                class="fa-solid fa-pen-to-square"></i>edit</a>
+                                            class="btn btn-outline-warning btn-sm ms-3"><i
+                                                class="fa-solid fa-pen-to-square"></i> edit</a>
 
                                         <form action="" method="POST" style="display: inline"
                                             onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                             <input type="hidden" name="id_anggota" value="<?= $a['id_anggota'] ?>">
-                                            <button class="btn btn-danger btn-sm " name="delete"><i
-                                                    class="fa-solid fa-trash"></i>hapus</button>
+                                            <button class="btn btn-outline-danger btn-sm " name="delete"><i
+                                                    class="fa-solid fa-trash"></i> hapus</button>
                                         </form>
                                         
                                     </td>
