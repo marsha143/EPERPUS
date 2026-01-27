@@ -7,7 +7,7 @@ $kondisi = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 
 if (isset($_POST['simpan'])) {
     $id_buku = (int) $_POST['id_buku'];
-    $no_buku = $_POST['kode_buku_takumi'];
+    $no_buku = (int) $_POST['kode_buku_takumi'];
     $id_kondisi = (int) $_POST['id_kondisi'];
 
     mysqli_query($conn, "
@@ -17,7 +17,7 @@ if (isset($_POST['simpan'])) {
 
     echo "<script>
         alert('Stok buku berhasil ditambahkan');
-        window.location.href='app?page=kondisi_buku';
+        window.location.href='app?page=stok';
     </script>";
     exit;
 }
@@ -45,7 +45,7 @@ if (isset($_POST['simpan'])) {
 
                 <div class="mb-3">
                     <label>No Buku Kampus</label>
-                    <input type="text" name="kode_buku_takumi" class="form-control" required>
+                    <input type="text" name="kode_buku_takumi" class="form-control" maxlength="8" pattern="\d{1,8}" placeholder="Maksimal 8 digit angka" required>
                 </div>
 
                 <div class="mb-3">
@@ -60,7 +60,7 @@ if (isset($_POST['simpan'])) {
                 </div>
 
                 <button class="btn btn-primary" name="simpan">Simpan</button>
-                <a href="app?page=kondisi_buku" class="btn btn-outline-secondary">
+                <a href="app?page=stok" class="btn btn-outline-secondary">
                     Batal
                 </a>
             </form>

@@ -22,32 +22,32 @@ if (isset($_POST['cari'])) {
     $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 } else {
     if (isset($_POST['delete'])) {
-  $id = $_POST['id_buku']; // atau dari POST
+        $id = $_POST['id_buku']; // atau dari POST
 
-$cek = mysqli_query($conn, "
+        $cek = mysqli_query($conn, "
     SELECT COUNT(*) AS total
     FROM peminjaman
     WHERE id_buku = '$id'
 ");
 
-$data = mysqli_fetch_assoc($cek);
+        $data = mysqli_fetch_assoc($cek);
 
-if ($data['total'] > 0) {
-    echo "<script>
-        alert('Buku tidak bisa dihapus karena sudah pernah dipinjam');
+        if ($data['total'] > 0) {
+            echo "<script>
+        alert('Buku tidak bisa dihapus karena sedang dipinjam');
         window.location.href='app?page=buku';
     </script>";
-    exit;
-}
+            exit;
+        }
 
-// HAPUS
-mysqli_query($conn, "DELETE FROM buku WHERE id_buku='$id'");
+        // HAPUS
+        mysqli_query($conn, "DELETE FROM buku WHERE id_buku='$id'");
 
-echo "<script>
+        echo "<script>
     alert('Buku berhasil dihapus');
     window.location.href='app?page=buku';
 </script>";
-exit;
+        exit;
     }
 }
 if (isset($_GET['id_buku'])) {
@@ -81,8 +81,12 @@ if (isset($_GET['id_buku'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
+                            <a href="app?page=stok" class="btn btn-outline-success btn-sm">
+                                Lihat Semua Stok Buku
+                            </a>
                             <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
+                                    class="fa-solid fa-plus"></i>Tambah Informasi Buku</a>
+
                         </div>
                     </div>
                 </div>
