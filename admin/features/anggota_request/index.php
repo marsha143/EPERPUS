@@ -26,7 +26,10 @@ if (isset($_POST['cari']) && $_POST['cari'] !== '') {
             a.nama LIKE '%$keyword%' OR
             a.nim_nidn LIKE '%$keyword%' OR
             a.program_studi LIKE '%$keyword%' OR
-            a.noHP LIKE '%$keyword%'
+            a.alamat LIKE '%$keyword%' OR
+            a.noHP LIKE '%$keyword%' OR
+            r.alamat_baru LIKE '%$keyword%' OR
+            r.no_hp_baru LIKE '%$keyword%'
         ORDER BY r.tanggal_request DESC
     ";
 
@@ -38,6 +41,7 @@ if (isset($_POST['cari']) && $_POST['cari'] !== '') {
 
     $requests = mysqli_fetch_all($qReq, MYSQLI_ASSOC);
 }
+
 
 
 // ================================

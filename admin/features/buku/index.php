@@ -1,27 +1,57 @@
 <?php
-$querydata = "
-SELECT 
-    buku.*,
-    penulis.nama_penulis,
-    genre.jenis_genre,
-    COUNT(stok_buku.id_stok) AS Qty
-FROM buku
-LEFT JOIN penulis ON penulis.id = buku.id_penulis
-LEFT JOIN genre ON genre.id = buku.id_genre
-LEFT JOIN stok_buku 
-    ON stok_buku.id_buku = buku.id_buku
-    AND stok_buku.id_kondisi = 2
-GROUP BY buku.id_buku
-";
+if (isset($_POST['cari']) && $_POST['cari'] !== '') {
+
+    $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
+
+    $querydata = "
+        SELECT 
+            buku.*,
+            penulis.nama_penulis,
+            genre.jenis_genre,
+            COUNT(stok_buku.id_stok) AS Qty
+        FROM buku
+        LEFT JOIN penulis ON penulis.id = buku.id_penulis
+        LEFT JOIN genre ON genre.id = buku.id_genre
+        LEFT JOIN stok_buku 
+            ON stok_buku.id_buku = buku.id_buku
+            AND stok_buku.id_kondisi = 2
+        WHERE 
+            buku.judul_buku LIKE '%$keyword%' OR
+            buku.isbn LIKE '%$keyword%' OR
+            penulis.nama_penulis LIKE '%$keyword%' OR
+            genre.jenis_genre LIKE '%$keyword%'
+        GROUP BY buku.id_buku
+        ORDER BY buku.id_buku DESC
+    ";
+
+} else {
+
+    // DEFAULT LOAD SEMUA DATA
+    $querydata = "
+        SELECT 
+            buku.*,
+            penulis.nama_penulis,
+            genre.jenis_genre,
+            COUNT(stok_buku.id_stok) AS Qty
+        FROM buku
+        LEFT JOIN penulis ON penulis.id = buku.id_penulis
+        LEFT JOIN genre ON genre.id = buku.id_genre
+        LEFT JOIN stok_buku 
+            ON stok_buku.id_buku = buku.id_buku
+            AND stok_buku.id_kondisi = 2
+        GROUP BY buku.id_buku
+        ORDER BY buku.id_buku DESC
+    ";
+}
+
 $data = mysqli_query($conn, $querydata);
+if (!$data) {
+    die("Query error: " . mysqli_error($conn));
+}
+
 $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
-if (isset($_POST['cari'])) {
-    $keyword = $_POST['cari'];
-    $data = mysqli_query($conn, "SELECT *, penulis.nama_penulis, genre.jenis_genre FROM buku LEFT JOIN penulis ON penulis.id = buku.id_penulis LEFT JOIN genre ON genre.id = buku.id_genre WHERE buku.judul_buku LIKE '%$keyword%'");
-    $buku = mysqli_fetch_all($data, MYSQLI_ASSOC);
-} else {
-    if (isset($_POST['delete'])) {
+if (isset($_POST['delete'])) {
         $id = $_POST['id_buku']; // atau dari POST
 
         $cek = mysqli_query($conn, "
@@ -49,7 +79,7 @@ if (isset($_POST['cari'])) {
 </script>";
         exit;
     }
-}
+
 if (isset($_GET['id_buku'])) {
     $id_buku = $_GET['id_buku'];
 
@@ -109,34 +139,34 @@ if (isset($_GET['id_buku'])) {
                             </thead>
                             <tbody>
                                 <?php foreach ($buku as $no => $b): ?>
-                                    <tr>
-                                        <td><img src="<?= $b['cover'] ?>" alt="cover" style="height:48px"></td>
-                                        <td><?= $b['judul_buku'] ?></td>
-                                        <td><?= $b['jenis_genre'] ?></td>
-                                        <td><?= $b['isbn'] ?></td>
-                                        <td><?= $b['nama_penulis'] ?></td>
-                                        <td><?= $b['tahun_terbit'] ?></td>
-                                        <td><?= $b['penerbit'] ?></td>
-                                        <form action="" method="POST" style="display:inline;">
-                                            <td><?= $b['Qty'] ?> Pcs <input type="hidden" name="id_buku"
-                                                    value="<?= $b['id_buku'] ?>">
-                                                <a href="app?page=buku&view=view_stok&id_buku=<?= $b['id_buku'] ?>"
-                                                    class="btn btn-outline-success btn-sm">
-                                                    Lihat Stok
-                                                </a>
-                                            </td>
-                                        </form>
-                                        <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"
-                                                class="btn btn-outline-warning btn-sm ms-3"><i
-                                                    class="fa-solid fa-pen-to-square"></i> edit</a>
-                                            <form action="" method="POST" style="display: inline"
-                                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                                <input type="hidden" name="id_buku" value="<?= $b['id_buku'] ?>">
-                                                <button class="btn btn-outline-danger btn-sm " name="delete"><i
-                                                        class="fa-solid fa-trash"></i> hapus</button>
-                                            </form>
+                                <tr>
+                                    <td><img src="<?= $b['cover'] ?>" alt="cover" style="height:48px"></td>
+                                    <td><?= $b['judul_buku'] ?></td>
+                                    <td><?= $b['jenis_genre'] ?></td>
+                                    <td><?= $b['isbn'] ?></td>
+                                    <td><?= $b['nama_penulis'] ?></td>
+                                    <td><?= $b['tahun_terbit'] ?></td>
+                                    <td><?= $b['penerbit'] ?></td>
+                                    <form action="" method="POST" style="display:inline;">
+                                        <td><?= $b['Qty'] ?> Pcs <input type="hidden" name="id_buku"
+                                                value="<?= $b['id_buku'] ?>">
+                                            <a href="app?page=buku&view=view_stok&id_buku=<?= $b['id_buku'] ?>"
+                                                class="btn btn-outline-success btn-sm">
+                                                Lihat Stok
+                                            </a>
                                         </td>
-                                    </tr>
+                                    </form>
+                                    <td><a href="app?page=buku&view=editbuku&id_buku=<?= $b['id_buku'] ?>"
+                                            class="btn btn-outline-warning btn-sm ms-3"><i
+                                                class="fa-solid fa-pen-to-square"></i> edit</a>
+                                        <form action="" method="POST" style="display: inline"
+                                            onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                            <input type="hidden" name="id_buku" value="<?= $b['id_buku'] ?>">
+                                            <button class="btn btn-outline-danger btn-sm " name="delete"><i
+                                                    class="fa-solid fa-trash"></i> hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>

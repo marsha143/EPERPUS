@@ -10,6 +10,8 @@ if (isset($_POST['cari']) && $_POST['cari'] !== '') {
           AND (
                 nama LIKE '%$keyword%' OR
                 nim_nidn LIKE '%$keyword%' OR
+                program_studi LIKE '%$keyword%' OR
+                noHP LIKE '%$keyword%' OR
                 email LIKE '%$keyword%' OR
                 username LIKE '%$keyword%'
               )
@@ -17,8 +19,13 @@ if (isset($_POST['cari']) && $_POST['cari'] !== '') {
     ";
 
     $data = mysqli_query($conn, $query);
+    if (!$data) {
+        die('Query error: ' . mysqli_error($conn));
+    }
+
     $anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
+
 if (isset($_POST['acc_request'])) {
 
     $idRequest = (int)$_POST['id_request'];

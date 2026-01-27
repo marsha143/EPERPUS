@@ -12,20 +12,46 @@ if (isset($_GET['send_email_late'])) {
 }
 
 $filter = $_GET['filter'] ?? 'all';
-$where = '';
+$whereFilter = '';
 
 if ($filter == 'dipinjam') {
-    $where = "WHERE p.status='Dipinjam'";
+    $whereFilter = "WHERE p.status='Dipinjam'";
 } elseif ($filter == 'dikembalikan') {
-    $where = "WHERE p.status='Dikembalikan'";
+    $whereFilter = "WHERE p.status='Dikembalikan'";
 }
 
-$sql = "SELECT 
+
+$whereSearch = '';
+
+if (isset($_POST['cari']) && $_POST['cari'] !== '') {
+    $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
+
+    $whereSearch = "
+        (
+            a.nama LIKE '%$keyword%' OR
+            a.nim_nidn LIKE '%$keyword%' OR
+            b.judul_buku LIKE '%$keyword%' OR
+            sb.kode_buku_takumi LIKE '%$keyword%'
+        )
+    ";
+}
+
+$where = '';
+
+if ($whereFilter && $whereSearch) {
+    $where = $whereFilter . " AND " . $whereSearch;
+} elseif ($whereFilter) {
+    $where = $whereFilter;
+} elseif ($whereSearch) {
+    $where = "WHERE " . $whereSearch;
+}
+
+$sql = "
+    SELECT 
         p.*, 
         a.nama AS nama_anggota, 
         a.nim_nidn, 
         b.judul_buku,
-         
         sb.kode_buku_takumi,
         a.email
     FROM peminjaman p
@@ -33,35 +59,17 @@ $sql = "SELECT
     JOIN stok_buku sb ON sb.id_stok = p.id_stok
     JOIN buku b ON b.id_buku = sb.id_buku
     $where
-    ORDER BY p.id DESC";
+    ORDER BY p.id DESC
+";
+
 $result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    die("Query error: " . mysqli_error($conn));
+}
+
 $peminjaman = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-if (isset($_POST['cari'])) {
-
-    $keyword = $_POST['cari'];
-    $data = mysqli_query($conn, "
-    SELECT 
-        p.*,
-        a.nama AS nama_anggota,
-        a.nim_nidn,
-        b.judul_buku,
-        
-        sb.kode_buku_takumi,
-        a.email
-    FROM peminjaman p
-    JOIN anggota a ON a.id_anggota = p.id_anggota
-    JOIN stok_buku sb ON sb.id_stok = p.id_stok
-    JOIN buku b ON b.id_buku = sb.id_buku
-    WHERE 
-        a.nama LIKE '%$keyword%'
-        OR a.nim_nidn LIKE '%$keyword%' 
-        OR b.judul_buku LIKE '%$keyword%'
-        OR LIKE '%$keyword%'
-");
-    $peminjaman = mysqli_fetch_all($data, MYSQLI_ASSOC);
-
-}
 
 if (isset($_POST['kembalikan'])) {
     $id = $_POST['id'];
@@ -108,7 +116,7 @@ if (isset($_POST['kembalikan'])) {
 <div class="container mt-4">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 class="mb-0 fw-bold">Daftar Peminjaman</h5>
+            <h3 class="mb-0 fw-bold">Daftar Peminjaman</h3>
 
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <a href="app?page=peminjaman&send_email_late=1"

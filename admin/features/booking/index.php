@@ -11,21 +11,33 @@ if (isset($_POST['cari']) && $_POST['cari'] !== '') {
     $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
 
     $query = "
-        SELECT b.*, 
-               a.nama AS nama_anggota, 
-               a.nim_nidn,
-               bk.judul_buku
+        SELECT 
+            b.*, 
+            a.nama AS nama_anggota, 
+            a.nim_nidn,
+            bk.judul_buku
         FROM booking b
         JOIN anggota a ON a.id_anggota = b.id_anggota
         JOIN buku bk ON b.id_buku = bk.id_buku
-        WHERE b.status = 'Dibooking'
-          AND bk.judul_buku LIKE '%$keyword%'
+        WHERE 
+            b.status = 'Dibooking'
+            AND (
+                a.nama LIKE '%$keyword%' OR
+                a.nim_nidn LIKE '%$keyword%' OR
+                bk.judul_buku LIKE '%$keyword%'
+            )
         ORDER BY b.id DESC
     ";
 
     $data = mysqli_query($conn, $query);
+
+    if (!$data) {
+        die("Query error: " . mysqli_error($conn));
+    }
+
     $booking = mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
+
 
 
 // ambil booking expired

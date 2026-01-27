@@ -3,33 +3,47 @@ $data = mysqli_query($conn, "SELECT * FROM anggota");
 $anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 if (isset($_POST['cari'])) {
-    $keyword = $_POST['cari'];
-    $data = mysqli_query($conn, "SELECT * FROM anggota WHERE nama LIKE '%$keyword%'");
+    $keyword = mysqli_real_escape_string($conn, $_POST['cari']);
+
+    $data = mysqli_query($conn, "
+        SELECT * 
+        FROM anggota 
+        WHERE 
+            nama LIKE '%$keyword%' OR
+            nim_nidn LIKE '%$keyword%' OR
+            program_studi LIKE '%$keyword%' OR
+            noHP LIKE '%$keyword%' OR
+            email LIKE '%$keyword%'
+    ");
+
     $anggota = mysqli_fetch_all($data, MYSQLI_ASSOC);
+
 } else {
+
     if (isset($_POST['delete'])) {
-        $id = $_POST['id_anggota'];
+        $id = mysqli_real_escape_string($conn, $_POST['id_anggota']);
 
-        $query = "DELETE FROM `anggota` WHERE id_anggota = $id ";
+        $query = "DELETE FROM `anggota` WHERE id_anggota = '$id'";
         $result = mysqli_query($conn, $query);
-        if ($result) {
 
+        if ($result) {
             echo "
-        <script>
-        alert('data  berhasil dihapus');
-        window.location.href = 'app?page=anggota'
-        </script>
-        ";
+                <script>
+                alert('data berhasil dihapus');
+                window.location.href = 'app?page=anggota'
+                </script>
+            ";
         } else {
             echo "
-         <script>
-        alert('data tidak berhasil dihapus');
-        </script>
-        ";
+                <script>
+                alert('data tidak berhasil dihapus');
+                </script>
+            ";
         }
     }
 }
 ?>
+
 
 <div class="container mt-5">
     <div class="card">
