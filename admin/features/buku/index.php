@@ -81,8 +81,11 @@ if (isset($_GET['id_buku'])) {
                     </div>
                     <div class="col-md-8">
                         <div class="text-end">
+                            <a href="app?page=stok" class="btn btn-outline-success btn-sm">
+                                Lihat Semua Stok Buku
+                            </a>
                             <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
+                                    class="fa-solid fa-plus"></i>Tambah Informasi Buku</a>
                         </div>
                     </div>
                 </div>
