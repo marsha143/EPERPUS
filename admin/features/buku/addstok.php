@@ -65,8 +65,8 @@ if (isset($_POST['simpan'])) {
 
                 <div class="mb-3">
                     <label class="form-label">Nomor Buku Kampus</label>
-                    <input type="text" name="no_buku" class="form-control" required
-                        placeholder="Contoh: BK-00123">
+                    <input type="text" name="no_buku" class="form-control" maxlength="8" pattern="\d{1,8}" placeholder="Maksimal 8 digit angka" required
+                        placeholder="Contoh: 00123">
                 </div>
 
                 <div class="mb-3">
