@@ -57,14 +57,14 @@ if (isset($_POST['hapus'])) {
     <div class="card">
         <div class="card-header">
             <div class="col-md-4">
-                <h5>Data Kondisi Buku (Seluruh Stok)</h5>
+                <h3>Data Kondisi Buku (Seluruh Stok)</h3>
             </div>
             <div class="text-end">
                 <div class="col-md">
-                    <a href="app?page=stok&view=add_stok_universal" class="btn btn-success btn-sm">
+                    <a href="app?page=stok&view=add_stok_universal" class="btn btn-outline-success btn-sm">
                         + Tambah stok buku
                     </a>
-                    <a href="app?page=buku&view=index" class="btn btn-danger btn-sm">
+                    <a href="app?page=buku&view=index" class="btn btn-outline-danger btn-sm">
                         <- Kembali Ke Daftar Buku </a>
                 </div>
             </div>
@@ -112,7 +112,7 @@ if (isset($_POST['hapus'])) {
                                 <!-- Hapus -->
                                 <form method="post" style="display:inline;" onsubmit="return confirm('Hapus stok ini?')">
                                     <input type="hidden" name="id_stok" value="<?= $s['id_stok'] ?>">
-                                    <button class="btn btn-danger btn-sm" name="hapus">
+                                    <button class="btn btn-outline-danger btn-sm" name="hapus">
                                         Hapus
                                     </button>
                                 </form>

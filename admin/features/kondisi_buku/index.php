@@ -19,8 +19,8 @@ if (isset($_POST['hapus'])) {
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">
-            <h5>Data Kondisi Buku (Seluruh Stok)</h5>
-            <a href="app?page=kondisi_buku&view=add_jenis_kondisi" class="btn btn-success btn-sm">
+            <h3>Data Kondisi</h3>
+            <a href="app?page=kondisi_buku&view=add_jenis_kondisi" class="btn btn-outline-success btn-sm">
                 + Tambah jenis kondisi
             </a>
         </div>
@@ -43,7 +43,7 @@ if (isset($_POST['hapus'])) {
                                 <!-- Hapus -->
                                 <form method="post" style="display:inline;" onsubmit="return confirm('Hapus stok ini?')">
                                     <input type="hidden" name="id" value="<?= $k['id'] ?>">
-                                    <button class="btn btn-danger btn-sm" name="hapus">
+                                    <button class="btn btn-outline-danger btn-sm" name="hapus">
                                         Hapus
                                     </button>
                                 </form>

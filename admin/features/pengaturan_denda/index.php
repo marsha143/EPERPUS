@@ -53,7 +53,7 @@ if (isset($_POST['simpan'])) {
                             </small>
                         </div>
 
-                        <button type="submit" name="simpan" class="btn btn-primary">
+                        <button type="submit" name="simpan" class="btn btn-outline-primary">
                             Simpan Pengaturan
                         </button>
 

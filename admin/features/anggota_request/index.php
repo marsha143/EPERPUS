@@ -147,10 +147,6 @@ if (isset($_POST['tolak_profile'])) {
                         </form>
                     </div>
                     <div class="col-md-8">
-                        <div class="text-end">
-                            <a href="./app?page=buku&view=addbuku" class="btn btn-primary btn-sm"><i
-                                    class="fa-solid fa-plus"></i>Tambah</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -200,9 +196,9 @@ if (isset($_POST['tolak_profile'])) {
 
                                 <td>
                                     <?php if ($r['status'] == 'Disetujui'): ?>
-                                    <span class="badge bg-success">Disetujui</span>
+                                    <span class="badge border border-success text-success">Disetujui</span>
                                     <?php else: ?>
-                                    <span class="badge bg-danger">Ditolak</span>
+                                    <span class="badge border border-danger text-danger">Ditolak</span>
                                     <?php endif; ?>
                                 </td>
 
