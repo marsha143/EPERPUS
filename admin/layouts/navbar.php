@@ -61,7 +61,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white <?= $page == 'kondisi_buku' ? 'active' : '' ?>"
-                                    href="app?page=kondisi_buku">Kondisi Buku</a>
+                                    href="app?page=kondisi_buku">jenis Kondisi</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white <?= $page == 'genre' ? 'active' : '' ?>"

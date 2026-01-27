@@ -2,7 +2,7 @@
 
 if (isset($_GET['id_penulis'])) {
     $id_penulis = $_GET['id_penulis'];
-    $query = " SELECT * FROM buku WHERE id_penulis = $id_penulis ";
+    $query = " SELECT * FROM penulis WHERE id = $id_penulis ";
     $result = mysqli_query($conn, $query);
     $data = mysqli_fetch_assoc($result);
     if (!$data) {
@@ -11,7 +11,7 @@ if (isset($_GET['id_penulis'])) {
 }
 if (isset($_POST['update'])) {
     $nama_penulis = $_POST['nama_penulis'];
-    $query = "UPDATE penulis SET `nama_penulis`='$nama_penulis'";
+    $query = "UPDATE penulis SET `nama_penulis`='$nama_penulis' WHERE id = $id_penulis";
     $result = mysqli_query($conn, $query);
     if ($result) {
         echo "
@@ -59,7 +59,7 @@ if (isset($_POST['update'])) {
                         </div>
                     </div>
                     <div class="card-footer text-end">
-                        <input type="hidden" name="id_buku" value="<?= $data['id_buku'] ?>">
+                        <input type="hidden" name="id_penulis" value="<?= $data['id'] ?>">
                         <button type="submit" name="update" class="btn btn-primary"><i
                                 class="fa-solid fa-download"></i>Simpan</button>
                         <a href="app?page=penulis" class="btn btn-secondary"><i

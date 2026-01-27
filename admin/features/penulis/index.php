@@ -1,5 +1,5 @@
 <?php
-$data = mysqli_query($conn, "SELECT * FROM penulis");
+$data = mysqli_query($conn, "SELECT * FROM penulis WHERE deleted_at IS NULL");
 $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
 if (isset($_POST['cari'])) {
@@ -8,25 +8,20 @@ if (isset($_POST['cari'])) {
     $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 } else {
     if (isset($_POST['delete'])) {
-        $id = $_POST['id_penulis'];
+        $id_penulis = (int) $_POST['id_penulis'];
 
-        $query = "DELETE FROM `penulis` WHERE id_penulis = $id ";
-        $result = mysqli_query($conn, $query);
-        if ($result) {
+        mysqli_query($conn, "
+        UPDATE penulis 
+        SET deleted_at = CURRENT_TIMESTAMP 
+        WHERE id = $id_penulis
+    ");
 
-            echo "
-        <script>
-        alert('data  berhasil dihapus');
-        window.location.href = 'app?page=penulis'
-        </script>
-        ";
-        } else {
-            echo "
-         <script>
-        alert('data tidak berhasil dihapus');
-        </script>
-        ";
-        }
+
+        echo "<script>
+        alert('Stok berhasil dihapus');
+        window.location.href='app?page=penulis';
+    </script>";
+        exit;
     }
 }
 ?>
@@ -69,22 +64,22 @@ if (isset($_POST['cari'])) {
                             </thead>
                             <tbody>
                                 <?php foreach ($penulis as $no => $p): ?>
-                                <tr>
-                                    <td><?= $p['nama_penulis'] ?></td>
-                                    <td>
-                                        <a href="app?page=penulis&view=editpenulis&id_penulis=<?= $p ?>"
-                                            class="btn btn-warning btn-sm ms-3">
-                                            <i class="fa-solid fa-pen-to-square"></i>edit
-                                        </a>
-                                        <form action="" method="POST" style="display: inline"
-                                            onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                            <input type="hidden" name="id_penulis" value="<?= $p ?>">
-                                            <button class="btn btn-danger btn-sm" name="delete">
-                                                <i class="fa-solid fa-trash"></i>hapus
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td><?= $p['nama_penulis'] ?></td>
+                                        <td>
+                                            <a href="app?page=penulis&view=editpenulis&id_penulis=<?= $p['id'] ?>"
+                                                class="btn btn-warning btn-sm ms-3">
+                                                <i class="fa-solid fa-pen-to-square"></i>edit
+                                            </a>
+                                            <form action="" method="POST" style="display: inline"
+                                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                                <input type="hidden" name="id_penulis" value="<?= $p['id'] ?>">
+                                                <button class="btn btn-danger btn-sm" name="delete">
+                                                    <i class="fa-solid fa-trash"></i>hapus
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>

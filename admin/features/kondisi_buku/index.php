@@ -2,10 +2,14 @@
 $q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku");
 $kondisi = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 
-if (isset($_POST['hapus'])) {
-    $id = (int) $_POST['id'];
+  if (isset($_POST['delete'])) {
+        $id = (int) $_POST['id'];
 
-    mysqli_query($conn, "DELETE FROM kondisi_buku WHERE id=$id");
+        mysqli_query($conn, "
+        UPDATE genre
+        SET deleted_at = CURRENT_TIMESTAMP 
+        WHERE id = $id
+    ");
 
     echo "<script>
         alert('Stok berhasil dihapus');
