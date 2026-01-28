@@ -97,12 +97,14 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                             <?= date('d M Y', strtotime($startDate)) ?> –
                             <?= date('d M Y', strtotime($endDate)) ?>)
                         </h6>
-                        <div class="btn-group">
-                            <a href="?range=harian&start=<?= $startDate ?>&end=<?= $endDate ?>">Harian</a>
-                            <a href="?range=mingguan&start=<?= $startDate ?>&end=<?= $endDate ?>">Mingguan</a>
-                            <a href="?range=bulanan&start=<?= $startDate ?>&end=<?= $endDate ?>">Bulanan</a>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-success"
+                                href="?range=harian&start=<?= $startDate ?>&end=<?= $endDate ?>">Harian</a>
+                            <a class="btn btn-outline-primary"
+                                href="?range=mingguan&start=<?= $startDate ?>&end=<?= $endDate ?>">Mingguan</a>
+                            <a class="btn btn-outline-primary"
+                                href="?range=bulanan&start=<?= $startDate ?>&end=<?= $endDate ?>">Bulanan</a>
                         </div>
-
                         <form method="GET" class="d-flex align-items-center gap-2">
 
                             <!-- RANGE -->
@@ -116,7 +118,7 @@ $peminjaman = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
                             <input type="date" name="end" value="<?= $_GET['end'] ?? '' ?>"
                                 class="form-control form-control-sm">
                             <div class="filter-tanggal">
-                                <button class="btn btn-sm btn-primary">
+                                <button class="btn btn-sm btn-outline-primary">
                                     Apply
                                 </button>
                             </div>
