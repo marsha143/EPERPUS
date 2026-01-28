@@ -6,10 +6,12 @@ SELECT
     bk.id,
     b.cover,
     b.judul_buku,
-    bk.waktu_booking 
+    bk.waktu_booking,
+    bk.status
 FROM booking bk
 JOIN buku b ON bk.id_buku = b.id_buku
 WHERE bk.id_anggota = $idAnggota
+AND bk.status = 'Dibooking'
 ORDER BY bk.waktu_booking DESC
 ";
 
