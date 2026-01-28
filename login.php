@@ -1,24 +1,43 @@
-<?php include("./config/db.php"); ?>
 <?php
+session_start();
+include("./config/db.php");
+
+// Jika sudah login, redirect sesuai role
 if (isset($_SESSION['login'])) {
-    if ($_SESSION['user']['role'] === 'admin') {
+    if ($_SESSION['user']['role_id'] == 2) {
         header('Location: app');
-    } else {
+    } elseif ($_SESSION['user']['role_id'] == 3) {
         header('Location: app_anggota');
     }
     exit;
 }
 
+// Proses login
 if (isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
-    $role     = $_POST['role']; // hanya validasi UI
 
     $query = "
-        SELECT id, username, password, role FROM (
-            SELECT id_admin AS id, username, password, role FROM admin
+        SELECT id, username, password, role_id, nama_role FROM (
+            SELECT 
+                a.id_admin AS id,
+                a.username,
+                a.password,
+                a.role AS role_id,
+                r.nama_role
+            FROM admin a
+            JOIN role r ON a.role = r.id
+
             UNION ALL
-            SELECT id_anggota AS id, username, password, role FROM anggota
+
+            SELECT 
+                ag.id_anggota AS id,
+                ag.username,
+                ag.password,
+                ag.role AS role_id,
+                r.nama_role
+            FROM anggota ag
+            JOIN role r ON ag.role = r.id
         ) AS users
         WHERE username = ?
         LIMIT 1
@@ -30,36 +49,39 @@ if (isset($_POST['login'])) {
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
 
+    // Username tidak ditemukan
     if (!$user) {
-        echo "<script>alert('Username tidak ditemukan'); window.location='login';</script>";
+        echo "<script>alert('Username tidak ditemukan');window.location='login';</script>";
         exit;
     }
 
+    // Password salah
     if (!password_verify($password, $user['password'])) {
-        echo "<script>alert('Password salah'); window.location='login';</script>";
+        echo "<script>alert('Password salah');window.location='login';</script>";
         exit;
     }
 
-    if ($user['role'] !== $role) {
-        echo "<script>alert('Role tidak sesuai'); window.location='login';</script>";
-        exit;
-    }
-
+    // Set session
     $_SESSION['login'] = true;
     $_SESSION['user'] = [
-        'id'       => $user['id'],
+        'id' => $user['id'],
         'username' => $user['username'],
-        'role'     => $user['role']
+        'role_id' => $user['role_id'],
+        'role' => $user['nama_role']
     ];
 
-    if ($user['role'] === 'admin') {
-        header('Location: app');
+    // Redirect berdasarkan role
+    if ($user['role_id'] == 2) {
+        header('Location: app'); // admin
+    } elseif ($user['role_id'] == 3) {
+        header('Location: app_anggota'); // anggota
     } else {
-        header('Location: app_anggota');
+        echo "<script>alert('Role tidak valid');window.location='login';</script>";
     }
     exit;
 }
 ?>
+
 <?php include('./anggota/layouts_anggota/header.php'); ?>
 <div class="page-header align-items-start min-vh-100"
     style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');"
@@ -75,34 +97,17 @@ if (isset($_POST['login'])) {
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="" class="text-start">
+                        <form method="POST" class="text-start">
                             <div class="input-group input-group-outline my-3">
                                 <label class="form-label">Username</label>
-                                <input type="username" name="username" class="form-control" required>
+                                <input type="text" name="username" class="form-control" required>
                             </div>
+
                             <div class="input-group input-group-outline mb-3">
                                 <label class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Masuk sebagai:</label>
 
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="role" id="admin" value="admin"
-                                        required>
-                                    <label class="form-check-label" for="admin">
-                                        Admin
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="role" id="anggota"
-                                        value="anggota" required>
-                                    <label class="form-check-label" for="anggota">
-                                        Anggota
-                                    </label>
-                                </div>
-                            </div>
                             <div class="text-center">
                                 <button type="submit" name="login" class="btn btn-primary">Login</button>
                             </div>
@@ -113,4 +118,4 @@ if (isset($_POST['login'])) {
         </div>
     </div>
 </div>
-<?php include('./anggota/layouts_anggota/footer.php');?>
+<?php include('./anggota/layouts_anggota/footer.php'); ?>
