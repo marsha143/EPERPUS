@@ -1,8 +1,8 @@
 <?php
-$data = mysqli_query($conn, "SELECT id, nama_penulis FROM penulis");
+$data = mysqli_query($conn, "SELECT id, nama_penulis FROM penulis WHERE deleted_at IS NULL");
 $penulis = mysqli_fetch_all($data, MYSQLI_ASSOC);
 
-$data2 = mysqli_query($conn, "SELECT id, jenis_genre FROM genre");
+$data2 = mysqli_query($conn, "SELECT id, jenis_genre FROM genre WHERE deleted_at IS NULL");
 $genre = mysqli_fetch_all($data2, MYSQLI_ASSOC);
 
 if (isset($_POST['simpan'])) {

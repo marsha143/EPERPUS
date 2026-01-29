@@ -77,7 +77,7 @@ VALUES
 // DATA DROPDOWN (TETAP)
 
 $buku = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM buku"), MYSQLI_ASSOC);
-$anggota = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM anggota"), MYSQLI_ASSOC);
+$anggota = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM anggota WHERE deleted_at IS NULL"), MYSQLI_ASSOC);
 ?>
 
 <div class="container mt-4">
