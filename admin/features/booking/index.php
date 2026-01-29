@@ -245,11 +245,6 @@ if (isset($_POST['kirim_tolak'])) {
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-8">
-                        <div class="text-end">
-                            <a href="./app?page=buku&view=addbuku" class="btn btn-outline-danger btn-sm ">+ Tambah</a>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="card-body">

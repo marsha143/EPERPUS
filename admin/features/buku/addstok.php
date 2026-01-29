@@ -16,7 +16,7 @@ if (!$buku) {
 }
 
 // Ambil kondisi buku
-$q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku");
+$q_kondisi = mysqli_query($conn, "SELECT * FROM kondisi_buku WHERE deleted_at IS NULL");
 $kondisi = mysqli_fetch_all($q_kondisi, MYSQLI_ASSOC);
 
 // Simpan stok

@@ -49,23 +49,23 @@ if (isset($_POST['simpan'])) {
                     <input type="text" name="kode_buku_takumi" class="form-control" maxlength="8" pattern="\d{1,8}"
                         placeholder="Maksimal 8 digit angka" required>
                 </div>
-        </div>
-        <div class="mb-3">
-            <label>Kondisi Buku</label>
-            <select name="id_kondisi" class="form-select" required>
-                <?php foreach ($kondisi as $k): ?>
-                    <option value="<?= $k['id'] ?>">
-                        <?= $k['jenis_kondisi'] ?>
-                    </option>
-                <?php endforeach ?>
-            </select>
-        </div>
 
-        <button class="btn btn-outline-success" name="simpan">Simpan</button>
-        <a href="app?page=stok" class="btn btn-outline-secondary">
-            Batal
-        </a>
-        </form>
+                <div class="mb-3">
+                    <label>Kondisi Buku</label>
+                    <select name="id_kondisi" class="form-select" required>
+                        <?php foreach ($kondisi as $k): ?>
+                            <option value="<?= $k['id'] ?>">
+                                <?= $k['jenis_kondisi'] ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
+                <button class="btn btn-outline-success" name="simpan">Simpan</button>
+                <a href="app?page=stok" class="btn btn-outline-secondary">
+                    Batal
+                </a>
+            </form>
+        </div>
     </div>
-</div>
 </div>
